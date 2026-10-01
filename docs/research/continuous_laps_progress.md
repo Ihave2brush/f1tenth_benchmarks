@@ -1,12 +1,22 @@
 # Continuous laps：進度與接續紀錄
 
-更新日期：2026-09-30
+更新日期：2026-10-01
 
 ## 目前狀態
 
-Stage 1 corrected research solver 已完成並正式 PASS。兩組 raceline、comparison report 已重新生成；12 項 regression tests 全通過，完整圈與 closure constraint 通過，baseline/upstream hashes 未變。Stage 1 已提交至 0e89803。Stage 2 獨立 Frenet tracker 已完成，12 項 tracker tests 與 12 項 Stage 1 regression 全通過；Stage 2 版本保存見末尾紀錄；未執行 vehicle simulation，Stage 3–5 尚未實作。
+Stage 1–5 本次 ESP continuous-lap 驗收已完成。Stage 1 已提交 0e89803，Stage 2 已提交 0f382f6；Stage 3–5、圖表與分析成果的版本保存見末尾紀錄；尚未 push。Research tests 35 項 PASS，真實 ESP 已完成三個完整圈（41.5771663、41.0668437、41.0630101 s），僅一次 reset，無碰撞／投影異常；所有樣本與 steering buffers 通過獨立 dynamics replay。原 mu60、Stage 1 產物、baseline logs 與 upstream 保護 hashes 未變。
 
-計畫：`docs/research/continuous_laps_plan.md`
+另完成真實 partial→full、timeout、collision 與原 simulate_laps baseline 隔離回歸。保存結果見 `Data/research/continuous_laps/stage5/acceptance.json`。計畫：[continuous_laps_plan.md](continuous_laps_plan.md)。先前未開始／未 simulation 等敘述保留為各批歷史狀態，最新狀態以本節與末尾 Stage 3–5 紀錄為準。
+
+## 最新五圈結果與圖表入口
+
+manual_run_001 是使用者手動執行的五圈 session，完成 N=5、partial=0、reset=1、sample_count=5148，無 collision／projection rejection／recovery，verify_session PASS。第 1 圈 41.577166 s；第 2–5 圈 41.066844、41.063010、41.072549、41.083535 s，flying 平均 41.071484 s。前 3 圈樣本與先前三圈驗收完全一致。
+
+- [完整 Markdown 分析報告](manual_run_001_report.md)：包含圖表解釋、重現指令、圈時間與規劃對照。
+- [路線總圖／終點放大](figures/manual_run_001/route_overview.png)、[逐圈比較](figures/manual_run_001/routes_by_lap.png)、[全場診斷](figures/manual_run_001/session_diagnostics.png)：均有 PNG／SVG。
+- [analysis.json](figures/manual_run_001/analysis.json)：replay 檢查、raceline 幾何距離與輸入 hashes。
+
+Stage 1 closed planned time=40.098769 s；manual flying 平均多 0.972715 s（2.4258%），standing-start 多 1.478397 s（3.6869%）。Closed profile 並非 standing-start 或全域最短圈時間；規劃／模擬模型、PID、steering delay、controller speed cap 與路徑差異尚未逐段歸因。此比較已完成數值核對；沒有藉此調參或宣稱追上規劃時間。
 
 ## 階段進度
 
@@ -15,9 +25,9 @@ Stage 1 corrected research solver 已完成並正式 PASS。兩組 raceline、co
 | Source 調查與規劃 | 完成 | 計畫文件及保存 baseline 的 source/檔案路徑 |
 | 1：Corrected closed profile + 四組比較 | PASS／完成 | Data/research/continuous_laps/stage1/comparison.json；12 regression tests PASS |
 | 2：固定 Frenet lap tracker | PASS／完成 | lap_tracking.py；12 tracker tests PASS，含實際 ESP reference 投影 |
-| 3：Continuous simulator | 未開始 | 無 |
-| 4：Research logger | 未開始 | 無 |
-| 5：ESP runner / 三圈驗收 | 未開始 | 無 |
+| 3：Continuous simulator | PASS／完成 | continuous_sim.py；真實短步進與全場 dynamics replay |
+| 4：Research logger | PASS／完成 | continuous_logging.py；exclusive/idempotent finalize、sample/event artifacts |
+| 5：ESP runner / 三圈驗收 | PASS／完成 | run_continuous_pp.py；三圈與 baseline 回歸，另 manual_run_001 五圈 replay PASS |
 
 ## Git 起始狀態
 
@@ -44,20 +54,11 @@ Staged changes: none
 
 ## 下次接續位置
 
-下一個實作目標是 **Stage 3 的最小 simulator 整合與短步進驗證**，不是直接執行完整三圈。此次只更新方向，沒有提前實作 Stage 3。
-
-- 完成依賴：Stage 1 corrected profile／產物驗證，以及 Stage 2 固定中心線、signed unwrapped s、partial／full、事件插值與明確 recovery。
-- 優先驗證：initial reset 僅一次；實際 post-step 樣本交給 tracker；跨線不中止、不清 dynamics state／steering buffer；collision、timeout、投影異常各自可辨識。
-- 接續順序：Stage 3 lifecycle → Stage 4 event／sample logger → Stage 5 runner 與 N 個完整圈驗收。每階段通過後再往下進行。
-- 尚缺證據：真實 dynamics 下的 tracker 配置校準、跨線 state 連續性、logger finalize，以及完整 ESP 三圈。現有 24 項單元／回歸測試不代表這些整合驗收已完成。
-
-
-1. 讀兩份文件、檢查 Git 與 comparison.json 的 PASS 結果。
-2. Stage 1 與 Stage 2 已通過；下一階段是 Stage 3 simulator。此次明確限定不整合，待後續指示。
-3. corrected_closed_solver 位於 research/closed_velocity_profile.py；僅支援本階段 constant GGV/mu、zero drag、exponent=1 的設定。
-4. 重新檢查用 compare --verify-only，不覆寫；只有明確 --replace-stage1 才覆寫兩個具名 research sets 與報告。
-
-Stage 1 命名已固定；Stage 2 固定 reference、finish/crossing、partial、計時邊界與事件欄位已定義，Stage 3–5 必須依此接續。
+1. 讀 plan/progress，檢查 Git 及 `Data/research/continuous_laps/stage5/acceptance.json`；本次 Stage 3–5 已通過，不需再視為待實作。
+2. Stage 3–5、圖表／報告與指定小型驗收摘要已納入本次版本保存；raw samples／scans 仍由 .gitignore 排除並保留本機，Dockerfile/.dockerignore 保持未追蹤。
+3. 需重查時用 `--verify-only Data/research/continuous_laps/stage5/esp_three_laps`；唯讀重播資料，不重新跑 simulation。需重跑時使用預設 timestamp session 或全新 --output-dir，已有目錄拒絕。
+4. 檢視 manual_run_001_report.md 與路線圖；下一個候選工作是沿 raceline 對齊 planned／commanded／physical speed 及分段時間，目前尚未實作，不先調參。
+5. 本次只涵蓋 ESP、既有 GlobalPurePursuit、mu60_closed 與預設 tracker 配置。其他地圖／速度／大偏移、不同 planning scheduler、LMPC／ROS2／opponent／overtaking 都不是本次已完成範圍。
 
 ## 後續每批紀錄格式
 
@@ -235,3 +236,122 @@ docker run --rm -e PYTHONDONTWRITEBYTECODE=1 \
   -w /workspace f1tenth-sim:full \
   python -B -m unittest discover -s tests/research -v
 ```
+
+
+## Stage 3–5 一次整合與實際验收（2026-09-30）
+
+使用者授權一次完成 Stage 3–5。起始 Git 僅有既存 Dockerfile/.dockerignore 未追蹤，HEAD 為 Stage 2 commit 0f382f6；重讀計畫、進度、tracker、原 simulator/dynamics/scan/logger/runner 與 planner。沒有修改原 benchmark、Stage 1／2 程式、params、racelines 或 Logs。
+
+實作產物：
+
+- `f1tenth_benchmarks/research/continuous_sim.py`：獨立研究 lifecycle，沿用原 dynamics/map/scan/四角 collision。default 起點固定中心線首點及切線，暖機四子步後 tracker 初始化；一次 reset、跨圈不 reset。終止原因分開，collision／timeout 當步不產生圈事件；projection_invalid 終止，不自動 recover。state／scan observations 為副本，完全避開原自動保存／destructor profiling。
+- `f1tenth_benchmarks/research/continuous_logging.py`：exclusive session directory、full/partial events 與 actual physical samples 分開；十欄 NPY、JSONL、lap CSV、可選 scan NPY、session metadata。保存每步 pre/post state 與 steering buffer，crossing estimate 及前後 sample time/index；explicit idempotent finalize，所有 buffers 清空，例外也 finalized。
+- `f1tenth_benchmarks/research/run_continuous_pp.py`：generic planner.plan runner、ESP factory／CLI、N 個完整圈終止、protected hash manifest；verify-only 原 dynamics replay；原 runner 的 temporary cwd baseline 回歸（新 Logs 複製到 research output，原 Logs 完全保留）。
+- `tests/research/test_continuous_laps.py`：11 tests，含受控 lifecycle 與真實 ESP dynamics；兩份 docs 同步當前完成狀態、介面、執行方式與限制。
+
+實際驗收結果：
+
+| 案例 | 結果 |
+|---|---|
+| ESP 三個完整圈 | requested_laps_reached；standing_start 41.57716626647754 s，flying 41.066843716979136 s、41.063010063982915 s |
+| 三圈 lifecycle | reset_count=1；total_steps=3094（含暖機），control_steps=3093；simulation_time=123.76000000002641 s，暖機後 elapsed=123.7200000000264 s；最後 crossing estimate=123.74702004743958 s，保留实际 post-step state |
+| 三圈 projection | 最大 distance／|e_y|≈0.6278692831633942 m；projection rejections=0；epoch=0；Stage 2 預設門檻未放寬 |
+| 三圈 replay | 3094 個 post-step 七維 state、所有 pre/post steering buffers、每個 crossing 前後 sample／alpha／duration 與 N 圈當步停止全部 PASS；scan shape=(3094,1080)，SimLog shape=(3094,10) |
+| 原 [0,0,0] 出發 | 先 partial：crossing estimate=0.17661403915322932 s，duration=0.1366140391532293 s；再 full=41.4653227656305 s；N=1 時 full_count=1、partial_count=1、reset_count=1；1042 samples 全部 replay PASS |
+| 真實短 timeout | timeout=0.2 s；end_reason=timeout、full_count=0、6 samples、reset_count=1 |
+| 真實初始 collision | 明確 out-of-map 起點；end_reason=collision、full_count=0、1 sample、reset_count=1；未呼叫 planner |
+| 原 baseline runner | 原 simulate_laps + 原 mu60 在隔離 temporary cwd：Time=41.5200、Steps=1038、Progress=0.9967、LapComplete=True、Collision=False；逐欄匹配保存 baseline |
+| 保護 hashes | 四個研究 session 及 baseline 回歸均 PASS，原受保護檔案零修改；Stage 1 protected hash regression 仍通過 |
+| 全部 research tests | 35 tests PASS，2.482 s、無 skip；Stage 1=12、Stage 2=12、Stage 3–5=11 |
+
+Tests 涵蓋初始化暖機與 observation copy、crossing 下一步 state/buffer 延續、三個 full events／圈時間／post-step artifacts、partial 不占 N、collision 與 crossing 同步優先終止、>250 秒不算 lap、投影異常停止／不 recover、exclusive/idempotent finalize、planner exception 保存、真實 ESP 短步進／初始 collision、真實 moving-start timeout 與 dynamics replay；修改保存的 steering buffer 會被 verifier 拒絕。Moving-start 初始化需記錄 preceding action=[0,initial_speed]，已由 replay test 驗證。未新增依賴，未重建 Docker 映像。
+
+保存產物（均主機 kimi ownership；現有 .gitignore 排除）：
+
+```text
+Data/research/continuous_laps/stage5/
+├── acceptance.json                 # 所有案例驗收、source hashes
+├── esp_three_laps/                 # session.json, samples/events.jsonl,
+│                                  # lap_results.csv, SimLog, ScanLog,
+│                                  # protected_hashes.json
+├── esp_partial_then_full/          # 相同 schema，無 scan output
+├── esp_timeout/                    # actual terminal samples
+├── esp_collision/                  # actual initial collision sample
+└── baseline_regression/            # regression.json + 隔離 Logs 的副本
+```
+
+三圈 ScanLog 約 26 MB，samples.jsonl 約 3.4 MB，NPY 約 244 KB。十欄形狀相容，但本研究 state 是 post-step，action 是 preceding interval；不能與原 pre-step log 混淆，也不能稱為精確 crossing state。
+
+實際 commands（repository cwd；既有 f1tenth-sim:full，container user=1000:1000；沒有固定容器名稱）：
+
+```bash
+git status --short --branch
+git diff --check
+
+# 第一輪 Stage 3–5 tests：10 tests PASS；補 replay/corruption test 後共 11。
+docker run --rm -e PYTHONDONTWRITEBYTECODE=1 -e NUMBA_CACHE_DIR=/tmp/stage345_numba_cache -e MPLCONFIGDIR=/tmp/stage345_matplotlib -v /data/f1tenth/sim/f1tenth_benchmarks:/workspace:ro -w /workspace f1tenth-sim:full python -B -m unittest discover -s tests/research -p test_continuous_laps.py -v
+
+# 真實三圈；目錄已存在，不可原樣重跑覆寫。
+docker run --rm --user 1000:1000 -e PYTHONDONTWRITEBYTECODE=1 -e NUMBA_CACHE_DIR=/tmp/stage345_numba_cache -e MPLCONFIGDIR=/tmp/stage345_matplotlib -v /data/f1tenth/sim/f1tenth_benchmarks:/workspace -w /workspace f1tenth-sim:full python -B -m f1tenth_benchmarks.research.run_continuous_pp --laps 3 --output-dir Data/research/continuous_laps/stage5/esp_three_laps --save-scans
+
+# 唯讀重播驗證三圈，沒有寫檔／新 simulation。
+docker run --rm --user 1000:1000 -e PYTHONDONTWRITEBYTECODE=1 -e NUMBA_CACHE_DIR=/tmp/stage345_numba_cache -e MPLCONFIGDIR=/tmp/stage345_matplotlib -v /data/f1tenth/sim/f1tenth_benchmarks:/workspace:ro -w /workspace f1tenth-sim:full python -B -m f1tenth_benchmarks.research.run_continuous_pp --verify-only Data/research/continuous_laps/stage5/esp_three_laps
+
+# 原 benchmark 隔離回歸。
+docker run --rm --user 1000:1000 -e PYTHONDONTWRITEBYTECODE=1 -e NUMBA_CACHE_DIR=/tmp/stage345_numba_cache -e MPLCONFIGDIR=/tmp/stage345_matplotlib -v /data/f1tenth/sim/f1tenth_benchmarks:/workspace -w /workspace f1tenth-sim:full python -B -m f1tenth_benchmarks.research.run_continuous_pp --baseline-regression --output-dir Data/research/continuous_laps/stage5/baseline_regression
+
+# 原點出發 partial→full。
+docker run --rm --user 1000:1000 -e PYTHONDONTWRITEBYTECODE=1 -e NUMBA_CACHE_DIR=/tmp/stage345_numba_cache -e MPLCONFIGDIR=/tmp/stage345_matplotlib -v /data/f1tenth/sim/f1tenth_benchmarks:/workspace -w /workspace f1tenth-sim:full python -B -m f1tenth_benchmarks.research.run_continuous_pp --laps 1 --start-pose 0 0 0 --output-dir Data/research/continuous_laps/stage5/esp_partial_then_full
+
+# 最終完整 regression。
+docker run --rm --user 1000:1000 -e PYTHONDONTWRITEBYTECODE=1 -e NUMBA_CACHE_DIR=/tmp/stage345_numba_cache -e MPLCONFIGDIR=/tmp/stage345_matplotlib -v /data/f1tenth/sim/f1tenth_benchmarks:/workspace:ro -w /workspace f1tenth-sim:full python -B -m unittest discover -s tests/research -v
+```
+
+此外實際以同樣 Docker options 加 `-i`，透過 stdin Python script 呼叫 verify_session 對三圈／partial 產物重播，呼叫 `run_esp_continuous_pp(3, stage5/'esp_timeout', timeout=.2)` 及 `run_esp_continuous_pp(3, stage5/'esp_collision', start_pose=[-1000.,-1000.,0.])`，assert 終止原因與零 full count，將兩組 replay、projection 統計、terminal 短案例、baseline report、protected hashes 與 research source SHA256 一起 exclusive 保存為 acceptance.json，passed=True。
+
+本次尚存限制：只驗收本 ESP/config；保留原四角 sampled collision 模型，未聲稱精確碰撞時刻。terminal outer-step 採保守規則不補計同一步 crossing，projection invalid 直接停止。Frenet sampling／局部唯一性假設、跨多圈 alias 限制仍在；crossing 是線性估計，physical state 不 rewind。原 planned time 不是 simulation pass 判據。未新增 LMPC、ROS2、opponent、overtaking，未改原 benchmark 行為；未 commit／push。
+
+
+## manual_run_001 五圈分析與路線圖（2026-10-01）
+
+使用者手動 session 實際 requested_full_laps=5，完成 5 個 full laps、0 partial、1 reset，無 collision／projection rejection／recovery。5148 samples 全部通過 verify_session 原 dynamics replay；前 3 圈所有 samples 與既有 esp_three_laps 完全一致。Flying 平均 41.071484 s、母體標準差 0.007741 s、range=0.020525 s（約 0.0500%）；中心線最大 |e_y|=0.627869 m。
+
+新增 `f1tenth_benchmarks/research/plot_continuous_report.py`，以保存 XY/time/events 生成 ESP map overlay、finish detail、各圈 trajectory、lap time／speed／unwrapped progress／offset diagnostics，另存 PNG＋SVG；新增 [manual_run_001 報告](manual_run_001_report.md)。所有圖在 `docs/research/figures/manual_run_001/`，analysis.json 保存輸入 hashes、重播驗證與分析數值。Matplotlib Agg 標準繪圖，使用既有依賴，未新增套件。
+
+額外計算 closed raceline 的全域最近線段無號 Euclidean 距離：mean=0.053763 m、P95=0.122642 m、max=0.379201 m；這不是沿程匹配的 Frenet error，不能與中心線 e_y 或 collision margin 混用。已視覺檢查三張 PNG 的地圖對齊、固定 finish、五圈切片與診斷圖；verify_session PASS、受保護檔案 hashes 未變、文件檢查 git diff --check PASS。此批不重新 simulation，不修改 manual_run_001 原始資料，沒有新增測試或重跑全部 regression；沿用已實跑 35 tests PASS 紀錄。未 commit／push。
+
+實際生成 command（目前 report／figures 已存在，重跑需使用新名稱）：
+
+```bash
+docker run --rm --user 1000:1000 \
+  -e PYTHONDONTWRITEBYTECODE=1 \
+  -e NUMBA_CACHE_DIR=/tmp/manual001_numba_cache \
+  -e MPLCONFIGDIR=/tmp/manual001_matplotlib \
+  -v /data/f1tenth/sim/f1tenth_benchmarks:/workspace \
+  -w /workspace f1tenth-sim:full \
+  python -B -m f1tenth_benchmarks.research.plot_continuous_report \
+  --session-dir Data/research/continuous_laps/stage5/manual_run_001 \
+  --report docs/research/manual_run_001_report.md \
+  --figures-dir docs/research/figures/manual_run_001
+```
+
+
+## manual_run_001 規劃／實測時間對照（2026-10-01）
+
+依使用者提問，核對 Stage 1 mu60_closed planned_time_s=40.09876900553927 s，將比較表補入 manual_run_001_report.md：standing-start=41.57716626647754 s（+1.478397 s，+3.6869%）；flying 平均=41.07148448651608 s（+0.972715 s，+2.4258%）。說明 minimum-curvature＋closed profile 不等於全域最短圈時間，standing-start 與 closed flying 假設不同；控制器速度 cap、PID、steering delay、路徑偏移及規劃／模擬模型差異尚未逐段歸因。本次僅補文件，沒有重新 simulation 或修改原產物。
+
+
+## 原計畫／進度文件摘要同步（2026-10-01）
+
+依使用者要求，兩份原文件的開頭同步 manual_run_001 五圈狀態、圖表／報告連結、planned／actual 比較與後续分析方向。Stage 1–5 維持本次 ESP PASS；planned／commanded／physical speed 沿程對比尚未實作。保留歷史紀錄，釐清原 benchmark runner 與新增研究 continuous runner 的差別。本次僅修改兩份文件，連結檢查與 git diff --check PASS；沒有重跑 tests／simulation、調參、commit 或 push。
+
+
+## Stage 3–5 與分析成果版本保存（2026-10-01）
+
+依使用者要求提交本機 overtaking-planner 分支，不 push。範圍包含 continuous simulator/logger/runner、plot_continuous_report、11 項 integration tests、兩份計畫／進度文件、manual_run_001 Markdown 報告、三組 PNG／SVG 與 analysis.json；明確 force-add stage5 acceptance.json、baseline regression.json，以及五個 session 的 session.json／lap_results.csv／events.jsonl／protected_hashes.json 作為小型驗收證據。原 .gitignore 不變，原 mu60、baseline Logs、Stage 1／2、upstream 與 Dockerfile/.dockerignore 不修改。
+
+約 79 MB 的 raw samples.jsonl、SimLog／ScanLog NPY 和隔離 baseline Logs 副本保留本機，不加入提交。全新 checkout 要執行 --verify-only，需另保留這些 raw artifacts，或用 runner 產生新 session；小型摘要與 figures 可直接查閱。提交 hash 以 git log 查詢，commit message 為 Add continuous simulator, logging, runner and verified lap reports。
+
+提交前實際重新執行唯讀 Docker unittest discover：35 tests PASS，2.564 s、無 skip；acceptance source fingerprints 與五個 session 保護 manifest 的所有原檔 hashes 重新核對 PASS，git diff --check PASS。沒有重新 simulation 或調參。
+
+提交產物格式檢查：清理 Matplotlib SVG 行尾空白，XML 元素 attributes／path geometry（忽略等價空白）保持一致。CSV 保留標準 writer 產生的原始 CRLF，不改 simulation artifacts；staged check 使用 `git -c core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol diff --cached --check`。

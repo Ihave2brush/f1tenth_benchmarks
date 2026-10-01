@@ -1,18 +1,46 @@
 # Continuous laps：實作計畫與研究方向
 
-更新日期：2026-09-30
+更新日期：2026-10-01
 
 ## 目前完成狀態與接續方向
 
-Stage 1 閉合速度規劃與 Stage 2 獨立 Frenet tracker 已完成驗證；Stage 3 simulator、Stage 4 logger、Stage 5 runner 尚未實作。最新 research 測試為 24 項 PASS（Stage 1、2 各 12 項）。尚未執行完整 continuous-lap vehicle simulation，因此目前不能宣稱已達成連續三圈驗收。
+Stage 1–5 已完成本次 ESP continuous-lap 實作與驗收。Research tests 共 35 項 PASS（Stage 1／2 各 12 項，Stage 3–5 共 11 項）。真實 ESP dynamics 已完成三個完整圈，僅一次 initial reset，沒有碰撞或投影異常；獨立重播驗證全部 state／steering buffer 延續，並在第 N 圈 crossing 的實際 post-step 樣本結束。
 
-接續工作依序為：
+| 完整圈 | 類型 | 圈時間估計（s） |
+|---|---|---:|
+| 1 | standing_start | 41.57716626647754 |
+| 2 | flying | 41.066843716979136 |
+| 3 | flying | 41.063010063982915 |
 
-1. **Stage 3：最小 simulator 整合。** 初始化完成後建立 tracker，之後將每個實際 post-step pose、time、signed velocity 傳入 update。先驗證短步進與跨 finish 的 lifecycle：不 reset 車輛、不清 steering delay，collision／timeout 與完成圈分開；tracker 異常需明確處理。
-2. **Stage 4：保存可追溯資料。** 分開保存 full／partial events、crossing 時間估計與實際 physical samples；記錄固定中心線 reference、tracker 配置、投影異常及 recovery epoch，確認 finalize 不重複寫入。
-3. **Stage 5：runner 與 ESP 驗收。** 以 completed_full_laps 達 N 為完成條件；中途出發的 partial 不占 N。完成整合與短步進驗證後，才執行 ESP 三個完整圈及隔離輸出的 baseline 回歸。
+使用者 manual_run_001 已額外完成五圈並通過 replay；路線圖、逐圈比較與診斷見 [manual_run_001 分析報告](manual_run_001_report.md)。
 
-下一階段先驗證 tracker 在真實 dynamics 下的取樣頻率、局部搜尋範圍及 Frenet 可行性配置，不將人工中心線投影測試視為 simulator 驗收。LMPC、ROS2、opponent、overtaking 與候選軌跡仍屬後續研究範圍。各階段實際 commands、產物及限制見 [進度紀錄](continuous_laps_progress.md)。
+產物：`Data/research/continuous_laps/stage5/acceptance.json` 與 `esp_three_laps/`。另驗證原點出發 partial→full、timeout、collision，以及隔離環境中的原 runner baseline 回歸；詳細 commands 與結果見 [進度紀錄](continuous_laps_progress.md)。
+
+接續方向是先保存本次成果與路線圖，再做 planned／commanded／physical speed 的沿程比較，定位實測比規劃多出的時間；分析完成後再決定是否調整控制器，或擴充其他地圖與速度／側向偏移範圍。本次只驗收 ESP、既有 GlobalPurePursuit 與 mu60_closed；不宣稱任意賽道／配置皆通過。LMPC、ROS2、opponent、overtaking 與候選軌跡未實作。
+
+## 最新手動驗證、圖表與時間比較
+
+`manual_run_001` 已完成五個完整圈，5148 個樣本，reset_count=1，無碰撞／投影異常／recovery；每個 state 與 steering buffer 通過 dynamics replay。Flying 四圈平均 41.071484 s，最大圈間差 0.020525 s（約 0.0500%）。這是本次 ESP/config 的證據，未擴大為其他地圖或長期運行保證。
+
+| 時間對照 | 圈時間（s） | 相對 closed planned time |
+|---|---:|---:|
+| mu60_closed 完整規劃預估 | 40.098769 | — |
+| manual_run_001 第 1 圈 standing_start | 41.577166 | +1.478397 s／+3.6869% |
+| manual_run_001 第 2–5 圈 flying 平均 | 41.071484 | +0.972715 s／+2.4258% |
+
+規劃時間包含 closure 且只計一次；這是 minimum-curvature 幾何＋closed speed profile，不是已證明的全域最短圈時間。Closed profile 不包含從靜止加速的起步條件，因此以 flying 平均作主要對照。實際 dynamics、PID、steering delay、PurePursuit 的轉向速度 cap、路徑偏移及規劃／模擬模型差異尚未逐段歸因；不要求 simulation time 等於 planned time。
+
+圖表與報告入口：
+
+- [manual_run_001 完整分析與重現指令](manual_run_001_report.md)
+- [全場實際軌跡與固定終點放大](figures/manual_run_001/route_overview.png)
+- [五圈實際路線比較](figures/manual_run_001/routes_by_lap.png)
+- [圈時間、速度、Frenet 進度與偏移診斷](figures/manual_run_001/session_diagnostics.png)
+- [分析數值、replay 結果與輸入 hashes](figures/manual_run_001/analysis.json)
+
+圖另存 SVG。中心線 e_y 與 raceline 最近幾何距離分開解讀：raceline 全域最近線段距離 mean=0.053763 m、P95=0.122642 m、max=0.379201 m，尚不是沿程匹配的控制誤差。圖表由 `research/plot_continuous_report.py` 讀既有 samples/events/NPY 生成，沒有重新 simulation 或修改原始資料。
+
+後續分析（尚未實作）：先選一個 flying lap，沿閉合 raceline 建立一致的局部匹配，再對齊 planned speed、preceding command speed、physical speed 與路段時間；區分速度限制、速度跟隨延遲與實際行駛路徑差異後，才提出調參實驗。此工作屬 continuous 完成後的性能分析，不是 Stage 1–5 的未完成項目。
 
 ## 目標與範圍
 
@@ -35,7 +63,7 @@ Stage 1 閉合速度規劃與 Stage 2 獨立 Frenet tracker 已完成驗證；St
 
 ## Source 調查結論
 
-- `run_scripts/run_functions.py:9` 的 `simulate_laps()` 每個 episode 都 reset；目前沒有真正 continuous-lap mode。
+- `run_scripts/run_functions.py:9` 的 `simulate_laps()` 每個 episode 都 reset；原 benchmark runner 沒有 continuous-lap mode，研究 runner 已另行實作。
 - `simulator/f1tenth_sim.py:68` 的 step 將 lap complete 與 collision 合併成 done，並立即保存。不能只忽略 done 或在 `super().step()` 後修改 done。
 - `f1tenth_sim.py:101` 使用 progress 門檻，不是 crossing detector；250 秒也回傳 lap complete。
 - `f1tenth_sim.py:134` 的 reset 清 physical state，執行一次零 action step；total_steps 不歸零。
@@ -114,17 +142,17 @@ Stage 1 執行補充（2026-09-30）：上述名稱已固定。新 CSV 使用 co
 
 驗收：人工序列與實際 ESP 中心線重取樣（不是 vehicle simulation）測試閉合長度、接縫、初始化、倒車、抖動、兩圈各自計時、partial、側向偏移、事件插值、異常凍結／恢復、時間與取樣限制、歧義與局部 branch 延續。
 
-### 階段 3：Continuous simulator
+### 階段 3：Continuous simulator（完成）
 
 新增 `research/continuous_sim.py`：`F1TenthSim_Continuous(F1TenthSim_TrueLocation)`。
 
-沿用 dynamics/map/scan/collision；override 必要 lifecycle，保留每步四次 dynamics 子步顺序。跨圈不 terminal；collision terminal。時間與 steps 全場累加；以 post-step pose/time/signed speed 呼叫 Stage 2 tracker，從 event 的插值邊界計算圈時間。invalid 結果須記錄並由 runner 明確決定停止或 recover，不得自動補圈。
+沿用 dynamics/map/scan/collision；override 必要 lifecycle，保留每步四次 dynamics 子步顺序。跨圈不 terminal；collision terminal。時間與 steps 全場累加；以 post-step pose/time/signed speed 呼叫 Stage 2 tracker，從 event 的插值邊界計算圈時間。本次 invalid 結果記錄後以 projection_invalid 終止，不自動 recover 或補圈。
 
 驗收：initial reset 一次；crossing 不呼叫 dynamics reset、不清七維 state 或 steering buffer；下一 dynamics update 承接 crossing 後 state；超過 250 秒不誤計圈。先短步進再完整圈。
 
-初始化零輸入 step 完成後的實際樣本作 tracker 初始時間；中心線第一點的固定 finish 不隨 initial pose 移動。依 Stage 2 容差判定 initial full／partial；只有已知初始速度符合條件才標 standing_start，否則 moving_start／initial_speed_unknown。partial 後由 crossing estimate 開始完整圈計時。
+預設 reset 在固定中心線首點及 outgoing tangent，因原 [0,0,0] 在終點前 0.07687 m、超過起點容差。只允許一次 reset。保留四子步初始化 tick，靜止起步輸入 [0,0]，明確 moving start 輸入 [0,initial_speed]；tick 完成後的實際樣本作 tracker 初始時間（預設 t=0.04 s）；中心線第一點的固定 finish 不隨 initial pose 移動。依 Stage 2 容差判定 initial full／partial；只有已知初始速度符合條件才標 standing_start，否則 moving_start／initial_speed_unknown。partial 後由 crossing estimate 開始完整圈計時。
 
-### 階段 4：Research logging
+### 階段 4：Research logging（完成）
 
 新增 `research/continuous_logging.py`：`ContinuousLapLogger`。
 
@@ -132,15 +160,15 @@ Stage 1 執行補充（2026-09-30）：上述名稱已固定。新 CSV 使用 co
 
 驗收：每有效 crossing 一筆 event；duration=end estimate−start boundary；full results 數等於 completed_full_laps，partial 獨立且不計入 N；collision/timeout/requested_laps_reached 有不同原因；explicit finalize，防止 destructor 重複 flush；scan buffers 正確清理。
 
-### 階段 5：Runner 整合與 ESP 驗收
+### 階段 5：Runner 整合與 ESP 驗收（完成）
 
 新增 `research/run_continuous_pp.py`：`run_continuous_laps()`、`run_esp_continuous_pp()`。建立 planner/set_map，initial reset 一次，每 control tick plan/step；collision、tracker.completed_full_laps 達 N 或研究 timeout 後 finalize；partial 不計入 N，不能以 crossing 數或 floor(s_unwrapped/L) 結束。
 
 驗收：ESP N=3 個完整 continuous laps；符合起點初始化条件時記錄 initial full 圈（依速度分類）與兩個 flying laps，中途出發則先獨立 partial，再三個完整圈；跨圈無 reset；達 N 圈當步結束；collision 可提前結束；全部結果可驗證。不得把 simulated time 等於 planned time 作通過條件。
 
-Baseline 回歸：原 GlobalPurePursuit runner 仍可原樣執行，另用隔離輸出 ID 做驗證，不能覆寫昨天結果。
+Baseline 回歸：在 temporary cwd 以原 planner/test ID 執行原 simulate_laps，params/maps/Data 指向 repository、Logs 完全隔離；結果複製到 stage5/baseline_regression。Time=41.5200、Steps=1038、Progress=0.9967、LapComplete=True、Collision=False，逐欄與保存 baseline 相同，原 Logs protected hashes 未變。
 
-## 預計新增檔案
+## 已實作檔案
 
 ```text
 f1tenth_benchmarks/research/
@@ -169,3 +197,29 @@ Runner 管 planning 調度，simulator 管 dynamics/lifecycle。未来五候選�
 ## Stage 1 正式完成（2026-09-30）
 
 前述 raw helper 未通過的紀錄為歷史狀態。使用者授權的 research-only corrected solver 已修兩處索引問題，重新生成兩組與四組比較報告；12 regression tests PASS。最大 combined residual 2.6645352591003757e-14 m/s²（tol=1e-9），零違規；不同起點速度一致、closure accounting、幾何 preservation、baseline/upstream hash 保護全部 PASS。完整時間 40.09876900553927 s。Stage 1 完成；本次 Stage 2 已實作並驗證，詳細 commands、產物與接續見 progress。
+
+
+## Stage 3–5 實作細節與驗收限制（2026-09-30）
+
+- Research subclass 不呼叫原 base constructor／step／reset；使用原 DynamicsSimulator、ScanSimulator2D 與車輛四角碰撞檢查，保留每 outer step 四次 dynamics 子步順序。避免原 profiling destructor、automatic logger 與 250 s lap-complete 副作用，不修改 benchmark 原始程式。
+- default initial reset 在中心線 s=0；暖機 tick 計入 total_steps，不計入 control_steps，tracker/sample index 0 在暖機後。simulation_time 為物理時間，laptime／elapsed_time 為暖機後 session 時間；圈時間取 event duration。use_random_starts 不用於研究 session，指定 start_pose 才中途出發。
+- lap_complete 只表示當步 full event，不是 terminal；partial 以 lap_event 提供。observation 的 state／scan 是副本。runner 保留 planner.plan(observation)，只用 completed_full_laps 達 N 停止，不直接使用原 simulate_laps 的逐圈 reset 迴圈。
+- terminal 優先處理 invalid_state、collision、timeout，再判定投影；撞牆／達 timeout 的 outer-step 樣本不送 tracker，因此不产生該步 crossing event。這是保守 sampled terminal 規則，不推估碰撞／timeout 前的子步圈事件。投影異常終止，不自動 relocation。
+- Logger 以 exclusive 新目錄保存 session.json、samples.jsonl、events.jsonl、lap_results.csv、十欄 SimLog；可選 ScanLog。state/action 對應 actual post-step state 與 preceding interval action，並記錄 pre/post steering buffer。十欄保留 plotting 形狀，但時間語義明確與原 pre-step logger 不同。finalize 可重複呼叫但只寫一次，清空所有 sample／event／scan buffers；沒有 destructor flush。
+- run_esp_continuous_pp 預設 racetrack_set=mu60_closed；planner init_folder=False，產物只另存 Data/research/continuous_laps/stage5 的新 session。原 Stage 1 racelines、mu60、Logs、params 與 upstream hashes 未變。
+- verify_session／CLI --verify-only 唯讀驗證 events 與 samples，從 actual initial pose 重播原 DynamicsSimulator，不在 finish reset；逐步 state（atol=1e-12）與 steering buffer 一致。三圈最大 projection distance／|e_y|=0.6278692831633942 m，零拒絕，保留 Stage 2 預設配置，未放寬門檻。
+- 本次驗收仍是既有 dynamics／collision 模型；四角碰撞與 outer-step sampling 的原有限制保留。線性 crossing estimate 不宣稱精確 crossing state／時刻；N 圈完成時保留跨線後實際樣本，不把 dynamics rewind 到估計 crossing。
+
+重新執行範例（既有 f1tenth-sim:full 映像；預設以 timestamp 新建 session，不覆寫）：
+
+```bash
+docker run --rm --user 1000:1000 \
+  -e PYTHONDONTWRITEBYTECODE=1 \
+  -e NUMBA_CACHE_DIR=/tmp/stage345_numba_cache \
+  -e MPLCONFIGDIR=/tmp/stage345_matplotlib \
+  -v /data/f1tenth/sim/f1tenth_benchmarks:/workspace \
+  -w /workspace f1tenth-sim:full \
+  python -B -m f1tenth_benchmarks.research.run_continuous_pp --laps 3
+```
+
+`--output-dir` 可指定全新目錄；重用已有目錄會拒絕，不提供覆寫開關。`--start-pose x y yaw` 驗證中途出發；`--timeout` 為暖機後 session 秒數，`--save-scans` 保留 scans；CLI 未達 N 圈（collision／timeout／projection_invalid）回傳 exit code 2，產物仍 finalized。`--verify-only SESSION_DIR` 不重新 simulation、不寫資料。Baseline 使用 `--baseline-regression --output-dir NEW_DIR`，不在原 Logs 下產生任何新檔。

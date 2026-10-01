@@ -1,0 +1,47 @@
+{
+  "verification": {
+    "passed": true,
+    "checks": {
+      "full_count": true,
+      "partial_count": true,
+      "one_reset": true,
+      "sample_count": true,
+      "ten_column_physical_samples": true,
+      "control_steps": true,
+      "requested_laps_reached": true,
+      "physical_and_buffer_continuity": true,
+      "event_interpolation_and_sample_boundaries": true,
+      "stop_on_final_crossing_step": true,
+      "independent_dynamics_replay_without_finish_reset": true,
+      "scan_samples": true
+    },
+    "full_lap_times": [
+      41.57716626647754,
+      41.066843716979136,
+      41.063010063982915,
+      41.072548671483716,
+      41.08353549361854
+    ],
+    "samples": 5148
+  },
+  "max_abs_centreline_e_y": 0.6278692831633941,
+  "raceline_nearest_distance_mean": 0.053762816360018756,
+  "raceline_nearest_distance_p95": 0.12264176420795415,
+  "raceline_nearest_distance_max": 0.379200910286585,
+  "speed_min": 0.0,
+  "speed_max": 7.999999999994483,
+  "negative_s_increments": 0,
+  "projection_rejections": 0,
+  "flying_mean": 41.07148448651608,
+  "flying_std_population": 0.007741315149807361,
+  "flying_range": 0.02052542963562587,
+  "final_sample_after_crossing_seconds": 0.016895787415847963,
+  "protected_files_changed": [],
+  "input_hashes": {
+    "session.json": "75c5b6bc31b8bfd1da757e96eafa20c953f03a02a63e5810d36e891dfbe427d0",
+    "events.jsonl": "dbd1a3382cd90e41c1734c69d94423a221969a2bd5f61b777227db01762a291e",
+    "samples.jsonl": "2686d373558977da08f82c873fd028961ee43856a742c627fed4a530f9dae69b",
+    "SimLog_esp_session.npy": "9aceb539709ebdc2edcaa3a54859a12ac1ef1b5c544c1650099d256ca9cb21fd"
+  },
+  "map_image_sha256": "0b43f364d034535de135730f8f111addd217f5362cd2727edd12f3f8d233289e"
+}

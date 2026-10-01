@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "expected": {
+    "Time": "41.5200",
+    "Steps": "1038",
+    "Progress": "0.9967",
+    "LapComplete": "True",
+    "Collision": "False"
+  },
+  "actual": {
+    "Time": "41.5200",
+    "Steps": "1038",
+    "Progress": "0.9967",
+    "LapComplete": "True",
+    "Collision": "False"
+  },
+  "protected_files_changed": [],
+  "runner": "original simulate_laps, original mu60, isolated temporary cwd"
+}
