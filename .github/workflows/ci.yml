@@ -17,8 +17,6 @@ jobs:
     env:
       MPLBACKEND: Agg
       PYTHONDONTWRITEBYTECODE: "1"
-      NUMBA_CACHE_DIR: ${{ runner.temp }}/numba
-      MPLCONFIGDIR: ${{ runner.temp }}/matplotlib
 
     steps:
       - name: Check out repository and pinned submodule
@@ -40,4 +38,7 @@ jobs:
           python -m pip check
 
       - name: Run regression tests
+        env:
+          NUMBA_CACHE_DIR: ${{ runner.temp }}/numba
+          MPLCONFIGDIR: ${{ runner.temp }}/matplotlib
         run: pytest

@@ -106,8 +106,6 @@ jobs:
     env:
       MPLBACKEND: Agg
       PYTHONDONTWRITEBYTECODE: "1"
-      NUMBA_CACHE_DIR: ${{ runner.temp }}/numba
-      MPLCONFIGDIR: ${{ runner.temp }}/matplotlib
     steps:
       - uses: actions/checkout@v4
         with:
@@ -123,9 +121,17 @@ jobs:
           python -m pip install --no-deps -e trajectory_planning_helpers -e .
           python -m pip check
       - name: Run regression tests
+        env:
+          NUMBA_CACHE_DIR: ${{ runner.temp }}/numba
+          MPLCONFIGDIR: ${{ runner.temp }}/matplotlib
         run: pytest
 ```
 
 The new CSV and YAML inputs must be committed with the tests before this workflow
 is enabled. Existing Docker files and unrelated local research plans are outside
 this change.
+
+The first push failed before creating a job: `runner.temp` was incorrectly used
+in job-level `env`. Those two cache paths now use step-level `env`, where the
+runner context is supported. Python test results remain separate from GitHub
+workflow validation; the corrected workflow needs a new push and hosted run.
