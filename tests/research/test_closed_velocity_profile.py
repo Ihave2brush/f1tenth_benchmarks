@@ -1,14 +1,15 @@
-"""Numerical acceptance checks; run with unittest, no pytest dependency."""
+"""Closed-profile regressions and optional historical workspace acceptance."""
 import tempfile
 import unittest
 from pathlib import Path
 
 import numpy as np
+import pytest
 
 from f1tenth_benchmarks.research.closed_velocity_profile import (
     build_closed_segment_lengths, compute_closed_acceleration_and_time,
     exclusive_json, solve_closed_velocity_profile, generate, validate, parameters,
-    check_start_index_invariance, protected_hashes, digest)
+    check_start_index_invariance, protected_hashes, digest, corrected_closed_solver)
 import json
 
 
@@ -45,6 +46,10 @@ class ClosedProfileTests(unittest.TestCase):
         self.assertEqual(profile.shape, (64, 7))
         self.assertEqual(len(ds), 64)
         self.assertEqual(len(dt), 64)
+        self.assertTrue(np.isfinite(profile).all())
+        self.assertTrue(np.isfinite(dt).all())
+        self.assertTrue(np.all((profile[:, 5] > 0) & (profile[:, 5] <= 8)))
+        self.assertTrue(np.all(dt > 0))
 
     def test_output_refuses_overwrite(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -57,8 +62,6 @@ class ClosedProfileTests(unittest.TestCase):
     def test_saved_geometry_header_and_closure(self):
         base = Path('Data/racelines/mu60/esp_raceline.csv')
         target = Path('Data/racelines/mu60_closed/esp_raceline.csv')
-        if not target.exists():
-            self.skipTest('Stage 1 artifacts not generated yet')
         a, b = np.loadtxt(base, delimiter=','), np.loadtxt(target, delimiter=',')
         np.testing.assert_array_equal(a[:, :5], b[:, :5])
         self.assertTrue(target.read_text().startswith('# s,x,y'))
@@ -70,8 +73,6 @@ class ClosedProfileTests(unittest.TestCase):
         self.assertTrue(summary['closure_combined_limit_pass'])
 
     def test_existing_generation_is_rejected_before_computation(self):
-        if not Path('Data/racelines/mu60_closed').exists():
-            self.skipTest('Stage 1 artifacts not generated yet')
         with self.assertRaises(FileExistsError):
             generate('fixed')
 
@@ -79,6 +80,33 @@ class ClosedProfileTests(unittest.TestCase):
         ds = np.array([1., 2., 3., 4., 5.])
         # Edges traversed by reversed point order 4,3,2,1,0,4.
         np.testing.assert_array_equal(np.flip(np.roll(ds, 1)), [4, 3, 2, 1, 5])
+
+    def test_backward_braking_nonuniform_edges_and_settled_seam(self):
+        # One lateral bottleneck at point 3; all other points are straight.
+        # Zero longitudinal capacity at the bottleneck makes its adjacent
+        # speeds equal. Beyond those edges, v^2 grows by 2*a*distance.
+        ds = np.array([.2, .7, 1.1, .3, .9, .4, 1.3, .5])
+        kappa = np.zeros(8)
+        kappa[3] = .5
+        p = dict(mu=.6, max_longitudinal_acc=8.5, max_lateral_acc=8.5)
+        vehicle = dict(max_speed=8., vehicle_mass=3.71)
+        acceleration = p['mu'] * p['max_longitudinal_acc']
+        corner_v2 = p['mu'] * p['max_lateral_acc'] / kappa[3]
+        expected = np.full(8, vehicle['max_speed'])
+        for direction in (1, -1):
+            v2 = corner_v2
+            for step in range(8):
+                i = (3 + direction * step) % 8
+                expected[i] = min(expected[i], np.sqrt(v2))
+                edge = i if direction == 1 else (i - 1) % 8
+                if step:
+                    v2 += 2 * acceleration * ds[edge]
+        for offset in range(8):
+            with self.subTest(offset=offset):
+                actual = corrected_closed_solver(np.roll(kappa, -offset),
+                    np.roll(ds, -offset), p, vehicle)
+                np.testing.assert_allclose(np.roll(actual, offset), expected,
+                                           rtol=1e-12, atol=1e-10)
 
     def test_esp_start_index_invariance_velocity_not_only_time(self):
         g = np.loadtxt('Data/racelines/mu60/esp_raceline.csv', delimiter=',')[:, :5]
@@ -102,6 +130,7 @@ class ClosedProfileTests(unittest.TestCase):
             self.assertAlmostEqual(result['planned_time_s'],
                                    result['nonclosure_time_s'] + result['closure_time_s'], places=12)
 
+    @pytest.mark.local_archive
     def test_baseline_and_upstream_hashes(self):
         current = protected_hashes()
         for name in ['mu60_closed', 'mu60_closed_regenerated']:

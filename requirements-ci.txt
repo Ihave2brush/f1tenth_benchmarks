@@ -1,0 +1,10 @@
+# Python 3.9 research regression environment; numerical versions match baseline.
+numpy==1.22.0
+scipy==1.11.1
+numba==0.57.1
+matplotlib==3.5.2
+PyYAML==6.0.1
+quadprog==0.1.13
+Pillow==11.3.0
+pandas==2.0.3
+pytest==8.3.5

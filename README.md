@@ -94,6 +94,39 @@ cd trajectory_planning_helpers
 pip install -e .
 ```
 
+## Research regression tests
+
+Use Python 3.9, matching the verified research baseline. From the repository root:
+
+```bash
+git submodule update --init --recursive
+python -m pip install -r requirements-ci.txt
+python -m pip install --no-deps -e trajectory_planning_helpers -e .
+pytest
+```
+
+The default suite checks required imports, original ESP mu60 and corrected
+raceline loading, closed velocity planning and backward braking, lap tracking,
+logging, and short headless simulations. It does not generate racelines or run
+full real laps. Simulator parameters, maps, and required baseline inputs are
+versioned; outputs use temporary directories. No exact real lap-time assertion
+is used. `pytest.ini` limits collection to `tests/research`.
+
+The historical protected-file manifest test also requires the original local
+`Logs` and other archived research inputs. It is excluded from default pytest
+runs; run it explicitly in that workspace with:
+
+```bash
+pytest -m local_archive
+```
+
+See [the test scope and validation notes](docs/research/regression_testing.md).
+
+`.github/workflows/ci.yml` runs the default suite on pushes and pull requests,
+including research branches, using Python 3.9 on Ubuntu 22.04. It initializes
+the pinned helper submodule and installs only `requirements-ci.txt`. The first
+GitHub-hosted result must be checked after pushing these changes.
+
 The MPCC algorithms use the [casadi](https://web.casadi.org/python-api/) optimistion package, which relies on the IPOPT library. Instructions to install IPOPT can be found [here]().
 
 ## Citation
@@ -108,6 +141,5 @@ If you found our work helpful, please consider citing.
   year={2024}
 }
 ```
-
 
 
