@@ -101,7 +101,8 @@ Use Python 3.9, matching the verified research baseline. From the repository roo
 ```bash
 git submodule update --init --recursive
 python -m pip install -r requirements-ci.txt
-python -m pip install --no-deps -e trajectory_planning_helpers -e .
+python -m pip install --no-deps ./trajectory_planning_helpers
+python -m pip install --no-deps -e .
 pytest
 ```
 
@@ -127,6 +128,9 @@ including research branches, using Python 3.9 on Ubuntu 22.04. It initializes
 the pinned helper submodule and installs only `requirements-ci.txt`. The first
 GitHub-hosted result must be checked after pushing these changes.
 
+The helper is installed normally from the pinned submodule rather than in
+editable mode, avoiding a same-name namespace import conflict with modern pip.
+
 The MPCC algorithms use the [casadi](https://web.casadi.org/python-api/) optimistion package, which relies on the IPOPT library. Instructions to install IPOPT can be found [here]().
 
 ## Citation
@@ -141,5 +145,4 @@ If you found our work helpful, please consider citing.
   year={2024}
 }
 ```
-
 

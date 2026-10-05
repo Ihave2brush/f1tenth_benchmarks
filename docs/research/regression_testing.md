@@ -54,8 +54,9 @@ establish bitwise determinism across dependency versions and hardware.
 ## CI boundary
 
 After local and fresh-checkout verification, CI uses a single Linux
-Python 3.9 job: recursive checkout, install the test requirements and editable
-packages, then `pytest` with `MPLBACKEND=Agg`. No full real laps, optimization,
+Python 3.9 job: recursive checkout, install the test requirements, install the
+pinned helper normally and the project editable, then `pytest` with
+`MPLBACKEND=Agg`. No full real laps, optimization,
 training, graphical reports, historical Logs, Docker publishing, or deployment.
 The workflow is implemented in `.github/workflows/ci.yml`; its first
 GitHub-hosted execution remains to be verified after commit and push.
@@ -118,7 +119,8 @@ jobs:
       - name: Install research test environment
         run: |
           python -m pip install -r requirements-ci.txt
-          python -m pip install --no-deps -e trajectory_planning_helpers -e .
+          python -m pip install --no-deps ./trajectory_planning_helpers
+          python -m pip install --no-deps -e .
           python -m pip check
       - name: Run regression tests
         env:
@@ -135,3 +137,19 @@ The first push failed before creating a job: `runner.temp` was incorrectly used
 in job-level `env`. Those two cache paths now use step-level `env`, where the
 runner context is supported. Python test results remain separate from GitHub
 workflow validation; the corrected workflow needs a new push and hosted run.
+
+The next hosted run reached pytest but had 7 failures / 39 passes. With modern
+PEP 660 editable installation, the checkout's outer `trajectory_planning_helpers`
+directory was loaded as an implicit namespace instead of executing the inner
+package's `__init__.py`, so `calc_ax_profile` was absent. In a temporary clean
+environment with pip 25.3, the same 7 failures were reproduced. Installing the
+same pinned helper normally restored its package initialization without editing
+the submodule or upgrading numerical dependencies. An explicit smoke check now
+requires the velocity, acceleration, and time helper APIs to be available.
+
+Using the corrected workflow's actual installation and `pytest` commands in that
+temporary source snapshot with pip 25.3: **47 passed, 1 deselected**, 4.59 s;
+`pip check` passed. Numerical package versions were unchanged. This remains a
+local reproduction; the next GitHub-hosted run must confirm the fix after push.
+For background on editable-install import precedence, see the
+[setuptools limitations](https://setuptools.pypa.io/en/latest/userguide/development_mode.html#limitations).

@@ -23,6 +23,19 @@ def test_required_imports(name):
     importlib.import_module(name)
 
 
+def test_helper_package_initializes_required_apis():
+    helper = importlib.import_module('trajectory_planning_helpers')
+    # A same-name namespace can import successfully without executing the
+    # real package __init__, leaving production's helper APIs unavailable.
+    for module_name, function_name in [
+        ('calc_ax_profile', 'calc_ax_profile'),
+        ('calc_t_profile', 'calc_t_profile'),
+        ('calc_vel_profile', '__solver_fb_acc_profile'),
+    ]:
+        module = getattr(helper, module_name)
+        assert callable(getattr(module, function_name))
+
+
 @pytest.mark.parametrize('raceline_set', ['mu60', 'mu60_closed'])
 def test_esp_raceline_structure_and_real_loader(raceline_set):
     filename = f'Data/racelines/{raceline_set}/esp_raceline.csv'
