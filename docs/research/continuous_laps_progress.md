@@ -1,12 +1,16 @@
 # Continuous laps：進度與接續紀錄
 
-更新日期：2026-10-01
+更新日期：2026-10-05
 
 ## 目前狀態
 
-Stage 1–5 本次 ESP continuous-lap 驗收已完成。Stage 1 已提交 0e89803，Stage 2 已提交 0f382f6；Stage 3–5、圖表與分析成果的版本保存見末尾紀錄；尚未 push。Research tests 35 項 PASS，真實 ESP 已完成三個完整圈（41.5771663、41.0668437、41.0630101 s），僅一次 reset，無碰撞／投影異常；所有樣本與 steering buffers 通過獨立 dynamics replay。原 mu60、Stage 1 產物、baseline logs 與 upstream 保護 hashes 未變。
+Stage 1–5 本次 ESP continuous-lap 驗收、研究 regression testing 與 GitHub CI 均已完成。研究功能、報告與 CI 已推送到自己的 fork，並透過 PR #1 合併到 `Ihave2brush/f1tenth_benchmarks:master`。本機 `master` 已同步至 `origin/master` 的 `d1a2200`；同步完成時 tracked/staged 無修改。之後今天的進度、計畫與測試使用說明更新，以及 Docker 測試入口仍是未提交變更；不要將它們誤認為已包含在 d1a2200。今天完成的詳細紀錄見末尾。
 
-另完成真實 partial→full、timeout、collision 與原 simulate_laps baseline 隔離回歸。保存結果見 `Data/research/continuous_laps/stage5/acceptance.json`。計畫：[continuous_laps_plan.md](continuous_laps_plan.md)。先前未開始／未 simulation 等敘述保留為各批歷史狀態，最新狀態以本節與末尾 Stage 3–5 紀錄為準。
+目前預設 pytest 為 **47 項 PASS、1 項 local_archive 驗收預設排除**；該歷史 hash 驗收另行執行也 PASS。GitHub 研究分支與合併後 master 的 CI 均已實際通過。先前 Stage 1–5 的 35 項 unittest PASS 保留為歷史驗收，不代表目前 suite 數量。
+
+先前真實 ESP 已完成三個完整圈（41.5771663、41.0668437、41.0630101 s），僅一次 reset，無碰撞／投影異常；所有樣本與 steering buffers 通過獨立 dynamics replay。今天未重跑完整圈或重新生成 raceline，原 mu60、Stage 1 產物、baseline logs、physics 與 upstream helper 保持原樣。
+
+另完成真實 partial→full、timeout、collision 與原 simulate_laps baseline 隔離回歸。保存結果見 `Data/research/continuous_laps/stage5/acceptance.json`。計畫：[continuous_laps_plan.md](continuous_laps_plan.md)；測試與 CI：[regression_testing.md](regression_testing.md)。先前未開始、未 simulation、未 push 等敘述保留為各批歷史狀態，最新狀態以本節與末尾今天的紀錄為準。
 
 ## 最新五圈結果與圖表入口
 
@@ -28,10 +32,13 @@ Stage 1 closed planned time=40.098769 s；manual flying 平均多 0.972715 s（2
 | 3：Continuous simulator | PASS／完成 | continuous_sim.py；真實短步進與全場 dynamics replay |
 | 4：Research logger | PASS／完成 | continuous_logging.py；exclusive/idempotent finalize、sample/event artifacts |
 | 5：ESP runner / 三圈驗收 | PASS／完成 | run_continuous_pp.py；三圈與 baseline 回歸，另 manual_run_001 五圈 replay PASS |
+| 最小 regression testing | PASS／完成 | 預設 pytest 47 PASS；本機歷史 hash 驗收另行 PASS |
+| GitHub Actions CI | PASS／完成 | push／PR、Python 3.9、必要依賴、pytest；研究分支與 master hosted runs success |
+| Fork／PR／本機主分支同步 | 完成 | PR #1 merged；本機 master = origin/master = d1a2200 |
 
-## Git 起始狀態
+## 歷史 Git 起始狀態
 
-建立文件前唯讀檢查：
+以下是建立文件前的歷史唯讀檢查，不是目前版本狀態；目前狀態見開頭及今天的紀錄：
 
 ```text
 Branch: overtaking-planner
@@ -55,10 +62,12 @@ Staged changes: none
 ## 下次接續位置
 
 1. 讀 plan/progress，檢查 Git 及 `Data/research/continuous_laps/stage5/acceptance.json`；本次 Stage 3–5 已通過，不需再視為待實作。
-2. Stage 3–5、圖表／報告與指定小型驗收摘要已納入本次版本保存；raw samples／scans 仍由 .gitignore 排除並保留本機，Dockerfile/.dockerignore 保持未追蹤。
+2. 研究功能、測試、CI、圖表／報告與指定小型驗收摘要已保存並合併到自己的 master。Raw samples／scans 及歷史 Logs 仍保留本機；Dockerfile/.dockerignore 與 map_frenet_plan.md 保持未追蹤。新 checkout 不含這些本機檔案。
 3. 需重查時用 `--verify-only Data/research/continuous_laps/stage5/esp_three_laps`；唯讀重播資料，不重新跑 simulation。需重跑時使用預設 timestamp session 或全新 --output-dir，已有目錄拒絕。
 4. 檢視 manual_run_001_report.md 與路線圖；下一個候選工作是沿 raceline 對齊 planned／commanded／physical speed 及分段時間，目前尚未實作，不先調參。
 5. 本次只涵蓋 ESP、既有 GlobalPurePursuit、mu60_closed 與預設 tracker 配置。其他地圖／速度／大偏移、不同 planning scheduler、LMPC／ROS2／opponent／overtaking 都不是本次已完成範圍。
+6. 後續從最新 master 建立功能分支，push 後檢查 CI，透過 PR 合併到自己的 master。新的 Frenet trajectory planning／candidate lines／overtaking 行為需補對應測試；現有 CI 不代表整個 upstream 已完整驗證。
+7. 使用目前測試入口 `bash tests/run_research_tests.sh`，或 README 的 Python 3.9／requirements-ci.txt 環境。舊 bare Docker unittest 指令保留為歷史紀錄，不作目前完整 suite 的執行方式。
 
 ## 後續每批紀錄格式
 
@@ -355,3 +364,77 @@ docker run --rm --user 1000:1000 \
 提交前實際重新執行唯讀 Docker unittest discover：35 tests PASS，2.564 s、無 skip；acceptance source fingerprints 與五個 session 保護 manifest 的所有原檔 hashes 重新核對 PASS，git diff --check PASS。沒有重新 simulation 或調參。
 
 提交產物格式檢查：清理 Matplotlib SVG 行尾空白，XML 元素 attributes／path geometry（忽略等價空白）保持一致。CSV 保留標準 writer 產生的原始 CRLF，不改 simulation artifacts；staged check 使用 `git -c core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol diff --cached --check`。
+
+## 2026-10-05：Regression testing、GitHub CI 與研究成果整合
+
+### 目標與實作範圍
+
+完成最小侵入式 regression testing 與 CI，保護後續 Frenet trajectory planning、candidate lines 與 overtaking 開發所依賴的研究 baseline。先唯讀檢查 repository、既有 35 項 unittest、submodule、資料路徑與 Docker，再沿用並補強研究測試。沒有替 upstream 建完整測試、修改 production modules、physics／vehicle dynamics、raceline numerical results 或重建 Docker 環境；沒有 CD 或實車部署。
+
+新增檔案：
+
+- `pytest.ini`：限制 discovery 到 tests/research；預設排除 local_archive。
+- `requirements-ci.txt`：Python 3.9 必要測試依賴；沿用 baseline numerical versions，pytest 為測試專用新增。
+- `tests/research/conftest.py`：測試時使用 repository root cwd，不改 production 路徑。
+- `tests/research/test_baseline_smoke.py`：import／helper API、原始及 closed ESP raceline loader、原始 CSV SHA256、真實 PP 10-step headless smoke。
+- `docs/research/regression_testing.md`：測試範圍、環境、實際驗證與 CI 說明。
+- `.github/workflows/ci.yml`：將先前未提交草稿整理為最小研究 CI。
+
+修改 `test_closed_velocity_profile.py`，增加 finite／正速度與非等長 edges 的解析煞車案例；在所有八個起點驗證正確速度結果。原本需要歷史 Logs 的整份 protected manifest 驗收保留，標記 local_archive，另行執行。移除必要產物缺失時的 skip，避免 fresh checkout 缺資料卻顯示成功。
+
+更新 README 與 `.gitignore`；將既有原始 `Data/racelines/mu60/esp_raceline.csv`、`Data/raceline_data/mu60/params.yaml` 納入 Git。兩個檔案內容未變、未重新生成。其餘大型 raw samples／scans 與 baseline Logs 仍保留本機。
+
+### 測試結果與環境差異修正
+
+| 實際驗證 | 結果 |
+|---|---|
+| 原 baseline 環境＋pytest | 最初 46 PASS、1 local_archive 預設排除 |
+| 無歷史 Logs 的來源副本＋獨立最小 venv | 最初 46 PASS；pip check PASS |
+| 本機歷史 protected manifest 驗收 | 單獨 1 PASS |
+| 將 reverse-edge 舊 bug 在記憶體重現 | 新 braking regression 在八個起點失敗，確認可攔截 |
+| 將 closed-slice 舊 bug 在記憶體重現 | 新 braking regression 在四個起點失敗，確認可攔截 |
+| 現代 pip 重現 hosted import 問題 | pip 25.3 下原 editable 安裝重現同樣 7 failed／39 passed |
+| 修正後實際 workflow 安裝與測試指令 | 47 PASS、1 deselected，4.59 s；pip check PASS |
+| GitHub hosted 研究分支與合併後 master | 均 completed／success |
+
+本地驗證使用既有 f1tenth-sim:full 的 Python 3.9.25，在 `/tmp/f1tenth-ci-validation` 建獨立 venv 與來源副本，repository 唯讀掛載。升級 pip 以重現 hosted 問題只發生於暫存 venv，沒有更新 baseline 映像或 numerical dependencies。最終預設測試包含 baseline smoke 12 項、closed profile 12 項、continuous lifecycle 11 項、lap tracker 12 項；另有 1 項 local_archive。
+
+首輪 hosted workflow 在 job 建立前失敗，原因是 job-level env 使用不允許的 runner.temp context；已將兩個 cache 路徑移到測試 step 的 env。第二輪執行到 pytest，但新版 editable import hook 讓同名外層 submodule 資料夾遮蔽真實 helper package，使 calc_ax_profile 缺失。已在暫存環境重現，改為正常安裝同一 pinned helper，主專案保留 editable，並新增 helper API smoke 防止只驗證 import 成功。沒有 monkeypatch production 或改 solver 數值。
+
+CI 現在是 push／pull_request → recursive submodule checkout → Ubuntu 22.04／Python 3.9 → 必要依賴 → pytest。固定 seed、headless 短步進；不每次跑完整圈、不要求 41.52 s 精確相等、不訓練／繪圖／生成 raceline、不 publish image 或部署。今天沒有重新跑完整圈 simulation。
+
+### GitHub、合併與本機同步
+
+- 建立自己的 fork `Ihave2brush/f1tenth_benchmarks`，原作者 BDEvan5 的 repository 保留為 upstream；自己的 fork 為 origin。
+- 提交：8421bbe（最小 tests／CI）、9f0601c（runner context）、48e2dbf（helper 安裝修正）。
+- [PR #1](https://github.com/Ihave2brush/f1tenth_benchmarks/pull/1) 已將自己的 overtaking-planner 合併到自己的 master；沒有向原作者合併。Merge commit：d1a2200。
+- [合併後 master CI](https://github.com/Ihave2brush/f1tenth_benchmarks/actions/runs/37265498702) 與 [研究分支 CI](https://github.com/Ihave2brush/f1tenth_benchmarks/actions/runs/37265254207) 均已由 GitHub API 查證 success。
+- Copilot review 因 quota limit 未完成，不將其列為已完成的 code review；CI 通過只表示已列出的 regression 行為通過。
+- 本機曾切到舊 master，落後 origin/master 七個提交，而工作目錄保留新研究內容。逐一比對 59 個變更檔案皆與遠端完全一致後，先備份，再只對齊索引並 fast-forward；未刪除或重寫研究資料。
+- 本機同步完成：master = origin/master = d1a2200，ahead／behind 均為 0；overtaking-planner = origin/overtaking-planner = 48e2dbf。Submodule 維持 3d0cd945，無本機修改。
+- 同步前備份：`/data/f1tenth/.backups/master-sync-d1a2200-llavsjm2/`，包含檔案、原索引與 SHA256 manifest。這是本機備份，不是 GitHub artifact。
+- 原有 `.dockerignore`、`Dockerfile`、`docs/research/map_frenet_plan.md` 保持未追蹤。這份今天的進度／計畫文件更新另待提交與推送。
+
+### 接續與限制
+
+目前可作為研究與協作的 baseline；後續從最新 master 建功能分支，經 tests、CI 與 PR 整合。新成員需 recursive clone submodule；完整歷史 session replay 需另外取得本機 raw artifacts。本次未設定 branch protection，也沒有驗證整個 upstream 或所有地圖／配置。
+
+Frenet trajectory planning、candidate lines、完整 overtaking planner、opponent／ROS2 與 planned／commanded／physical speed 的沿程比較仍未實作。下一階段應先明確選定工作與驗收範圍，再補對應測試。本次進度更新只修改文件，未重新執行 pytest／simulation，也未 commit／push；沿用上述已實際執行與查證的結果。
+
+## 2026-10-05：文件版本釐清與既有 Docker 測試入口
+
+收到檢查摘要指出舊文件的「未提交／未 push」與目前 Git 版本不同，以及裸 image 缺少 pytest。重新實查 HEAD 仍為 d1a2200，研究功能與 CI 已合併；但工作目錄的今天進度／計畫更新實際有未提交修改，不能沿用摘要中的「tracked 無修改」。將歷史 Git 起始狀態明確標示為歷史，更新 README／regression_testing 中過期的「資料待納入下一次提交」「尚未 push」「首次 hosted CI 待驗證」等現況描述，保留歷史執行紀錄。
+
+依使用者提供的重跑摘要，裸 f1tenth-sim:full image 有 23 項 unittest 通過、另兩個測試模組因缺 pytest 無法載入。此結果只代表部分測試成功，不列為完整 suite PASS，也不推翻先前在準備好依賴的環境中得到的 47 PASS。今天 CI／Docker 的差異屬測試環境缺項，沒有據此修改研究功能或降低 assertions。
+
+新增 `tests/run_research_tests.sh`，統一目前本機 Docker 的入口：
+
+```bash
+bash tests/run_research_tests.sh
+```
+
+使用既有 image、UID/GID 對應與唯讀 repository mount；在一次性容器建立暫存 venv，安裝 requirements-ci.txt，將 pinned helper 的 build inputs 複製到暫存位置後正常安裝，執行 pip check 與完整 pytest。Image 與其原有套件不變；pytest cache 關閉，Numba／Matplotlib／pip cache 放在容器 /tmp。與 CI 統一的是必要依賴清單、helper 安裝方式與 pytest suite，不宣稱容器 OS 或所有間接依賴完全相同。安裝需網路；已有 image 不等於已準備好 pytest 環境。
+
+實際執行新的入口：**47 passed、1 deselected，4.40 s**；`pip check` PASS，Python 3.9.25／pytest 8.3.5。這是本機準備後的完整 suite 結果；沒有重新執行完整圈 simulation，也沒有重建 Docker image。Shell syntax 與 git diff --check 通過。執行後將 pip cache 明確放到 /tmp，避免非 root user 的預設 cache 權限提示。
+
+本批修改 README、regression_testing、今天的進度／計畫說明，新增 Docker 測試入口；尚未 commit／push。原有 Dockerfile、.dockerignore、map_frenet_plan.md 仍未追蹤；新的 tests/run_research_tests.sh 是本批待納入版本控制的檔案，不與這三個舊檔混同。

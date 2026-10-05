@@ -1,10 +1,16 @@
 # Continuous laps：實作計畫與研究方向
 
-更新日期：2026-10-01
+更新日期：2026-10-05
 
 ## 目前完成狀態與接續方向
 
-Stage 1–5 已完成本次 ESP continuous-lap 實作與驗收。Research tests 共 35 項 PASS（Stage 1／2 各 12 項，Stage 3–5 共 11 項）。真實 ESP dynamics 已完成三個完整圈，僅一次 initial reset，沒有碰撞或投影異常；獨立重播驗證全部 state／steering buffer 延續，並在第 N 圈 crossing 的實際 post-step 樣本結束。
+Stage 1–5 已完成本次 ESP continuous-lap 實作與驗收；今天另外完成最小 regression testing、GitHub Actions CI，以及研究成果整合到自己的 fork。預設 pytest 47 項 PASS，1 項依賴本機歷史 Logs 的 local_archive 驗收另行執行也 PASS；GitHub 研究分支及合併後 master 的 CI 均通過。原 Stage 1／2 各 12 項、Stage 3–5 共 11 項的 35 unittest PASS 保留為歷史紀錄。
+
+PR #1 已將 `overtaking-planner` 合併到 `Ihave2brush/f1tenth_benchmarks:master`，本機 master 已對齊 origin/master（d1a2200）。CI 僅安裝 Python 3.9 的研究必要依賴，檢查 import、ESP raceline、closed profile／backward braking、lap tracking／logging 與短步進 headless simulation；不跑完整真實圈、不要求精確 lap time、不部署。測試範圍與安裝方式見 [regression_testing.md](regression_testing.md)。
+
+今天的文件摘要與 Docker 測試入口仍待提交／推送，與已合併的研究／CI 程式分開記錄。本機既有 image 不含 pytest；目前用 `bash tests/run_research_tests.sh` 在暫存 venv 補齊依賴，已實跑 47 PASS、1 deselected。裸 image 的部分 unittest 成功加上模組載入錯誤不算完整 suite 驗收。
+
+先前真實 ESP dynamics 已完成三個完整圈，僅一次 initial reset，沒有碰撞或投影異常；獨立重播驗證全部 state／steering buffer 延續，並在第 N 圈 crossing 的實際 post-step 樣本結束。今天未重新執行完整圈驗收或生成新的 raceline。
 
 | 完整圈 | 類型 | 圈時間估計（s） |
 |---|---|---:|
@@ -16,7 +22,7 @@ Stage 1–5 已完成本次 ESP continuous-lap 實作與驗收。Research tests 
 
 產物：`Data/research/continuous_laps/stage5/acceptance.json` 與 `esp_three_laps/`。另驗證原點出發 partial→full、timeout、collision，以及隔離環境中的原 runner baseline 回歸；詳細 commands 與結果見 [進度紀錄](continuous_laps_progress.md)。
 
-接續方向是先保存本次成果與路線圖，再做 planned／commanded／physical speed 的沿程比較，定位實測比規劃多出的時間；分析完成後再決定是否調整控制器，或擴充其他地圖與速度／側向偏移範圍。本次只驗收 ESP、既有 GlobalPurePursuit 與 mu60_closed；不宣稱任意賽道／配置皆通過。LMPC、ROS2、opponent、overtaking 與候選軌跡未實作。
+研究成果、路線圖與最小測試／CI 已保存並合併。接續候選工作是 planned／commanded／physical speed 的沿程比較，定位實測比規劃多出的時間；或依下一階段明確需求推進 Frenet trajectory planning、candidate lines 與 overtaking。從最新 master 建立功能分支、補對應測試，再經 CI 與 PR 整合。本次只驗收 ESP、既有 GlobalPurePursuit 與 mu60_closed；不宣稱任意賽道／配置皆通過。LMPC、ROS2、opponent、overtaking 與候選軌跡未實作。
 
 ## 最新手動驗證、圖表與時間比較
 
