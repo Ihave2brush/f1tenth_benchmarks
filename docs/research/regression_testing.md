@@ -14,7 +14,8 @@ Initialize the pinned `trajectory_planning_helpers` submodule recursively;
 do not update its revision to install tests.
 
 The exact original `Data/racelines/mu60/esp_raceline.csv` and
-`Data/raceline_data/mu60/params.yaml` must be included in the next commit.
+`Data/raceline_data/mu60/params.yaml` were committed with the test suite and are
+included in the merged master.
 The `.gitignore` exceptions expose only these two additional baseline inputs.
 The closed CSVs, metadata, ESP maps/centreline, and vehicle/simulator parameters
 are already tracked. Missing required inputs fail tests instead of being skipped.
@@ -22,6 +23,35 @@ are already tracked. Missing required inputs fail tests instead of being skipped
 The original mu60 CSV has no header, while the upstream `RaceTrack` loader
 always skips one row. Tests protect the current loader result, including this
 behavior; they do not fix the loader or rewrite numerical inputs.
+
+## Local execution with the existing Docker image
+
+From the repository root, run:
+
+```bash
+bash tests/run_research_tests.sh
+```
+
+This uses the existing `f1tenth-sim:full` image and a read-only repository mount.
+It creates a temporary venv, installs `requirements-ci.txt`, normally installs
+the pinned helper from a temporary source copy, checks dependencies, then runs
+the default pytest suite. It does not rebuild the image or write test caches to
+the repository. Installation needs network access. Extra pytest arguments can
+be appended, for example `bash tests/run_research_tests.sh -m local_archive` in
+the original workspace that contains the historical archive.
+
+The unmodified image does not include pytest. Running the historical bare-image
+`python -m unittest discover` command against today's suite can therefore fail
+to import test modules. A partial unittest pass with import errors is not full
+suite acceptance. Historical commands and counts in the progress log describe
+their original stages; use this entry point or README's Python 3.9 environment
+recipe for current validation. A raw image test and a prepared CI environment
+must be reported separately.
+
+The Docker entry point was actually run on 2026-10-05: **47 passed, 1
+deselected**, 4.40 s, with `pip check` passing. This entry point and the latest
+documentation updates are local uncommitted changes; the already-merged
+research/CI baseline remains master d1a2200.
 
 ## Default checks
 
@@ -58,8 +88,9 @@ Python 3.9 job: recursive checkout, install the test requirements, install the
 pinned helper normally and the project editable, then `pytest` with
 `MPLBACKEND=Agg`. No full real laps, optimization,
 training, graphical reports, historical Logs, Docker publishing, or deployment.
-The workflow is implemented in `.github/workflows/ci.yml`; its first
-GitHub-hosted execution remains to be verified after commit and push.
+The workflow is implemented in `.github/workflows/ci.yml`. The corrected research
+branch run and merged master run have both been verified successful on GitHub;
+the commits and run links are recorded in `continuous_laps_progress.md`.
 
 ## Verified results (2026-10-05)
 
@@ -77,8 +108,9 @@ GitHub-hosted execution remains to be verified after commit and push.
 - Repository mounts were read-only during validation; caches and test outputs
   were temporary. `git diff --check` passed.
 
-These are local results, not a GitHub-hosted runner result. The new files and
-previously ignored inputs have not been committed or pushed.
+The timings above are local measurements, not GitHub-hosted timings. The tests,
+CI and required inputs have since been committed, pushed and merged through PR
+#1 (master d1a2200). The later hosted results are recorded in the progress log.
 
 ## GitHub Actions workflow
 
@@ -129,9 +161,9 @@ jobs:
         run: pytest
 ```
 
-The new CSV and YAML inputs must be committed with the tests before this workflow
-is enabled. Existing Docker files and unrelated local research plans are outside
-this change.
+The required CSV and YAML inputs were committed with the tests before the
+successful hosted runs. Existing Docker files and unrelated local research
+plans remain outside this change.
 
 The first push failed before creating a job: `runner.temp` was incorrectly used
 in job-level `env`. Those two cache paths now use step-level `env`, where the

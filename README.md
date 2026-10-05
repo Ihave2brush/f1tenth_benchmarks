@@ -123,10 +123,21 @@ pytest -m local_archive
 
 See [the test scope and validation notes](docs/research/regression_testing.md).
 
+With the existing `f1tenth-sim:full` image, use the prepared test entry point:
+
+```bash
+bash tests/run_research_tests.sh
+```
+
+It installs the required test packages in a temporary venv and mounts the
+repository read-only. The bare image lacks pytest; historical bare-image
+unittest commands do not validate the full current suite.
+
 `.github/workflows/ci.yml` runs the default suite on pushes and pull requests,
 including research branches, using Python 3.9 on Ubuntu 22.04. It initializes
-the pinned helper submodule and installs only `requirements-ci.txt`. The first
-GitHub-hosted result must be checked after pushing these changes.
+the pinned helper submodule and installs only `requirements-ci.txt`. The corrected
+research branch and merged master have both passed GitHub-hosted CI; see the
+[progress record](docs/research/continuous_laps_progress.md) for run links.
 
 The helper is installed normally from the pinned submodule rather than in
 editable mode, avoiding a same-name namespace import conflict with modern pip.
@@ -145,4 +156,3 @@ If you found our work helpful, please consider citing.
   year={2024}
 }
 ```
-
