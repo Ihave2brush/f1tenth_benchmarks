@@ -7,6 +7,18 @@ Logs/
 !Data/media/local_map_racing.png
 Data/*
 
+# Exact baseline inputs needed by portable research regression tests.
+!Data/racelines/
+Data/racelines/*
+!Data/racelines/mu60/
+Data/racelines/mu60/*
+!Data/racelines/mu60/esp_raceline.csv
+!Data/raceline_data/
+Data/raceline_data/*
+!Data/raceline_data/mu60/
+Data/raceline_data/mu60/*
+!Data/raceline_data/mu60/params.yaml
+
 # trajectory_planning_helpers
 
 

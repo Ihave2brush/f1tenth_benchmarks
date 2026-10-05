@@ -1,0 +1,100 @@
+{
+  "esp_three_laps": {
+    "passed": true,
+    "checks": {
+      "full_count": true,
+      "partial_count": true,
+      "one_reset": true,
+      "sample_count": true,
+      "ten_column_physical_samples": true,
+      "control_steps": true,
+      "requested_laps_reached": true,
+      "physical_and_buffer_continuity": true,
+      "event_interpolation_and_sample_boundaries": true,
+      "stop_on_final_crossing_step": true,
+      "independent_dynamics_replay_without_finish_reset": true,
+      "scan_samples": true
+    },
+    "full_lap_times": [
+      41.57716626647754,
+      41.066843716979136,
+      41.063010063982915
+    ],
+    "samples": 3094,
+    "max_projection_distance": 0.6278692831633942,
+    "max_abs_e_y": 0.6278692831633941,
+    "projection_rejections": 0,
+    "reset_counts": [
+      1
+    ]
+  },
+  "esp_partial_then_full": {
+    "passed": true,
+    "checks": {
+      "full_count": true,
+      "partial_count": true,
+      "one_reset": true,
+      "sample_count": true,
+      "ten_column_physical_samples": true,
+      "control_steps": true,
+      "requested_laps_reached": true,
+      "physical_and_buffer_continuity": true,
+      "event_interpolation_and_sample_boundaries": true,
+      "stop_on_final_crossing_step": true,
+      "independent_dynamics_replay_without_finish_reset": true
+    },
+    "full_lap_times": [
+      41.4653227656305
+    ],
+    "samples": 1042,
+    "max_projection_distance": 0.6140760197743441,
+    "max_abs_e_y": 0.6140760197743441,
+    "projection_rejections": 0,
+    "reset_counts": [
+      1
+    ]
+  },
+  "esp_timeout": {
+    "end_reason": "timeout",
+    "completed_full_laps": 0,
+    "reset_count": 1,
+    "samples": 6,
+    "passed": true
+  },
+  "esp_collision": {
+    "end_reason": "collision",
+    "completed_full_laps": 0,
+    "reset_count": 1,
+    "samples": 1,
+    "passed": true
+  },
+  "baseline_regression": {
+    "passed": true,
+    "expected": {
+      "Time": "41.5200",
+      "Steps": "1038",
+      "Progress": "0.9967",
+      "LapComplete": "True",
+      "Collision": "False"
+    },
+    "actual": {
+      "Time": "41.5200",
+      "Steps": "1038",
+      "Progress": "0.9967",
+      "LapComplete": "True",
+      "Collision": "False"
+    },
+    "protected_files_changed": [],
+    "runner": "original simulate_laps, original mu60, isolated temporary cwd"
+  },
+  "protected_hash_checks": true,
+  "source_hashes": {
+    "f1tenth_benchmarks/research/__init__.py": "1aea7cebe84c910e8ad6f07269c8d27bdfe938ed72b587e9051679d3efa52cef",
+    "f1tenth_benchmarks/research/closed_velocity_profile.py": "68ae0a8314e08e75e377858a8156a5a56ac3d141a1f6ec083617fd9ff732b721",
+    "f1tenth_benchmarks/research/continuous_logging.py": "5c5b122bebf4c2a2f86ffb734317e0228ef601b59b0e551ce5581b345d596435",
+    "f1tenth_benchmarks/research/continuous_sim.py": "3d9e53bc905684b85b92178a0ff35f76772443c5dbed7ffd5b9b86c93d768a3b",
+    "f1tenth_benchmarks/research/lap_tracking.py": "26612e49e748b5f12787fc1efa61de422a828aae9429b8871a896e7470253279",
+    "f1tenth_benchmarks/research/run_continuous_pp.py": "d64b5e7d3973dbed19162b49af8d89f4331fc612b6cd64d2a78c90b82508a4d5"
+  },
+  "passed": true
+}
