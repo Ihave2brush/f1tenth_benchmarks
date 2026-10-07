@@ -20,7 +20,9 @@ from f1tenth_benchmarks.research.core.geometry.domain import json_bytes
 from f1tenth_benchmarks.research.core.geometry.map_raster import sha256
 import hashlib
 from f1tenth_benchmarks.research.core.geometry.viewer import MapInspector,make_server
-from f1tenth_benchmarks.research.core.geometry.complete_stage_d import audit_geometry
+from f1tenth_benchmarks.research.core.geometry.complete_stage_d import audit_geometry,summarize
+from f1tenth_benchmarks.research.core.geometry.check_frenet import check
+from f1tenth_benchmarks.research.core.geometry.validate_stage_d import validate
 
 
 @pytest.fixture
@@ -60,9 +62,12 @@ def test_open_tracker_keeps_zero_lap_count(straight):
         assert result['s_unwrapped']==pytest.approx(s,abs=1e-4)
 
 
-def test_open_l_corridor_orientation_save_reload_and_audit(tmp_path):
+@pytest.mark.parametrize('side_branch',[False,True])
+def test_open_l_corridor_orientation_save_reload_and_audit(tmp_path,side_branch):
     gray=np.zeros((120,80),np.uint8)
     gray[10:110,45:65]=255;gray[10:30,10:65]=255
+    if side_branch:
+        gray[60:75,25:45]=255
     raster=MapRaster(gray,dict(resolution=.05,origin=[0,0,0],negate=0,free_thresh=.2,occupied_thresh=.65))
     build=build_open_geometry(raster,[2.75,.7])
     assert not build['curve'].closed
@@ -77,8 +82,87 @@ def test_open_l_corridor_orientation_save_reload_and_audit(tmp_path):
     assert verify_artifacts(directory)['passed']
     geometry=load_geometry(directory,yaml,inspect=True)
     assert not geometry.curve.closed and audit_geometry(geometry,directory)['passed']
+    # The primary skeleton path selects the reference, not a cropped free mask.
+    assert np.array_equal(geometry.corridor,build['corridor'])
+    if side_branch:
+        assert build['options']['skeleton_endpoints']>=3
+        assert build['corridor'][65,30] and geometry.corridor[65,30]
     assert geometry.reference(geometry.curve.L)['xy']==pytest.approx(build['xy'][-1])
     curve=json.loads((directory/'reference_curve.json').read_text());assert curve['periodic'] is False
+
+
+def test_open_dense_report_preserves_terminal_section_and_interval(straight):
+    report=validate(straight,.05,0)
+    assert report['numeric_checks_passed'],report['failures']
+    terminal=next(p for p in report['sections'] if p['s_m']==straight.curve.L)
+    boundary=straight.boundaries(straight.curve.L)
+    assert terminal['boundary']['left_xy']==pytest.approx(boundary['left_xy'])
+    assert terminal['boundary']['right_xy']==pytest.approx(boundary['right_xy'])
+    assert terminal['boundary']['left_xy']!=pytest.approx(straight.boundaries(0)['left_xy'])
+    final_leaf=report['boundary_segments'][-1]
+    assert final_leaf['s_end']==straight.curve.L
+    assert final_leaf['midpoint_error_m']<1e-8
+    assert final_leaf['sampled_tolerance_passed']
+    assert report['dense_sections']==101
+    assert check(straight,8)['sampled_check_passed']
+
+
+@pytest.mark.parametrize('validator',[check,validate])
+def test_open_validation_does_not_hide_projection_to_other_endpoint(straight,monkeypatch,validator):
+    forward=straight.to_frenet
+    inverse=straight.to_cartesian
+    queried=[]
+
+    def wrong_endpoint(xy,yaw=None):
+        result=forward(xy,yaw)
+        if result.get('valid') and result['s_wrapped']<1e-8:
+            return dict(result,s_wrapped=straight.curve.L)
+        return result
+
+    def independent_inverse(s,d,e_psi=None):
+        # Keep inverse/source acceptance intact to isolate a forward regression.
+        monkeypatch.setattr(straight,'to_frenet',forward)
+        try:
+            queried.append(s)
+            return inverse(s,d,e_psi)
+        finally:
+            monkeypatch.setattr(straight,'to_frenet',wrong_endpoint)
+
+    monkeypatch.setattr(straight,'to_frenet',wrong_endpoint)
+    monkeypatch.setattr(straight,'to_cartesian',independent_inverse)
+    report=check(straight,8) if validator is check else validate(straight,.05,0)
+    assert straight.curve.L in queried
+    if validator is check:
+        assert not report['sampled_check_passed']
+        assert report['max_s_error_m']==pytest.approx(straight.curve.L)
+        assert any(p['reason']=='source_coordinate_mismatch' and p['s_error_m']>4
+            for p in report['failures'])
+    else:
+        assert not report['numeric_checks_passed']
+        assert report['max_errors']['s_m']==pytest.approx(straight.curve.L)
+        assert any(p['reason']=='roundtrip_error' and p['errors'][1]>4
+            for p in report['failures'])
+
+
+def test_open_diagnostics_separate_endpoint_issues_and_keep_terminal_s(straight):
+    positions=[0.,2.5,straight.curve.L]
+    report=dict(numeric_checks_passed=True,dense_step_m=.05,rejected_queries=2,
+        sections=[dict(s_m=s,boundary=dict(valid=True)) for s in positions],
+        rejected_points=[dict(s_m=s,d_m=.2,xy=straight.reference(s)['xy'],
+            reason='ambiguous_projection') for s in (0.,straight.curve.L)],
+        boundary_segments=[dict(s_start=a,s_end=b,sampled_tolerance_passed=passed,
+            midpoint_error_m=.03,quarter_errors_m=[.02,.04])
+            for a,b,passed in ((0.,1.,False),(1.,4.,True),(4.,straight.curve.L,False))])
+    result=summarize(straight,report,dict(passed=True))
+    assert result['issue_groups']==4
+    assert all(not issue['crosses_seam'] for issue in result['issues'])
+    low=[p for p in result['issues'] if p['category']=='ambiguous_projection']
+    assert [(p['s_start_m'],p['s_end_m']) for p in low]==[(0.,0.),(straight.curve.L,straight.curve.L)]
+    leaves=[p for p in result['issues'] if p['category']=='boundary_interpolation']
+    assert [(p['s_start_m'],p['s_end_m']) for p in leaves]==[(0.,1.),(4.,straight.curve.L)]
+    assert leaves[-1]['samples'][0]['s_m']==pytest.approx(4.5)
+    assert leaves[-1]['center_xy'][-1]==pytest.approx(straight.reference(straight.curve.L)['xy'])
+    assert 'open endpoints separate' in result['coverage']['grouping']
 
 
 def test_open_http_rejects_s_beyond_terminal(straight):

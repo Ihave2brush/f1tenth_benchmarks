@@ -20,8 +20,8 @@ LABELS = {'singular_frenet': 'Frenet 餘裕不足',
           'boundary_interpolation': '僅插值誤差'}
 
 
-def cyclic_runs(indices, count):
-    """Merge only consecutive sampled indices, including the closed-track seam."""
+def cyclic_runs(indices, count, closed=True):
+    """Group consecutive samples; merge endpoint runs only for closed tracks."""
     indices = sorted(set(indices))
     if not indices:
         return []
@@ -31,7 +31,7 @@ def cyclic_runs(indices, count):
             runs[-1].append(index)
         else:
             runs.append([index])
-    if len(runs) > 1 and runs[0][0] == 0 and runs[-1][-1] == count-1:
+    if closed and len(runs) > 1 and runs[0][0] == 0 and runs[-1][-1] == count-1:
         runs = [runs[-1]+runs[0]] + runs[1:-1]
     return runs
 
@@ -122,7 +122,7 @@ def summarize(geometry, report, audit):
             continuous_verified=False))
 
     for reason, by_index in sorted(reasons.items()):
-        for run in cyclic_runs(by_index,count):
+        for run in cyclic_runs(by_index,count,geometry.curve.closed):
             samples=[]
             for i in run:
                 for point in by_index[i]:
@@ -133,14 +133,18 @@ def summarize(geometry, report, audit):
                   any(a>b for a,b in zip(run,run[1:])))
     leaves=report['boundary_segments']
     bad=[i for i,p in enumerate(leaves) if not p.get('sampled_tolerance_passed',False)]
-    for run in cyclic_runs(bad,len(leaves)):
-        positions=[leaves[i]['s_start'] for i in run]+[leaves[run[-1]]['s_end']%geometry.curve.L]
-        samples=[dict(s_m=float((leaves[i]['s_start']+leaves[i]['s_end'])/2%geometry.curve.L),
+    def section_s(s):
+        return float(s%geometry.curve.L) if geometry.curve.closed else float(s)
+
+    for run in cyclic_runs(bad,len(leaves),geometry.curve.closed):
+        positions=[leaves[i]['s_start'] for i in run]+[section_s(leaves[run[-1]]['s_end'])]
+        samples=[dict(s_m=section_s((leaves[i]['s_start']+leaves[i]['s_end'])/2),
             xy=geometry.reference((leaves[i]['s_start']+leaves[i]['s_end'])/2)['xy'],
             d_m=0., midpoint_error_m=leaves[i].get('midpoint_error_m'),
             quarter_errors_m=leaves[i].get('quarter_errors_m'), source_valid=None) for i in run]
         issue('boundary_interpolation',positions,samples,
-              any(a>b for a,b in zip(run,run[1:])) or leaves[run[-1]]['s_end']>=geometry.curve.L)
+              geometry.curve.closed and (any(a>b for a,b in zip(run,run[1:]))
+                  or leaves[run[-1]]['s_end']>=geometry.curve.L))
     return dict(schema_version=1,stage='D_diagnostics',geometry_id=geometry.geometry_id,
         diagnostic_ready=bool(audit['passed'] and report['numeric_checks_passed']),
         geometry_audit=audit, issues=issues, issue_groups=len(issues),
@@ -148,7 +152,8 @@ def summarize(geometry, report, audit):
         rejected_source_queries=report['rejected_queries'],
         interpolation_failed_leaves=len(bad),
         coverage=dict(sections=count,dense_step_m=report['dense_step_m'],
-            grouping='consecutive sampled sections or boundary leaves; cyclic seam merged',
+            grouping=('consecutive sampled sections or boundary leaves; cyclic seam merged'
+                if geometry.curve.closed else 'consecutive sampled sections or boundary leaves; open endpoints separate'),
             continuous_verified=False), domain_verified=False,planning_allowed=False,
         limitations=['Diagnostic completion is separate from planning approval',
             'Sampled extents do not certify all points inside or outside each group',

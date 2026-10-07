@@ -8,7 +8,7 @@ from pathlib import Path
 import numpy as np
 
 from .domain import json_bytes
-from .frenet import load_geometry, circular_distance, wrap
+from .frenet import load_geometry, wrap
 from .map_raster import sha256
 
 
@@ -21,7 +21,7 @@ def validate(geometry, step_m=.05, max_depth=4, progress=None):
     sections={};errors=[];failures=[];rejected=[]
 
     def section(s):
-        s=float(s%geometry.curve.L)
+        s=float(s%geometry.curve.L) if geometry.curve.closed else float(s)
         if s in sections:return sections[s]
         ref=geometry.reference(s);boundary=geometry.boundaries(s)
         if not boundary['valid']:
@@ -55,7 +55,7 @@ def validate(geometry, step_m=.05, max_depth=4, progress=None):
                     tangent=np.asarray(projected['tangent']);normal_back=np.array([-tangent[1],tangent[0]])
                     roundtrip=np.asarray(projected['xy'])+forward['d']*normal_back
                     err=[float(np.linalg.norm(roundtrip-xy)),
-                         circular_distance(s,forward['s_wrapped'],geometry.curve.L),
+                         geometry.distance_s(s,forward['s_wrapped']),
                          abs(d-forward['d']),abs(wrap(result['yaw']-(ref['psi']+.13)))]
                     errors.append(err)
                     if max(err)>1e-4:failures.append(dict(s_m=s,d_m=d,reason='roundtrip_error',errors=err))
@@ -69,6 +69,8 @@ def validate(geometry, step_m=.05, max_depth=4, progress=None):
     for i,s in enumerate(positions):
         section(s)
         if progress and i%256==0:progress(dict(phase='dense',completed=i,total=count))
+    if not geometry.curve.closed:
+        section(geometry.curve.L)
     section(1e-6);section(geometry.curve.L-1e-6)
     boundary_checks=[]
 
@@ -89,7 +91,7 @@ def validate(geometry, step_m=.05, max_depth=4, progress=None):
                 reason='exact_query_required'))
 
     for i,s in enumerate(positions):
-        refine(float(s),float(s+spacing),0)
+        refine(float(s),float(positions[i+1]) if i+1<count else geometry.curve.L,0)
         if progress and i%256==0:progress(dict(phase='adaptive',completed=i,total=count))
     finite=[b['midpoint_error_m']for b in boundary_checks if 'midpoint_error_m'in b]
     # Quarter-point checks on every final leaf reduce midpoint-only blind spots.
@@ -107,7 +109,7 @@ def validate(geometry, step_m=.05, max_depth=4, progress=None):
     unresolved=sum(not x.get('sampled_tolerance_passed',False) for x in boundary_checks)
     maxima=np.max(errors,axis=0).tolist() if errors else [None]*4
     return dict(schema_version=1,stage='D',geometry_id=geometry.geometry_id,
-        dense_step_m=spacing,dense_sections=count,total_sections=len(sections),adaptive_max_depth=max_depth,
+        dense_step_m=spacing,dense_sections=count+int(not geometry.curve.closed),total_sections=len(sections),adaptive_max_depth=max_depth,
         valid_queries=len(errors),rejected_queries=len(rejected),rejection_reasons=dict(Counter(p['reason']for p in rejected)),
         max_errors=dict(zip(('position_m','s_m','d_m','yaw_rad'),maxima)),failures=failures,
         numeric_checks_passed=bool(errors) and not failures,

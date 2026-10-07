@@ -37,7 +37,7 @@ python -B -m f1tenth_benchmarks.research.core.geometry.viewer \
 程式雜湊、來源 bundle_id 與未壓縮內容雜湊，重新計算壓縮檔案及包裝識別。
 移動及壓縮不改變 geometry_id、CSV、座標或數值驗證結果。
 
-CornerHall 是從下端向上再向左的開放走廊，其 s∈[0,L]；其他四張為閉合賽道。
+CornerHall 是從下端向上再向左的開放走廊，其 s∈[0,L]；其他五張（ESP、AUT、GBR、MCO、my_map）為閉合賽道。
 通過的是有限採樣與查詢目標，continuous_verified、planning_allowed 仍為 false。
 左右邊界 CSV 是各截面法線首次命中牆面的點，不保證可直接連成物理牆線。
 候選仍須精確查詢，後續在 x/y 檢查車身與動態。

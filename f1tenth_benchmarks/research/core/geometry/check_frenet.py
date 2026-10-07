@@ -5,13 +5,13 @@ from pathlib import Path
 
 import numpy as np
 
-from .frenet import load_geometry, circular_distance, wrap
+from .frenet import load_geometry, wrap
 
 
 def check(geometry, count=512):
     errors, s_errors, d_errors, yaw_errors = [], [], [], []
     invalid, failures = [], []
-    positions = np.linspace(0, geometry.curve.L, count, endpoint=False).tolist()
+    positions = np.linspace(0, geometry.curve.L, count, endpoint=not geometry.curve.closed).tolist()
     positions += [1e-6, geometry.curve.L-1e-6]
     for s in positions:
         ref = geometry.reference(s)
@@ -39,7 +39,7 @@ def check(geometry, count=512):
             if not inverse['valid']:
                 failures.append(dict(s=s,d=d,reason=inverse['reason'])); continue
             errors.append(float(np.linalg.norm(np.array(inverse['xy'])-xy)))
-            s_errors.append(circular_distance(s,result['s_wrapped'],geometry.curve.L))
+            s_errors.append(geometry.distance_s(s,result['s_wrapped']))
             d_errors.append(abs(result['d']-d))
             yaw_errors.append(abs(wrap(inverse['yaw']-(ref['psi']+.13))))
             if s_errors[-1]>1e-4 or d_errors[-1]>1e-4:
