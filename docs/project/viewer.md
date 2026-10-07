@@ -24,7 +24,9 @@ docker run --rm --name f1tenth-frenet-inspector \
   --catalog maps/frenet/inspector_catalog.json --port 8765
 ```
 
-從 repository 根目錄執行才能正確掛載。服務只綁定 127.0.0.1；同一 port 已在使用時直接開啟既有服務。Docker 服務可用 `docker stop f1tenth-frenet-inspector` 停止。
+從 repository 根目錄執行才能正確掛載。服務只綁定 127.0.0.1。若 8765 已由這個檢視器使用，直接在瀏覽器開啟上述網址，不要再次啟動；程式不會自動沿用既有服務，同一埠被占用時重新啟動會失敗。
+
+需要重新啟動時，先用 Ctrl+C 停止原服務；上述 Docker 服務可用 `docker stop f1tenth-frenet-inspector` 停止。也可以將啟動指令改為 `--port 8766`，並開啟 `http://127.0.0.1:8766`。若要並行啟動第二個 Docker 容器，還需使用不同的 `--name`。
 
 ## 操作
 

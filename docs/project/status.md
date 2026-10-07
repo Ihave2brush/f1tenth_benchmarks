@@ -4,7 +4,7 @@
 
 **Continuous 已完成 ESP 連續圈模擬與紀錄／重播驗收；Frenet 已完成六張地圖的幾何、雙向轉換、截面範圍與檢視工具。** 兩者提供後續研究基礎，但目前仍是分開的功能：Continuous 使用既有 Pure Pursuit 與折線圈追蹤，Frenet 尚未接入控制迴路。
 
-行車與幾何批次數值取自保存的驗收 JSON 與報告。本次提交前另重新執行完整研究 pytest；原三圈／五圈行車、全量幾何生成、GUI 與 hosted CI 未重跑。
+行車與幾何批次數值取自保存的驗收 JSON 與報告。首次提交前已重新執行完整研究 pytest；今日 PR 修正依使用者要求只做本機靜態檢查，推送後的 GitHub hosted CI 已確認成功。原三圈／五圈行車、全量幾何生成與 GUI 未因 PR 修正重跑。
 
 ## 1. 基礎建立到哪裡
 
@@ -19,7 +19,7 @@
 | 自動回歸 | tests/research 包含可攜 pytest；CI workflow 使用 Python 3.9／Ubuntu 22.04 |
 | 原版隔離驗收 | 已保存原 simulate_laps 結果一致性；新增研究沒有取代原版演算法入口 |
 
-CI 檔存在與本機回歸通過不等於目前 GitHub hosted run 成功。本次未查詢最新遠端 CI 狀態；提交紀錄以 Git 為準。
+2026-10-07 已核對 [PR #3](https://github.com/Ihave2brush/f1tenth_benchmarks/pull/3)：最新提交為 `10fe38e`，兩次 Research regression 的 Python 3.9 research tests 均成功。這是遠端 CI 的實際結果；本機檢查與歷史幾何驗收另行記錄。
 
 ## 2. Continuous：完成了什麼
 
@@ -59,7 +59,7 @@ Frenet 的目標是從原始影像／YAML 建立可重載的參考線與左右�
 
 | 工作 | 已完成內容 |
 |---|---|
-| 座標與資料契約（A） | map frame、單位、起點／方向、左正右負、版本與實體參考點規則 |
+| 座標、資料格式與介面規格（A） | map frame、單位、起點／方向、左正右負、版本與實體參考點規則 |
 | 幾何生成（B） | 中線、弧長／方向／曲率、逐截面邊界、CSV、來源與保存／重載校驗 |
 | 轉換及追蹤（C） | 雙向轉換、精確有效性、投影歧義、連續追蹤、TF 相容資料適配與離線重播 |
 | 診斷（D） | ESP 密集數值核對、問題分類與定位；診斷目標完成 |
@@ -104,6 +104,10 @@ my_map 另逐格驗證所選主賽道 **5,204 格中心**，全部通過雙向�
 
 2026-10-07 提交前以 `bash tests/run_research_tests.sh` 重新驗證：**146 passed、1 deselected，21.61 s**；Python 3.9.25／pytest 8.3.5，`pip check` 通過。my_map 收尾批次另保存 146 passed、1 deselected，21.75 s 的歷史驗收。被排除的是需本機原始 Logs／歷史 manifest 的 `local_archive` 測試，並非失敗；Continuous 歷史批次曾另跑並通過，本次未重跑該項。
 
+今日 PR 修正補上開放曲線的起終點距離、診斷分組、`s=L` 採樣與文件中的閉合賽道數量，新增含支線遮罩重載及開放端點回歸案例。README 更新後曾因 `publication.json` 保留舊雜湊導致 CI 失敗，已於 `10fe38e` 同步補正；全部 62 個發布檔案雜湊、六圖 catalog 與外部匯入 metadata 的本機核對通過。推送後兩次遠端研究回歸均成功：[PR CI](https://github.com/Ihave2brush/f1tenth_benchmarks/actions/runs/37577465345)、[分支 CI](https://github.com/Ihave2brush/f1tenth_benchmarks/actions/runs/37577460829)。上述 146 項是首次提交的歷史數字，並非最新 CI 的項目數。
+
+[最新 Copilot 審查](https://github.com/Ihave2brush/f1tenth_benchmarks/pull/3#pullrequestreview-5438167478)已將原五項問題列為解決：第 1 項由使用者標示 Incorrect，其前提把主幹中線選取誤認為道路遮罩裁切；第 2～5 項已修正。另指出一項低嚴重度文件問題：檢視器指南稱會沿用已占用的 port，但程式重新啟動時會報錯，該描述已在本機指南修正為開啟既有服務網址，或停止／換埠後重啟；文件修改尚未提交／推送。核對時 PR 已取消 Draft、無合併衝突，尚未合併。
+
 | 測試類別 | 已測內容 | 對應 tests/research/ |
 |---|---|---|
 | 基礎載入／原版 | 必要 import、helper API、raceline 首列與結構、原 mu60 hash、短 headless Pure Pursuit | test_baseline_smoke.py |
@@ -114,7 +118,7 @@ my_map 另逐格驗證所選主賽道 **5,204 格中心**，全部通過雙向�
 | Frenet 轉換 | 獨立圓環正反轉換、接縫、低 J、歧義、無效來源與 hint 行為 | test_frenet.py |
 | 定位／TF | 跨接縫／倒退、時間及版本、物理點偏移、拒絕不提交與明確重置 | test_frenet_tracking.py |
 | 截面／檢視器 | 不跨拒絕樣本合併區間、缺牆、分類、HTTP 路由與非法參數、來源校驗 | test_frenet_inspector.py |
-| 開放圖 | 終點不繞圈、有限 s、方向、開放追蹤、範圍 bundle 與混合原因 | test_open_frenet.py |
+| 開放圖 | 終點不繞圈、有限 s、方向、開放追蹤、範圍 bundle、混合原因、含支線遮罩重載、跨端點誤差與診斷分組 | test_open_frenet.py |
 | 實際 PGM | 灰色 unknown、指定方向、不支援地圖明確失敗 | test_external_map.py |
 | 正式候選重載 | 六圖可攜 catalog、gzip 載入、精確截面與保存結果一致 | test_published_tracks.py |
 
@@ -141,7 +145,7 @@ my_map 另逐格驗證所選主賽道 **5,204 格中心**，全部通過雙向�
 
 目前可執行 Continuous 多圈實驗，或在六圖上查詢 Frenet 座標與截面限制。三種 s 分別屬於 raceline、Continuous 折線圈追蹤、Frenet 平滑參考線，不能直接互換；ESP 對應長度約為 230.452815、237.329933、236.907498 m。
 
-尚未完成的項目：
+本次 Frenet 轉換階段已完成；以下屬於後續研究，不列為本次結案前置條件：
 
 - 全道路連續有效域及邊界插值批准；目前 domain_verified、continuous_verified、planning_allowed 皆為 false。
 - 使用 d(s) 的路線規劃、整段軌跡與 Cartesian 車身／動態檢查。
