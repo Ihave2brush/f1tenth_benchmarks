@@ -14,6 +14,7 @@ setup(
         description=DESCRIPTION,
         long_description=LONG_DESCRIPTION,
         packages=find_packages(),
+        package_data={"f1tenth_benchmarks.research.core.geometry": ["viewer.html"]},
         install_requires=[], # add any additional packages that 
         # needs to be installed along with your package. Eg: 'caer'
         

@@ -1,152 +1,61 @@
-# F1Tenth Autonomous Racing Benchmarks
+# F1TENTH Benchmarks 與模擬研究
 
-![](media/f1tenth_platform.png)
+以原版 F1TENTH Autonomous Racing Benchmarks 為基礎，新增 **Continuous 連續圈模擬**與 **Frenet 地圖幾何／座標查詢**。原版動力學、LiDAR、碰撞檢查及 benchmark 入口持續沿用。
 
-This repository contains code to run benchmark algorithms for F1Tenth autonomous racing. 
-The follow methods are implemented.
-1. [Classical racing:](#classic-racing) which uses a classic perception, planning and control stack with prior access to a map of the track.
-2. [Mapless racing:](#mapless-racing) where the planner does not have any access to a map of the track and only the LiDAR scan and vehicle speed is available.
-3. [End-to-end racing:](#end-to-end-learning-agents) training a deep reinforcement learning (DRL) agent to race.
-4. [Local map racing:](#local-map-racing) at each timestep a local map is build that is used for planning.
+- [完成總結與測試紀錄](docs/project/status.md)：從基礎到 Continuous、Frenet 的成果與驗證範圍。
+- [操作指南](docs/project/usage.md)：安裝、測試、連續圈與地圖生成。
+- [Frenet 檢視器](docs/project/viewer.md)：六圖切換、點選與截面範圍查詢。
+- [介面與座標定義](docs/project/interfaces.md)：程式接線與有效性規則。
+- [文件索引與維護原則](docs/README.md)。
 
-Jump to [**Installation**](#usage)
+## 目前完成範圍
 
+| 功能 | 已完成 | 驗證範圍 |
+|---|---|---|
+| Continuous | 閉合速度配置、一次初始化的多圈模擬、圈事件、紀錄與重播 | ESP／GlobalPurePursuit；已保存三圈與五圈驗收 |
+| Frenet | 中線／邊界、雙向座標轉換、定位追蹤、截面範圍與檢視器 | ESP、AUT、GBR、MCO、CornerHall 與實際 PGM `my_map` |
+| 後續研究 | 目錄與介面預留 | 路線規劃、超車、LMPC、ROS2 Frenet 節點與實車驗證尚未完成 |
 
-## Overview
+Frenet 目前供檢視與精確查詢，`planning_allowed=false`；尚未接入 Continuous 的 Pure Pursuit 控制迴路。有限採樣通過不等於全道路連續域批准。
 
-The repo separates algorithms in different subfolders for each category.
+## 開始使用
 
-To run an algorithm, execute one of the Python scrips in the `run_scripts/` folder.
-- The parameters for algorithm are in the relevant `.yaml` file in the `params/` directory
-- There are functions to test the planner on one of the maps, or all the maps available.
-- The files are maintained in such a way that they can be run and will generate results
-
-### Result recreation
-
-To recreate the results in the paper, "**Unifying F1TENTH Autonomous Racing: Survey, Methods and Benchmarks**":
-- run the scripts in the `benchmark_results/` folder
-- run all the cells in the `.ipynb` files
-
-![](media/example_trajectories.png)
-
-
-## Algorithm description
-
-### Classical racing
-
-The classic racing stack has several key parts:
-- **Particle filter localisation:** the particle filter that localises the vehicle uses state estimation theory to sample a proposal distribution and update it using the LiDAR data. More information is available [here](http://github.com/BDEvan5/sensor_fusion)
-- **Optimal Trajectory Generation:** optimal trajectories (racelines) are generated using the `RaceTrackGenerator.py` script. The [trajectory_planning_helpers](https://github.com/FTM_TUM/trajectory_planning_helpers) library is used to generate minimum cuvature trajectories, followed by minimum time speed profiles.
-- **Pure Pursuit Path Tracking:** the pure pursuit path tracker uses a geometric vehicle model to follow the optimal trajectory.
-- **Model predictive contouring control:** the MPCC algorithm maximises progress along the center line (not requiring an optimal trajectory) using an receeding horizon optimisation approach.
-
-
-![](media/classic_pipeline.jpg)
-
-### End-to-end learning agents
-
-- The SAC and TD3 algorithms are used for end-to-end reinforcement learning which uses the last two LiDAR scans and vehicle speed as input to a neural network that directly outputs speed and steering angles. 
-- The agents are trained using the [trajectory aided learning](https://ieeexplore.ieee.org/document/10182327) reward signal for 60,000 steps.
-
-
-
-### Mapless Racing
-
-**Follow the gap algorithm:** the follow the gap algorithm calculates the largest gap and then steers towards it.
-- In the future, an artificial potential fields algorithm can be added here.
-
-### Local Map Racing
-
-- The local map racing method uses the LiDAR scan to extract a local map of the visible track region.
-- The local map is then used for planning with either an MPCC or pure pursuit planner.
-
-![](media/local_map_racing.png)
-
-### Simulator
-- The [f1tenth_gym](https://github.com/f1tenth/f1tenth_gym) base simulator is used, but repackaged to allow for the analytics to be collected. The dynamics model, and scan simulator model are kept the same to ensure that results are transferrable.
-
-> The classical methods are tested with particle filter localisation and with the vehicle's true location. 
-> This is done by providing two simulator classes; `F1TenthSim`, which only has the LiDAR scan and `F1TenthSim_TrueLocation` which includes the entire vehicle state.
-
-
-
-# Installation
-
-## Recommended
-
-It is recommended that you use a virtual environment to manage dependencies. A virtual environment can be created and sourced with the following commands:
-```bash
-python3.9 -m venv venv
-source venv/bin/activate
-```
-
-The requirements and package can then be installed using,
-```bash
-pip install -r requirements.txt
-pip install -e .
-```
-
-The [trajectory_planning_helpers](https://github.com/TUMFTM/trajectory_planning_helpers.git) library, must be installed independantly through the following commands, 
-```
-git submodule init
-git submodule update
-cd trajectory_planning_helpers
-pip install -e .
-```
-
-## Research regression tests
-
-Use Python 3.9, matching the verified research baseline. From the repository root:
+研究環境使用 Python 3.9。從本 repository 根目錄執行：
 
 ```bash
 git submodule update --init --recursive
 python -m pip install -r requirements-ci.txt
 python -m pip install --no-deps ./trajectory_planning_helpers
 python -m pip install --no-deps -e .
-pytest
+python -m pip check
+pytest -p no:cacheprovider
 ```
 
-The default suite checks required imports, original ESP mu60 and corrected
-raceline loading, closed velocity planning and backward braking, lap tracking,
-logging, and short headless simulations. It does not generate racelines or run
-full real laps. Simulator parameters, maps, and required baseline inputs are
-versioned; outputs use temporary directories. No exact real lap-time assertion
-is used. `pytest.ini` limits collection to `tests/research`.
-
-The historical protected-file manifest test also requires the original local
-`Logs` and other archived research inputs. It is excluded from default pytest
-runs; run it explicitly in that workspace with:
+helper 使用一般安裝。既有 `f1tenth-sim:full` 映像可用 `bash tests/run_research_tests.sh`；腳本需要 Docker 與依賴下載網路。完整操作與測試邊界見[操作指南](docs/project/usage.md)。
 
 ```bash
-pytest -m local_archive
+python -B -m f1tenth_benchmarks.research.core.geometry.viewer \
+  --catalog maps/frenet/inspector_catalog.json --port 8765
 ```
 
-See [the test scope and validation notes](docs/research/regression_testing.md).
+在瀏覽器開啟 [本機檢視器](http://127.0.0.1:8765)。正式候選資料見 [maps/frenet](maps/frenet/README.md)。
 
-With the existing `f1tenth-sim:full` image, use the prepared test entry point:
+## 原版 benchmark
 
-```bash
-bash tests/run_research_tests.sh
-```
+原版提供 classical、mapless、end-to-end 與 local-map racing：
 
-It installs the required test packages in a temporary venv and mounts the
-repository read-only. The bare image lacks pytest; historical bare-image
-unittest commands do not validate the full current suite.
+| 類型 | 主要方法 |
+|---|---|
+| Classical | 粒子濾波定位、raceline 生成、Pure Pursuit、MPCC |
+| Mapless | Follow the Gap |
+| End-to-end | SAC／TD3 學習代理 |
+| Local-map | LiDAR 局部地圖搭配 MPCC／Pure Pursuit |
 
-`.github/workflows/ci.yml` runs the default suite on pushes and pull requests,
-including research branches, using Python 3.9 on Ubuntu 22.04. It initializes
-the pinned helper submodule and installs only `requirements-ci.txt`. The corrected
-research branch and merged master have both passed GitHub-hosted CI; see the
-[progress record](docs/research/continuous_laps_progress.md) for run links.
+原版執行腳本位於 `f1tenth_benchmarks/run_scripts/`，設定在 `params/`；[quickstart.ipynb](quickstart.ipynb)保留原版示例。[論文結果重現說明](f1tenth_benchmarks/benchmark_results/benchmark_results.md)屬上游 benchmark，不代表新增研究功能的驗收。MPCC／DRL 等完整依賴另見 `requirements.txt`，研究 CI 的精簡環境不涵蓋所有演算法。
 
-The helper is installed normally from the pinned submodule rather than in
-editable mode, avoiding a same-name namespace import conflict with modern pip.
+## 授權與引用
 
-The MPCC algorithms use the [casadi](https://web.casadi.org/python-api/) optimistion package, which relies on the IPOPT library. Instructions to install IPOPT can be found [here]().
-
-## Citation
-
-If you found our work helpful, please consider citing.
+沿用 [Apache 2.0 授權](LICENSE.md)，第三方 helper 的授權與文件保留於其目錄。使用原版研究成果時請引用：
 
 ```bibtex
 @article{evans2024unifying,

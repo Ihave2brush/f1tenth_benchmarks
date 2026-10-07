@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "map_id": "my_map",
+  "source_image": "my_map.pgm",
+  "original_yaml": "my_map.original.yaml",
+  "working_yaml": "my_map.yaml",
+  "source_hashes": {
+    "image": "bd2c7b20f8bc5684cc956cc85e218f9b37e8db06e741d94c734524d48776cb5d",
+    "original_yaml": "919a4844f603a4aa5131bec6603bd4248421df9d7db4dcbfd97b67956951d53d",
+    "working_yaml": "5c5259d432f3985d17450c2aa14f0f9128e791b44e6c1c48b1296a3896311bdd"
+  },
+  "threshold_correction": {
+    "original_free_thresh": 0.25,
+    "working_free_thresh": 0.196,
+    "gray_205_probability": 0.196078431372549,
+    "gray_205_semantics": "unknown; explicitly confirmed by user",
+    "original_failure": "gray205 treated free; selected component reaches image edge"
+  },
+  "geometry_id": "3257b83623ab4b87ed906687e624e365f4c09339b7e8fd280e4dfb1e2a387085",
+  "direction": "counterclockwise",
+  "origin_xy": [
+    0.8808763106827361,
+    -2.4371387322824996
+  ],
+  "initial_heading_rad": 0.14410195594470043,
+  "anchor_selection": "minimum maximum absolute curvature in a physical arclength window",
+  "anchor_window_m": 1.0,
+  "L_m": 11.93004280322861,
+  "selected_free_cells": 5204,
+  "excluded_components": [
+    {
+      "cells": 4,
+      "component": 2,
+      "reason": "unsupported_topology: expected one enclosed nonfree island"
+    },
+    {
+      "cells": 1,
+      "component": 3,
+      "reason": "unsupported_topology: expected one enclosed nonfree island"
+    },
+    {
+      "cells": 1,
+      "component": 4,
+      "reason": "unsupported_topology: expected one enclosed nonfree island"
+    },
+    {
+      "cells": 1,
+      "component": 5,
+      "reason": "unsupported_topology: expected one enclosed nonfree island"
+    }
+  ],
+  "cell_coverage": {
+    "schema_version": 1,
+    "geometry_id": "3257b83623ab4b87ed906687e624e365f4c09339b7e8fd280e4dfb1e2a387085",
+    "cell_centres": 5204,
+    "accepted": 5204,
+    "rejected": 0,
+    "rejection_reasons": {},
+    "examples": [],
+    "other_free_cells_rejected_as_outside_track": 7,
+    "max_roundtrip_error_m": 5.0406648933576e-13,
+    "min_accepted_J": 0.23951613397120364,
+    "checks": {
+      "unknown": true,
+      "occupied": true,
+      "outside_map": true,
+      "seam": true
+    },
+    "passed": true,
+    "continuous_verified": false,
+    "planning_allowed": false,
+    "scope": "every selected corridor cell centre, not every continuous point or vehicle footprint"
+  },
+  "range_summary": {
+    "boundary_failures": 0,
+    "continuous_verified": false,
+    "domain_verified": false,
+    "failures": [],
+    "geometry_id": "3257b83623ab4b87ed906687e624e365f4c09339b7e8fd280e4dfb1e2a387085",
+    "limited_sections": 0,
+    "max_roundtrip_error_m": 2.824407374646398e-13,
+    "numerical_checks_passed": true,
+    "planning_allowed": false,
+    "range_interface_passed": true,
+    "rejected_queries": 0,
+    "rejection_reasons": {},
+    "roundtrip_checks": 234,
+    "sampled_queries": 2747,
+    "schema_version": 1,
+    "sections": 62,
+    "sections_without_accepted_samples": 0,
+    "verification_level": "sampled_requires_exact_query"
+  }
+}

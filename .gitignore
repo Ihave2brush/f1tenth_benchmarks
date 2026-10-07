@@ -1,4 +1,29 @@
 # Custom
+# Public guides and selected verification evidence; working notes stay local.
+docs/*
+!docs/README.md
+!docs/project/
+docs/project/*
+!docs/project/status.md
+!docs/project/features.md
+!docs/project/usage.md
+!docs/project/interfaces.md
+!docs/project/viewer.md
+!docs/project/images/
+docs/project/images/*
+!docs/project/images/esp_projection_candidates.png
+!docs/project/images/my_map_frenet.png
+!docs/project/reports/
+docs/project/reports/*
+!docs/project/reports/manual_run_001_report.md
+!docs/project/reports/figures/
+docs/project/reports/figures/*
+!docs/project/reports/figures/manual_run_001/
+docs/project/reports/figures/manual_run_001/*
+!docs/project/reports/figures/manual_run_001/analysis.json
+!docs/project/reports/figures/manual_run_001/route_overview.png
+!docs/project/reports/figures/manual_run_001/routes_by_lap.png
+!docs/project/reports/figures/manual_run_001/session_diagnostics.png
 !Logs/.gitkeep
 Logs/
 !Data/.gitkeep
@@ -6,6 +31,20 @@ Logs/
 !Data/media/example_trajectories.png
 !Data/media/local_map_racing.png
 Data/*
+
+# Published track files live in maps/frenet (versioned).
+# Local research/archive artifacts stay ignored; only their layout README is versioned.
+!Data/research/
+Data/research/*
+!Data/research/geometry/
+!Data/research/overtaking/
+!Data/research/lmpc/
+Data/research/geometry/*
+Data/research/overtaking/*
+Data/research/lmpc/*
+!Data/research/geometry/README.md
+!Data/research/overtaking/README.md
+!Data/research/lmpc/README.md
 
 # Exact baseline inputs needed by portable research regression tests.
 !Data/racelines/
@@ -127,5 +166,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-
