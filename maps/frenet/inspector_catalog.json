@@ -1,0 +1,38 @@
+[
+  {
+    "label": "ESP",
+    "geometry": "esp/geometry",
+    "ranges": "esp/ranges",
+    "map_yaml": "../esp.yaml"
+  },
+  {
+    "label": "AUT",
+    "geometry": "aut/geometry",
+    "ranges": "aut/ranges",
+    "map_yaml": "../aut.yaml"
+  },
+  {
+    "label": "GBR",
+    "geometry": "gbr/geometry",
+    "ranges": "gbr/ranges",
+    "map_yaml": "../gbr.yaml"
+  },
+  {
+    "label": "MCO",
+    "geometry": "mco/geometry",
+    "ranges": "mco/ranges",
+    "map_yaml": "../mco.yaml"
+  },
+  {
+    "label": "CornerHall｜開放走廊",
+    "geometry": "CornerHall/geometry",
+    "ranges": "CornerHall/ranges",
+    "map_yaml": "../CornerHall.yaml"
+  },
+  {
+    "label": "my_map｜實際 PGM",
+    "geometry": "my_map/geometry",
+    "ranges": "my_map/ranges",
+    "map_yaml": "../my_map.yaml"
+  }
+]
