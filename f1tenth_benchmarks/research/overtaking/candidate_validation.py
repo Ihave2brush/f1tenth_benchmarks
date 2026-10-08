@@ -22,6 +22,8 @@ from f1tenth_benchmarks.research.overtaking.candidate_paths import (
     hermite_lateral,
 )
 
+MAX_SAMPLES = 10001
+
 
 def validate_candidate_paths(
     geometry,
@@ -54,6 +56,10 @@ def validate_candidate_paths(
             "sample_step_m must be positive and finite."
         )
 
+    ratio = lookahead_m / sample_step_m
+    if not np.isfinite(ratio) or ratio > MAX_SAMPLES - 1:
+        raise ValueError(f"Path would exceed {MAX_SAMPLES} samples.")
+
     # ---------------------------------------------------------
     # Generate V2 paths
     base_result = generate_candidate_paths(
@@ -80,7 +86,7 @@ def validate_candidate_paths(
     # Create denser sampling positions
     segment_count = max(
         1,
-        int(np.ceil(lookahead_m / sample_step_m)),
+        int(np.ceil(ratio)),
     )
 
     t_values = np.linspace(
@@ -183,7 +189,7 @@ def validate_candidate_paths(
                     d_max = d_left - safety_margin_m
 
                     margin_valid = bool(
-                        d_min <= d <= d_max
+                        d_min < d_max and d_min <= d <= d_max
                     )
                 else:
                     boundary_valid = False
@@ -207,6 +213,11 @@ def validate_candidate_paths(
                 ):
                     x_map = float(xy_array[0])
                     y_map = float(xy_array[1])
+
+            if x_map is None or y_map is None:
+                geometry_valid = False
+            if exact.get("geometry_id") != geometry_id:
+                raise ValueError("Exact query geometry version mismatch.")
 
             # ---------------------------------------------------------
             # Determine sample validity
@@ -250,6 +261,9 @@ def validate_candidate_paths(
                     "boundary_valid": boundary_valid,
                     "margin_valid": margin_valid,
                     "geometry_valid": geometry_valid,
+                    "geometry_reason": None if geometry_valid else (
+                        exact.get("reason") or "invalid_geometry"
+                    ),
                     "valid": point_valid,
                     "reason": reason,
                 }
@@ -295,6 +309,10 @@ def validate_candidate_paths(
         "inspection_only": True,
         "continuous_verified": False,
         "footprint_verified": False,
+        "dynamics_verified": False,
+        "opponents_verified": False,
+        "heading_verified": False,
+        "verification_level": "sampled_requires_exact_query",
         "start": base_result["start"],
         "lookahead_m": lookahead_m,
         "safety_margin_m": safety_margin_m,
@@ -350,15 +368,18 @@ def main():
 
     # ---------------------------------------------------------
     # Validate paths
-    result = validate_candidate_paths(
-        geometry=geometry,
-        x=args.x,
-        y=args.y,
-        yaw=args.yaw,
-        lookahead_m=args.lookahead,
-        safety_margin_m=args.margin,
-        sample_step_m=args.sample_step,
-    )
+    try:
+        result = validate_candidate_paths(
+            geometry=geometry,
+            x=args.x,
+            y=args.y,
+            yaw=args.yaw,
+            lookahead_m=args.lookahead,
+            safety_margin_m=args.margin,
+            sample_step_m=args.sample_step,
+        )
+    except ValueError as exc:
+        parser.error(str(exc))
 
     # ---------------------------------------------------------
     # Print summary
