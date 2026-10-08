@@ -1,12 +1,12 @@
+
 """
 Generate five candidate target points in Frenet coordinates.
 
 This version:
-1. Converts the current vehicle position from Cartesian to Frenet.
-2. Looks ahead a fixed distance.
-3. Reads the road boundaries at the target position.
-4. Generates five evenly spaced lateral target points.
-5. Checks each target with the Frenet geometry interface.
+1. Converts the current vehicle position to Frenet.
+2. Samples five lateral targets at a fixed lookahead distance.
+3. Checks each target using the geometry API.
+4. Preserves map version and inspection status.
 
 Complete trajectories are not generated yet.
 """
@@ -58,6 +58,9 @@ def generate_five_targets(
 
     s0 = float(start["s_wrapped"])
     d0 = float(start["d"])
+
+    geometry_id = geometry.geometry_id
+    frame_id = "map"
 
     # ---------------------------------------------------------
     # Calculate target longitudinal position
@@ -113,7 +116,7 @@ def generate_five_targets(
     ):
         d_target = float(d_target)
 
-        # Exact geometry check for this Frenet source coordinate
+        # Exact geometry check
         checked = geometry.to_cartesian(
             s_target,
             d_target,
@@ -131,6 +134,8 @@ def generate_five_targets(
         candidates.append(
             {
                 "candidate_id": index,
+                "geometry_id": geometry_id,
+                "frame_id": frame_id,
                 "s": float(s_target),
                 "d": d_target,
                 "x": x_target,
@@ -149,6 +154,7 @@ def generate_five_targets(
                         False,
                     )
                 ),
+                "inspection_only": True,
             }
         )
 
@@ -180,6 +186,8 @@ def generate_five_targets(
     # ---------------------------------------------------------
     # Return result
     return {
+        "geometry_id": geometry_id,
+        "frame_id": frame_id,
         "start": {
             "x": float(x),
             "y": float(y),
