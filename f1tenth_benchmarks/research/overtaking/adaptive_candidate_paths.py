@@ -107,17 +107,20 @@ def generate_adaptive_paths(
     # Check initial road width
     initial_boundary = geometry.boundaries(s0)
 
-    if not initial_boundary["valid"]:
+    initial_right = initial_boundary.get("d_right")
+    initial_left = initial_boundary.get("d_left")
+    if (
+        not initial_boundary["valid"]
+        or initial_right is None
+        or initial_left is None
+        or not np.isfinite([initial_right, initial_left]).all()
+    ):
         raise ValueError(
             "Invalid road boundary at vehicle start."
         )
 
-    initial_min = (
-        float(initial_boundary["d_right"]) + safety_margin_m
-    )
-    initial_max = (
-        float(initial_boundary["d_left"]) - safety_margin_m
-    )
+    initial_min = float(initial_right) + safety_margin_m
+    initial_max = float(initial_left) - safety_margin_m
 
     if initial_min >= initial_max:
         raise ValueError(

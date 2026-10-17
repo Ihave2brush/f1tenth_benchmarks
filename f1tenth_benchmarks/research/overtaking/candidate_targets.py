@@ -33,9 +33,9 @@ def generate_five_targets(
     lookahead_m = float(lookahead_m)
     safety_margin_m = float(safety_margin_m)
 
-    if not np.isfinite(lookahead_m) or lookahead_m < 0:
+    if not np.isfinite(lookahead_m) or lookahead_m <= 0:
         raise ValueError(
-            "lookahead_m must be finite and non-negative."
+            "lookahead_m must be positive and finite."
         )
 
     if (
@@ -67,6 +67,10 @@ def generate_five_targets(
     s_target_raw = s0 + lookahead_m
 
     if geometry.curve.closed:
+        if lookahead_m >= geometry.curve.L:
+            raise ValueError(
+                "Lookahead must be shorter than one full lap."
+            )
         s_target = s_target_raw % geometry.curve.L
 
     else:
