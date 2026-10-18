@@ -1,1 +1,1 @@
-"""Track A namespace; candidate trajectories and opponents are not implemented."""
+"""Track A candidate points and sampled paths; opponent planning is pending."""
