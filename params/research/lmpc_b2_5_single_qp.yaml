@@ -1,0 +1,54 @@
+schema_version: 1
+base_config: params/research/lmpc.yaml
+database: Data/research/lmpc/b2_esp_periodic_20261008_002
+scope: esp_simulation_per_action_validation
+prediction_value_mode: original_pid_geometric
+settings:
+  timeout_s: 600.0
+  footprint_margin_m: 0.05
+  max_speed_mps: 1.5
+  max_abs_heading_rad: 0.5
+  max_abs_lateral_m: 0.25
+  max_acceleration_mps2: 3.0
+  residual_ridge: 0.1
+  input_rate_weights:
+  - 0.5
+  - 0.01
+  qp_absolute_tolerance: 1.0e-07
+  qp_max_iterations: 100000
+  equality_gate: 1.0e-05
+  sqp_iterations: 1
+  prediction_trust_box:
+  - 0.8
+  - 0.3
+  - 2.0
+  - 0.2
+  - 1.0
+  - 0.15
+  - 0.3
+  - 0.4
+  - 0.4
+  warm_start_mode: reroll_measured
+sources:
+  paper: base_config freezes N=12, dt=0.1, K=20 per lap, P=80, Q and h
+  adaptations: 'Physical actuator prior plus weighted local affine residual; augments
+    six states with actual steering and two delay entries. smoothed_servo uses clipped
+    proportional steering rate with gain 1/physics_dt and low-speed beta inversion
+    floor 0.1 m/s. Optional original_pid uses the original nominal value and regularized
+    surrogate sensitivities, not an exact Jacobian; this diagnostic variant failed
+    early. Actual plant and shadow always keep original PID. This is a hybrid adaptation,
+    not the paper''s pure five-coefficient velocity regressor. Historical acceleration
+    averages approximate varying within-step PP acceleration. Pure paper regressors
+    are retained as diagnostics. B2.5 diagnostic variant: original PID nominal physical
+    integration and exact core projection for pose; surrogate derivatives remain explicitly
+    approximate. Re-roll warm start from measured actuator memory. No plant/core/PID
+    changes.'
+  limits: B3 pilot speed cap 1.5 m/s after 3.0 m/s probes failed convergence/shadow
+    lateral checks. This is an explicit engineering restriction, not paper-derived;
+    physical limits remain unchanged. Exact candidate queries plus original-model
+    shadow substeps gate each action; finite samples do not certify a continuous domain.
+  numerics: Ridge, rate weights, tolerances, trust box and SQP iterations are explicit
+    engineering settings, not paper constants.
+
+# B2.5 single-QP comparison: explicit engineering variant; hard terminal,
+# physical gates and history unchanged. Two-pass variant is preserved.

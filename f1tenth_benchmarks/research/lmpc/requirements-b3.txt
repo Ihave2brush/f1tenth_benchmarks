@@ -1,0 +1,4 @@
+# Install into an isolated --system-site-packages venv using --no-deps.
+# Verified with the existing simulation image: Python3.9/numpy1.22/scipy1.11.
+osqp==0.6.3
+qdldl==0.1.7.post4

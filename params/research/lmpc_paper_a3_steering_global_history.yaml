@@ -1,0 +1,39 @@
+schema_version: 1
+experiment_id: A3
+initialization_source:
+  directory: Data/research/lmpc/experiments/A2_lmpc_20261015_001/initialization
+  database: Data/research/lmpc/experiments/A2_lmpc_20261015_001/initial_database
+exploration:
+  historical_vx_multiplier: 1.2
+  historical_steering_multiplier: 1.2
+  steering_scope: global_history
+  future_nodes: 12
+  update_on: successful_history_only
+base_config: params/research/lmpc_a2.yaml
+database: Data/research/lmpc/experiments/A2_20261015_001/initial_database
+scope: esp_simulation_per_action_validation
+prediction_value_mode: paper_direct
+settings:
+  shadow_mode: first_action
+  constraint_mode: paper_simulator_polytope
+  finish_cost_mode: literal_indicator
+  identification_gate: report_only # rank is diagnostic, not a paper startup condition
+  acceleration_gain_policy: dt_cos_beta_when_unidentified
+  timeout_s: 600.0
+  footprint_margin_m: 0.05
+  max_speed_mps: 8.0
+  max_abs_heading_rad: 0.5
+  max_abs_lateral_m: 0.25
+  max_acceleration_mps2: 9.51
+  residual_ridge: 0.1 # legacy schema field, unused by paper_direct
+  input_rate_weights: [0.5, 0.01]
+  qp_absolute_tolerance: 0.0000001
+  qp_max_iterations: 100000
+  equality_gate: 0.00001
+  sqp_iterations: 1
+  prediction_trust_box: [0.8, 0.3, 2.0, 0.2, 1.0, 0.15, 0.3, 0.4, 0.4] # unused in six-state QP
+sources:
+  paper: Equations 5-17; N=12, K=20, P=80, Q=diag(.1,1,1,0,0,0), h=10, Epanechnikov, five-coefficient WLS, six-state nominal ATV and shifted terminal successor. State X applies at x0..xN-1; terminal uses the same lambda.
+  adaptations: ESP/core Frenet observation and original Continuous plant retained. A2 PP reference is 2.5 m/s with seeded bounded delta/a excitation during the three PP laps only; a bounded interval acceleration adapter records genuine delta/a commands. SVD WLS rcond=1e-8, no ridge. Engineering initialization sets only unidentifiable vx acceleration gain to dt*cos(beta), beta=atan2(vy,vx), stationary beta=0; remaining coefficients refit conditionally. Identifiable gain uses unconstrained measured regression. First-ever horizon seeded from standing-start history; initial terminal candidate follows latest source lap as equation10. Source laps each include a genuinely observed consecutive continuation lap. Simulator acceleration uses existing per-substep PID inversion; actuator memory stays in plant only.
+  limits: Steering command at u0..u11 bounded by min(0.4189, 1.2 times maximum absolute historical command), scope global_history; symmetric envelope does not certify joint support. A3 engineering bound vx <= 1.2 times historical maximum vx at x1..x12; acceleration remains +/-9.51; update only after successful history inclusion. Experiment speed cap8 uses an inscribed32-sided vx/vy polygon, at most0.4816percent radial conservatism. Forward vx>=0 is an experiment choice. Command steering +/-0.4189 and acceleration +/-9.51 use simulator values; actual speed-dependent saturation, steering rate and delay remain in plant. Lateral .25m, heading .5rad and footprint .05m are ESP choices, not paper values. Legacy independent vy/r and progress boxes removed. Original-model checks protect the first applied action, not hypothetical future actions; candidate geometry checks retained. No global core permission changes.
+  numerics: OSQP eps=1e-7, original residual gate1e-5 and rate weights[.5,.01] retained. Variable/row equilibration and numerical-nullspace hard-equality elimination are engineering solver operations. Literal finish h uses QP branches screened by conservative affine intervals, not one ordinary QP globally. Active-finish terminal costs are zero after finish; raw signed continuation potentials preserved. Boundary representation adjustments are within the original residual gate and dynamics are rechecked. No ridge, trust box, SQP, terminal slack or relaxed acceptance.

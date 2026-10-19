@@ -1,1 +1,1 @@
-"""Track B namespace; lap database, safe set, and LMPC are not implemented."""
+"""Track B data interfaces and scoped Local LMPC pilot; see session acceptance."""

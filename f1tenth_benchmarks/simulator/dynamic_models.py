@@ -86,6 +86,24 @@ def steering_constraint(steering_angle, steering_velocity, s_min, s_max, sv_min,
 
 
 @njit(cache=True)
+def non_overshooting_steering_rate(steering_angle, target_angle, requested_rate,
+                                 timestep, s_min, s_max, sv_min, sv_max):
+    """Limit an existing PID rate to the remaining bounded target distance.
+
+    The caller supplies a positive timestep and an in-bounds current angle.
+    Keep the PID deadband and the original directional rate limits. Apply this
+    before evaluating vehicle dynamics, including its low-speed yaw derivative.
+    """
+    target = min(max(target_angle, s_min), s_max)
+    rate = steering_constraint(steering_angle, requested_rate,
+                               s_min, s_max, sv_min, sv_max)
+    remaining_rate = (target - steering_angle) / timestep
+    if remaining_rate >= 0.:
+        return min(max(rate, 0.), remaining_rate)
+    return max(min(rate, 0.), remaining_rate)
+
+
+@njit(cache=True)
 def vehicle_dynamics_ks(x, u_init, mu, C_Sf, C_Sr, lf, lr, h, m, I, s_min, s_max, sv_min, sv_max, v_switch, a_max, v_min, v_max):
     """
     Single Track Kinematic Vehicle Dynamics.
@@ -217,5 +235,4 @@ def pid(speed, steer, current_speed, current_steer, max_sv, max_a, max_v, min_v)
             accl = kp * vel_diff
 
     return accl, sv
-
 

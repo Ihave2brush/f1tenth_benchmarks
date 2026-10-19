@@ -1,0 +1,15 @@
+schema_version: 1
+experiment_id: A6
+baseline_config: params/research/lmpc_paper_a4.yaml
+source_run: Data/research/lmpc/experiments/A4_lmpc_20261015_001
+scope: offline_identification_only
+selection_steering_signal: delta_real
+regression_steering_signal: delta_cmd
+kernel:
+  name: epanechnikov
+  distance: input_aware_weighted_L1
+  scaling: [0.1, 1, 1, 1, 1]
+  bandwidth: 15
+  points: 80
+  pool: unchanged_A4
+  source_allocation: pooled_nearest_80

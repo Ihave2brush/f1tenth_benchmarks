@@ -1,0 +1,58 @@
+schema_version: 1
+experiment:
+  id: A2.5
+  initialization_speed_mps: 2.5
+  excitation:
+    seed: 20261015
+    hold_steps: 5
+    steering_amplitude_rad: 0.0
+    acceleration_amplitude_mps2: 0.6
+map_name: esp
+paper:
+  initialization_laps: 2
+  initialization_speed: 1.2
+  control_dt: 0.1
+  horizon: 12
+  history_laps: 2
+  safe_points_per_lap: 20
+  terminal_distance_diagonal:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  identification_distance_diagonal:
+  - 0.1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  identification_points: 80
+  kernel_bandwidth: 10
+  kernel: epanechnikov
+  solver: osqp
+adaptation:
+  geometry_path: maps/frenet/esp/geometry
+  map_yaml: maps/esp.yaml
+  purpose: observation_and_replay_only
+  timeout: 10.0
+  smoke_steps: 20
+initialization:
+  timeout: 600.0
+  lookahead_m: 0.6
+  max_abs_e_y_m: 0.25
+  max_abs_e_psi_rad: 0.5
+  settled_after_s: 5.0
+  max_settled_speed_error_mps: 0.1
+  footprint_margin_m: 0.05
+  preflight_step_m: 0.05
+sources:
+  paper: Rosolia and Borrelli, Learning How to Autonomously Race a Car, sections II-V
+    and Table I
+  map_name: user_selected_esp
+  adaptation: 'A2.5: same A2 PP reference 2.5 m/s, seed, hold duration and acceleration
+    excitation +/-0.6 m/s2; steering excitation exactly zero. Original simulator delay/rate
+    limits and six-state LMPC retained.'
+  vehicle: params/simulator_params.yaml and params/vehicle_params.yaml

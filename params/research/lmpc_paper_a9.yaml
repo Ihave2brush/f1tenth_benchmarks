@@ -1,0 +1,82 @@
+schema_version: 1
+experiment_id: A9
+initialization_source:
+  directory: Data/research/lmpc/experiments/A2_5_lmpc_20261016_001/initialization
+  database: Data/research/lmpc/experiments/A2_5_lmpc_20261016_001/initial_database
+exploration:
+  historical_vx_multiplier: 1.2
+  vx_scope: local_80
+  historical_steering_multiplier: 1.2
+  steering_scope: local_80
+  future_nodes: 12
+  update_on: successful_history_only
+base_config: params/research/lmpc_a2_5.yaml
+database: Data/research/lmpc/experiments/A2_5_lmpc_20261016_001/initial_database
+scope: esp_simulation_per_action_validation
+prediction_value_mode: paper_direct
+settings:
+  shadow_mode: first_action
+  constraint_mode: paper_simulator_polytope
+  finish_cost_mode: literal_indicator
+  identification_gate: report_only
+  acceleration_gain_policy: dt_cos_beta_when_unidentified
+  timeout_s: 600.0
+  footprint_margin_m: 0.05
+  max_speed_mps: 8.0
+  max_abs_heading_rad: 0.5
+  max_abs_lateral_m: 0.25
+  max_acceleration_mps2: 9.51
+  residual_ridge: 0.1
+  input_rate_weights:
+  - 0.5
+  - 0.01
+  qp_absolute_tolerance: 1.0e-07
+  qp_max_iterations: 100000
+  equality_gate: 1.0e-05
+  sqp_iterations: 1
+  prediction_trust_box:
+  - 0.8
+  - 0.3
+  - 2.0
+  - 0.2
+  - 1.0
+  - 0.15
+  - 0.3
+  - 0.4
+  - 0.4
+sources:
+  paper: Equations 5-17; N=12, K=20, P=80, Q=diag(.1,1,1,0,0,0), h=10, Epanechnikov,
+    five-coefficient WLS, six-state nominal ATV and shifted terminal successor. State
+    X applies at x0..xN-1; terminal uses the same lambda.
+  adaptations: A9 combines the exact A5 command-input-aware weighted L1/h15/P80 neighbor
+    selection, five-column command-steering WLS and local-80 exploration envelopes
+    with verified A2.5 acceleration-only PP initialization (zero added steering noise).
+    Replay the recorded three A2.5 PP laps in the original delayed simulator and verify
+    state/FIFO equality before continuous handoff. Six prediction states and original
+    physical delay/rate limits retained. No A5 deadzone variant or A7/A8 changes.
+  limits: Steering command at u0..u11 bounded by min(0.4189, 1.2 times maximum absolute
+    historical command), scope local_80; symmetric envelope does not certify joint
+    support. A4 bound vx[k+1] <= 1.2 times maximum vx in the 80 original WLS neighbors
+    selected at nominal x[k], k=0..11; abs steering[k] <= 1.2 times maximum abs command
+    in the same 80; acceleration remains +/-9.51; update only after successful history
+    inclusion. Experiment speed cap8 uses an inscribed32-sided vx/vy polygon, at most0.4816percent
+    radial conservatism. Forward vx>=0 is an experiment choice. Command steering +/-0.4189
+    and acceleration +/-9.51 use simulator values; actual speed-dependent saturation,
+    steering rate and delay remain in plant. Lateral .25m, heading .5rad and footprint
+    .05m are ESP choices, not paper values. Legacy independent vy/r and progress boxes
+    removed. Original-model checks protect the first applied action, not hypothetical
+    future actions; candidate geometry checks retained. No global core permission
+    changes.
+  numerics: OSQP eps=1e-7, original residual gate1e-5 and rate weights[.5,.01] retained.
+    Variable/row equilibration and numerical-nullspace hard-equality elimination are
+    engineering solver operations. Literal finish h uses QP branches screened by conservative
+    affine intervals, not one ordinary QP globally. Active-finish terminal costs are
+    zero after finish; raw signed continuation potentials preserved. Boundary representation
+    adjustments are within the original residual gate and dynamics are rechecked.
+    No ridge, trust box, SQP, terminal slack or relaxed acceptance.
+kernel_selection:
+  distance: input_aware_weighted_L1
+  bandwidth: 15
+  points: 80
+  selection_steering: delta_cmd
+  regression_steering: delta_cmd

@@ -1,0 +1,42 @@
+# Paper values and experiment adaptations are separate; never auto-merge these
+# into the original benchmark parameter files.
+schema_version: 1
+experiment:
+  id: A1
+  initialization_speed_mps: 2.5
+map_name: esp
+paper:
+  initialization_laps: 2
+  initialization_speed: 1.2
+  control_dt: 0.1
+  horizon: 12
+  history_laps: 2
+  safe_points_per_lap: 20
+  terminal_distance_diagonal: [0, 0, 0, 0, 1, 0]
+  identification_distance_diagonal: [0.1, 1, 1, 0, 0, 0]
+  identification_points: 80
+  kernel_bandwidth: 10
+  kernel: epanechnikov
+  solver: osqp
+adaptation:
+  geometry_path: maps/frenet/esp/geometry
+  map_yaml: maps/esp.yaml
+  # Planning remains disabled. This first entry point only observes/replays.
+  purpose: observation_and_replay_only
+  timeout: 10.0
+  smoke_steps: 20
+initialization:
+  # Engineering choices, frozen before B1. No paper parameter is changed.
+  timeout: 600.0
+  lookahead_m: 0.6
+  max_abs_e_y_m: 0.25
+  max_abs_e_psi_rad: 0.5
+  settled_after_s: 5.0
+  max_settled_speed_error_mps: 0.05
+  footprint_margin_m: 0.05
+  preflight_step_m: 0.05
+sources:
+  paper: Rosolia and Borrelli, Learning How to Autonomously Race a Car, sections II-V and Table I
+  map_name: user_selected_esp
+  adaptation: A1 speed comparison; only PP reference changes to 2.5 m/s; PP lookahead 0.6 m, 0.25 m lateral limit, 0.05 m footprint margin
+  vehicle: params/simulator_params.yaml and params/vehicle_params.yaml

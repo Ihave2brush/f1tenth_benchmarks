@@ -1,0 +1,14 @@
+# Explicit engineering adaptation; does not alter frozen B1 or paper parameters.
+schema_version: 1
+mode: historical_periodic_reuse
+prefix_steps: 128
+# Bounds apply to an original-model one-control-step seam replay.
+# r tolerance corresponds to at most 0.03 rad heading contribution over 0.1 s.
+max_state_residual: [0.05, 0.03, 0.30, 0.03, 0.05, 0.02]
+max_position_residual_m: 0.05
+max_yaw_residual_rad: 0.03
+max_actual_steering_residual_rad: 0.02
+max_incoming_buffer_difference_rad: 0.02
+max_outgoing_buffer_residual_rad: 0.000000000001
+source: user_requested_reuse_of_two_initialization_laps
+scope: approximate_terminal_history_only_not_identification_or_measured_seam
