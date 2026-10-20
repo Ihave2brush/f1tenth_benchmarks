@@ -1,4 +1,54 @@
+> Branch ownership: LMPC code and documentation are maintained on `research/lmpc`; `master` remains the overtaking mainline. Only this layout README is versioned here; raw sessions remain ignored.
+
+> Current documentation (2026-10-20): [LMPC index](../../../docs/local/lmpc/README.md), [status](../../../docs/local/lmpc/completed.md), and [latest progress](../../../docs/local/lmpc/progress_20261020.md). Dated sections below describe their own artifacts; they are not all current controller settings. Raw experiment files were not moved during documentation cleanup.
+
 # Track B session artifacts
+
+## A5-COMPARE factorial experiment (2026-10-20)
+
+`experiments/A5_COMPARE_20261020_001/report.md` records four new independent runs
+with the same accepted NO history and exact handoff. C00 original/Reduced applied
+23 commands / 6.988937 m; C01 original/Full, C10 NO/Reduced, C11 NO/Full applied
+6 commands each. All stopped at their own OSQP iteration limits; none completed
+a lap. Common-prefix analysis uses six applied commands, not unequal-length RMSE.
+NO removes overshoot; Full lowers common-prefix cycle time; neither established
+successful sustained LMPC. Every failed QP and raw solution is archived per case.
+No production edits, new PP, solver retries, lambda projections, commits or pushes.
+Older experiments below are historical references, not reused factorial cells.
+
+## A5-NO-FULL short closed loop (2026-10-20)
+
+`experiments/A5_NO_FULL_20261020_001/report.md` records 6 applied commands /
+1.772930 m / 0.6 s, then QP7 hit 100000 iterations. No retry or extension.
+The 30-step target did not pass. The first six QPs satisfy original constraints
+and KKT; later one-step yaw prediction and rate-limited steering tracking diverge.
+`live_qps/qp_0007/` preserves the full failure. One JSON logging interruption was
+recovered through an exact checkpoint replay without re-solving QP1; both segments
+remain archived and the replayed first transition is counted once. Production,
+accepted NO history and QP-D1 artifacts are unchanged.
+
+## QP-D1 offline comparison (2026-10-20)
+
+`experiments/QP_D1_20261020_001/report.md` contains the full numerical report,
+eight fixed-matrix cases and standalone replay/certificate scripts. With the
+original OSQP settings, Full physical solves QP1/QP2 in 1575/1050 iterations;
+all original constraints and KKT pass. Reduced all also solves both, so no single
+transformation is isolated as the cause. No production or closed-loop changes.
+See [2026-10-20 progress](../../../docs/local/lmpc/progress_20261020.md).
+
+## Latest local evidence (2026-10-19)
+
+Start with [2026-10-19 progress](../../../docs/local/lmpc/archive/20261020_document_cleanup/progress_20261019.md)
+and [author QP implementation comparison](../../../docs/local/lmpc/archive/20261020_document_cleanup/qp_implementation_comparison_20261019.md).
+`experiments/A5_NO_full_20261019_001/` contains fresh non_overshoot initialization
+and a one-action LMPC run; its `qp2_diagnosis_20261019_001/` contains the offline
+reconstruction, original-constraint feasibility proof and solver diagnostics.
+`experiments/A5_NO_S1_20261019_001/` reuses that history with scaling=0: saved QP2
+solved, but live QP1 reached the iteration limit and no command was applied.
+Its `qp_snapshots/qp_0001/` contains the actual runtime failure matrices and last
+iterate. QP2 reconstruction and S1 runtime snapshots are distinct evidence.
+No successful LMPC lap or universal solver setting is accepted. Original A2/A5,
+reports and raw artifacts remain in place; older sections below are historical.
 
 B0 observation/replay runs now create a new `b0_<timestamp>/` directory per run.
 See `f1tenth_benchmarks/research/lmpc/README.md` for the entry point and acceptance
@@ -56,11 +106,11 @@ QP timing and complete control timing have separate acceptance.
 Core local documentation: [LMPC overview](../../../docs/local/lmpc/README.md),
 [completed work](../../../docs/local/lmpc/completed.md),
 [paper method](../../../docs/local/lmpc/paper_method.md), and
-[2026-10-14 progress](../../../docs/local/lmpc/progress_20261014.md).
+[2026-10-14 progress](../../../docs/local/lmpc/archive/20261020_document_cleanup/progress_20261014.md).
 
 ## Daily evidence review (2026-10-15)
 
-Latest local overview: [2026-10-15 progress](../../../docs/local/lmpc/progress_20261015.md).
+Historical daily overview: [2026-10-15 progress](../../../docs/local/lmpc/archive/20261020_document_cleanup/progress_20261015.md).
 A0–A8 closed-loop attempts and M1/T1 offline diagnostics remain separate artifacts.
 A5 reached 22 applied actions / 6.6811 m after handoff; all runs have zero successful
 LMPC laps. Use `experiments/A5_A6_kernel_20261015_002/` for the corrected selection-only

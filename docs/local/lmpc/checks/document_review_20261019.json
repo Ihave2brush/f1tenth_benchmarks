@@ -1,0 +1,230 @@
+{
+  "date": "2026-10-19",
+  "timezone": "Asia/Taipei",
+  "scope": "Documentation consolidation only. No unit tests, vehicle simulations, QP solves, parameter sweeps or sampling rerun. Selected saved evidence checked for existence, hash and JSON readability; not a new numerical acceptance.",
+  "organization": "Raw logs, reports, snapshots and runners remain in original locations; daily entry and pinned-source comparison added under docs/local/lmpc. Historical scaling=0 recommendation qualified by subsequent S1 result.",
+  "protected_source_config_test_file_count": 204,
+  "changed_protected_paths": [],
+  "inventory": [
+    {
+      "path": "Data/research/steering_actuator/non_overshoot_20261019_001/original_regression.json",
+      "bytes": 341,
+      "sha256": "12176bde1fc150945831c0084955d9a62c691a7c63cece4ab495e2cbd698018b",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/steering_actuator/non_overshoot_20261019_001/report.md",
+      "bytes": 13070,
+      "sha256": "62b954df30c65fe70b9937b92006bc16305820aaa9da9316a2290f3a88cd6061"
+    },
+    {
+      "path": "Data/research/steering_actuator/non_overshoot_20261019_001/summary.json",
+      "bytes": 5955,
+      "sha256": "cf59433ac6b246d385bac6779f1d8454bbc417b908a0d2a0ec1fd08fcd4261f5",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/steering_actuator/non_overshoot_20261019_001/test_results.json",
+      "bytes": 345,
+      "sha256": "7e318a8c397d469492a22e74965e8d1658f4f4c702fd445d42bc2d2ad2eb1280",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/steering_actuator/non_overshoot_20261019_001/verification.json",
+      "bytes": 52424,
+      "sha256": "8b5dece4e50d2e8e277e0240155df9b2407b27f3467a827d22b00252c9ab1a41",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_full_20261019_001/comparison.json",
+      "bytes": 15340,
+      "sha256": "e52cbb086631caac9b78cf70ad9f9caa8fbbc5e04be4d091013b6ccd091fb12e",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_full_20261019_001/preflight.json",
+      "bytes": 2606,
+      "sha256": "eb5fe579a2078a017c37725e60144f9c3e6739e5f47461373d55aef05cb9a86f",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_full_20261019_001/qp2_diagnosis_20261019_001/effective_solver_settings.json",
+      "bytes": 413,
+      "sha256": "829899a5ef162a0b3fa85f9c6b4a328039464e59406aa40e7fda1a5b79c92e3a",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_full_20261019_001/qp2_diagnosis_20261019_001/feasibility.json",
+      "bytes": 5863,
+      "sha256": "0ca91b794278f6e27cb75d3cd136c8f1be729e050548c9a62f2cc9874d09b90f",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_full_20261019_001/qp2_diagnosis_20261019_001/matrix_diagnostics.json",
+      "bytes": 13907,
+      "sha256": "1a9f28724e97a1e6a4fb9af50d49a3a2315c37cb40dc02791d69b63d481396b1",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_full_20261019_001/qp2_diagnosis_20261019_001/reconstruction.json",
+      "bytes": 1176,
+      "sha256": "f344127b3bdc7ee05fa25074c0eb2e0e40a4d9ac9bfcc6698247f0645f9f9987",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_full_20261019_001/qp2_diagnosis_20261019_001/report.md",
+      "bytes": 9615,
+      "sha256": "a5b6e26f3c4203b71f6085a2aa3db1be21ff99aad50a8b463d19bf8bb1177a20"
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_full_20261019_001/qp2_diagnosis_20261019_001/solver_comparison.csv",
+      "bytes": 1140,
+      "sha256": "9597d3858b980ada1d364c6a1782e372ef1fc3f9bb8db06beb737543b3e5d600"
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_full_20261019_001/qp2_diagnosis_20261019_001/solver_settings.json",
+      "bytes": 185,
+      "sha256": "402bab88587a0be8d155b9eecd718dec5067da9a7edb0f7582e7805e7feb10d4",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_full_20261019_001/qp2_diagnosis_20261019_001/summary.json",
+      "bytes": 69652,
+      "sha256": "854da52f38b4d30a186d2a5e30bb59c780bc5a82e2dd0544e3bc38ceaa253d61",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_full_20261019_001/report.md",
+      "bytes": 5347,
+      "sha256": "7319acde78cad2a6cc7c349d79b13af8bcbf12293af3dae770b67289d3826f56"
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_full_20261019_001/run_outcome.json",
+      "bytes": 1745,
+      "sha256": "ca788910f5b0bd9700e23b55956483c382447d1e46b9675b9d04503e9ccf08a3",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_full_20261019_001/source_integrity.json",
+      "bytes": 103,
+      "sha256": "558682d58956e1a0cc93009434aaa8d593d4cf6187e493fedc76c10d0991f165",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_full_20261019_001/verification.json",
+      "bytes": 1392,
+      "sha256": "e3096f194d74443b3ec0677316d1a3e700c2069bc30109f7701366863d7ff140",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_S1_20261019_001/comparison.json",
+      "bytes": 5765,
+      "sha256": "d392244b2d7b8a4027b3182e48b35d4bb8f84eea57867f3f3d41c55b50ba79e3",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_S1_20261019_001/qp_snapshots/qp_0001/context.json",
+      "bytes": 18492,
+      "sha256": "266f13db2e3ef135744cbd3317975a4ed5520857ee93459f02809b4aa06b133b",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_S1_20261019_001/qp_snapshots/qp_0001/model_and_terminal.npz",
+      "bytes": 7701,
+      "sha256": "c34a84a1a7e4f8fc8b571da17d404e330e96e5dafd56c6c2d72e8fe46e4d7295"
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_S1_20261019_001/qp_snapshots/qp_0001/model_diagnostics.json",
+      "bytes": 49918,
+      "sha256": "b55e5a4631f99d6a00fdc0c3ad651ddeec025ac03434674278fdab527e9b8959",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_S1_20261019_001/qp_snapshots/qp_0001/original_qp.npz",
+      "bytes": 273323,
+      "sha256": "bf2917511b5542a174c441514dcb0adfd864edf21a3ac4af06efea0559907f95"
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_S1_20261019_001/qp_snapshots/qp_0001/solve_001_last_iterate.npz",
+      "bytes": 1337,
+      "sha256": "762746b13489b0f2a6e27b84a3db2b6d1d62a2d87c1bc7ddf26c9b32f117c296"
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_S1_20261019_001/qp_snapshots/qp_0001/solve_001_original_variables.npz",
+      "bytes": 3106,
+      "sha256": "4dd1e810b67bd50e577af03d55e2abee39ddbbffcf264ba88020c97ec3a83647"
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_S1_20261019_001/qp_snapshots/qp_0001/solve_001_result.json",
+      "bytes": 915,
+      "sha256": "f64492bf83918200391139b96c80803319d31a988611fbf58b2c00422a2661cd",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_S1_20261019_001/qp_snapshots/qp_0001/solve_001_solver_qp.npz",
+      "bytes": 66253,
+      "sha256": "0dba8fd89ac11a0ef448c7065a10f9389e1b13468e94aea5afc1eac370372706"
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_S1_20261019_001/qp_snapshots/qp_0001/solver_qp.npz",
+      "bytes": 66253,
+      "sha256": "0dba8fd89ac11a0ef448c7065a10f9389e1b13468e94aea5afc1eac370372706"
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_S1_20261019_001/qp_snapshots/qp_0001/solver_settings.json",
+      "bytes": 319,
+      "sha256": "576cec4d2bda4222d6e1028f69404f275e2314ca32d334f1edbb4e1b32fc9945",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_S1_20261019_001/qp_summary.csv",
+      "bytes": 432,
+      "sha256": "e04ea0e37e2daa39ccf2833e1695898dcf4ad4862d15fe573b33bb3b9da89ace"
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_S1_20261019_001/report.md",
+      "bytes": 5314,
+      "sha256": "617d08d3abab937642aef177423b4b48c90f59b507e0ae123d01ee164e96affd"
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_S1_20261019_001/run_outcome.json",
+      "bytes": 1010,
+      "sha256": "548f821ac0e958906e58bb27168b84d83399e050e57b0c7c3698a70afe24c19e",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_S1_20261019_001/saved_qp_preflight.json",
+      "bytes": 856,
+      "sha256": "321e74d300d3b97e6dfbdd52ec79bc668ae723dcbb2e5a5c2397b3f42edcfcc2",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_S1_20261019_001/solver_override.json",
+      "bytes": 565,
+      "sha256": "a0a9b817d1925562d52ad578a3f8d5f716f311c4c982c7f0887ca28d3ea3c110",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_S1_20261019_001/source_integrity.json",
+      "bytes": 162,
+      "sha256": "5017855a9f3b63cbbf9112b0f1eb42cffef93f62dcde62cb7fd881b36d44169b",
+      "json_readable": true
+    },
+    {
+      "path": "Data/research/lmpc/experiments/A5_NO_S1_20261019_001/verification.json",
+      "bytes": 413,
+      "sha256": "b2fc84e944bf1188211c4dd25b42035b3fc18e3097a0e6896a8269b49228a0ce",
+      "json_readable": true
+    }
+  ],
+  "local_link_check": {
+    "documents": [
+      "docs/local/lmpc/progress_20261019.md",
+      "docs/local/lmpc/qp_implementation_comparison_20261019.md",
+      "docs/local/lmpc/README.md",
+      "Data/research/lmpc/README.md"
+    ],
+    "checked": 31,
+    "broken": []
+  }
+}

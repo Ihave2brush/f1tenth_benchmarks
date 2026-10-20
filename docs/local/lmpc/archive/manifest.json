@@ -1,0 +1,162 @@
+{
+  "date": "2026-10-14",
+  "note": "Original records preserved; only relative Markdown link paths adjusted for relocation.",
+  "files": [
+    {
+      "original": "acceleration_gain_decision_20261014.md",
+      "archived": "archive/acceleration_gain_decision_20261014.md",
+      "original_sha256": "f2ca37669a05cf2bfd20477c5d7607f75d168ce944b87175bac8f6b168bc2688",
+      "archived_sha256": "f2ca37669a05cf2bfd20477c5d7607f75d168ce944b87175bac8f6b168bc2688"
+    },
+    {
+      "original": "b1_report_20261007.md",
+      "archived": "archive/b1_report_20261007.md",
+      "original_sha256": "63a07a80cdf6d6e3f3a1ece7970950786bc3bd69f5d165f4fc5728026c83f9ee",
+      "archived_sha256": "855895a4bb5d0214a9b9766f2a470ef769640b3704596d617723208f1e0381c3"
+    },
+    {
+      "original": "b2_5_control_model_plan.md",
+      "archived": "archive/b2_5_control_model_plan.md",
+      "original_sha256": "df155fa32c78ec457f2990e864f0160da64916d51cd5bfea54c11e4251f932ec",
+      "archived_sha256": "33491a0e32e0d6a069884604798dd65b75c1defd7aa0b5970bfaa1cfca908ffb"
+    },
+    {
+      "original": "b2_5_report_20261012.md",
+      "archived": "archive/b2_5_report_20261012.md",
+      "original_sha256": "7f6ba481ae1eabafea33cc7b4b47417672992aca51fd6eae2637b3a09d1ca695",
+      "archived_sha256": "d5f1b0b3722009c101ae9b23a1ab283db4ff175f9492aaaef572bc859776f958"
+    },
+    {
+      "original": "b2_periodic_report_20261008.md",
+      "archived": "archive/b2_periodic_report_20261008.md",
+      "original_sha256": "cc8e790d5670fd4dcecaae2b48c7adecdbb8c96ff45612527ad7a253d048a36e",
+      "archived_sha256": "0b442d5d0cfae850a3ae0f9731ed0f9ba3e62e72d1202819998df8a39b02d6a4"
+    },
+    {
+      "original": "b2_report_20261008.md",
+      "archived": "archive/b2_report_20261008.md",
+      "original_sha256": "b5a28c5d9b0f918756609008da16ec22cb124aae08113f24ffb875df383ae0b7",
+      "archived_sha256": "3efef498cbfbfdb8e9f11e16cb2b71c963be99816cc01446e05559b21b366758"
+    },
+    {
+      "original": "b2_review_20261012.md",
+      "archived": "archive/b2_review_20261012.md",
+      "original_sha256": "1448c5170d01ca128140c955c156409e8706c7aee91c4fb56b84e3cabee1a5e1",
+      "archived_sha256": "1448c5170d01ca128140c955c156409e8706c7aee91c4fb56b84e3cabee1a5e1"
+    },
+    {
+      "original": "b3_report_20261012.md",
+      "archived": "archive/b3_report_20261012.md",
+      "original_sha256": "82a4a9c5c11d08dc13582f83b59ff09d59d76c8f495665561b9c1825ef97fe6d",
+      "archived_sha256": "7fa1851f5f01b7b26baea8d566c0c82bfb52472138ca110394f6fa2387b41356"
+    },
+    {
+      "original": "core_frenet_review_20261012.md",
+      "archived": "archive/core_frenet_review_20261012.md",
+      "original_sha256": "bd385b54d395027fc44bb5f3aa6f774a578c4178ff90f76800916501289c43c2",
+      "archived_sha256": "bd385b54d395027fc44bb5f3aa6f774a578c4178ff90f76800916501289c43c2"
+    },
+    {
+      "original": "cross_finish_resolution_20261013.md",
+      "archived": "archive/cross_finish_resolution_20261013.md",
+      "original_sha256": "e39bb93ac5867215332d5f3df1aa261964482f709c72a7183e90b9f5dc690246",
+      "archived_sha256": "c862e6644345b99766d7c1ce0a40a8f22ecc62d5eb547cd4a8a91108251a8a09"
+    },
+    {
+      "original": "experiment_protocol_20261013.md",
+      "archived": "archive/experiment_protocol_20261013.md",
+      "original_sha256": "31d7683229741eae61ec25d6ba2a99fb4fa6bd239127c99235c1130bfc367ce3",
+      "archived_sha256": "31d7683229741eae61ec25d6ba2a99fb4fa6bd239127c99235c1130bfc367ce3"
+    },
+    {
+      "original": "finish_cost_audit_report_20261013.md",
+      "archived": "archive/finish_cost_audit_report_20261013.md",
+      "original_sha256": "1b7d276d2f4dd5bbc5d43f826e99af871e2f391213cd776826e9072a1b9b70e0",
+      "archived_sha256": "af83a623ca1d9c3688985a10ecdcf99625ebf02a11ac0360eee6d7cf8f29750d"
+    },
+    {
+      "original": "fixed_atv_validation_20261014.md",
+      "archived": "archive/fixed_atv_validation_20261014.md",
+      "original_sha256": "5b2bd32488ab1812bd25036517e8c93b656aff5beff2ad50d47395a3679eab45",
+      "archived_sha256": "5b2bd32488ab1812bd25036517e8c93b656aff5beff2ad50d47395a3679eab45"
+    },
+    {
+      "original": "identification_diagnosis_20261014.md",
+      "archived": "archive/identification_diagnosis_20261014.md",
+      "original_sha256": "8bcb94ead029161258d97f0b235b71d9bdb6ffc37a90ea7145ef5cdd6a3d05dd",
+      "archived_sha256": "8bcb94ead029161258d97f0b235b71d9bdb6ffc37a90ea7145ef5cdd6a3d05dd"
+    },
+    {
+      "original": "lmpc_plan.md",
+      "archived": "archive/lmpc_plan.md",
+      "original_sha256": "9a2f0c3417e3bc12cc7e2962b35a849ba53ae93c749fab347ea2c48458212191",
+      "archived_sha256": "9a2f0c3417e3bc12cc7e2962b35a849ba53ae93c749fab347ea2c48458212191"
+    },
+    {
+      "original": "lmpc_plan_before_section_iii_iv_20261012.md",
+      "archived": "archive/lmpc_plan_before_section_iii_iv_20261012.md",
+      "original_sha256": "d38c7f13f99cc7fb920e2133140e9c0c6bc3ede2c3f4b4b39c65257653511d82",
+      "archived_sha256": "4acf73603fcd13aa1fd28e58ee717a554af4961a5a86991c4623c0259d6d3cac"
+    },
+    {
+      "original": "paper_alignment_20261012.md",
+      "archived": "archive/paper_alignment_20261012.md",
+      "original_sha256": "50a83a690f8f193af8522409804ab3f767fc03bfbada8c3e3f2e918db6a9e990",
+      "archived_sha256": "50a83a690f8f193af8522409804ab3f767fc03bfbada8c3e3f2e918db6a9e990"
+    },
+    {
+      "original": "paper_github_comparison_20261013.md",
+      "archived": "archive/paper_github_comparison_20261013.md",
+      "original_sha256": "47bbe1adf4972caa9dfc2d3e027bb0715b2318ca90c7878ad0f975a283a21c58",
+      "archived_sha256": "c7380102280b21710d3f3c618d282ae68a5ee25c1f993ec737dd6cae22674647"
+    },
+    {
+      "original": "qp_setup_20261014.md",
+      "archived": "archive/qp_setup_20261014.md",
+      "original_sha256": "df5d63aa7c8add624cb73d7f64e92b9cfda8f25de17afce9a9ff1ba3c455ecbc",
+      "archived_sha256": "df5d63aa7c8add624cb73d7f64e92b9cfda8f25de17afce9a9ff1ba3c455ecbc"
+    },
+    {
+      "original": "qp_speed_20261014.md",
+      "archived": "archive/qp_speed_20261014.md",
+      "original_sha256": "e8ddb683edc80572aeb64439db18a85f6f8d1ca90dc670d60d1c38e84a6f59b6",
+      "archived_sha256": "e8ddb683edc80572aeb64439db18a85f6f8d1ca90dc670d60d1c38e84a6f59b6"
+    },
+    {
+      "original": "r0_decisions_20261013.md",
+      "archived": "archive/r0_decisions_20261013.md",
+      "original_sha256": "7a3b78a688a9a35acef318e08d52f291e650df8f834c0fd6666e7b91c17b0828",
+      "archived_sha256": "7a3b78a688a9a35acef318e08d52f291e650df8f834c0fd6666e7b91c17b0828"
+    },
+    {
+      "original": "r0_review_20261012.md",
+      "archived": "archive/r0_review_20261012.md",
+      "original_sha256": "06115f370ed683177561f33913ddf894f6834f30274fc89570c3ca92a1a557b7",
+      "archived_sha256": "44b9829dadb22643c7e9e074603a703c5ae48b2e8918faa7c97de84961afb070"
+    },
+    {
+      "original": "r0_technical_spec_20261013.md",
+      "archived": "archive/r0_technical_spec_20261013.md",
+      "original_sha256": "7a239de2e8a5a4d104351f08a15e63d320abbf4a77aa80967db06c56ec835a96",
+      "archived_sha256": "7a239de2e8a5a4d104351f08a15e63d320abbf4a77aa80967db06c56ec835a96"
+    },
+    {
+      "original": "r4_first_three_20261014.md",
+      "archived": "archive/r4_first_three_20261014.md",
+      "original_sha256": "32f6673e71274169efd6995f056d1ac147ffd388ea08f0bfb3aaa5a9fd2351d7",
+      "archived_sha256": "32f6673e71274169efd6995f056d1ac147ffd388ea08f0bfb3aaa5a9fd2351d7"
+    },
+    {
+      "original": "remaining_issues_20261013.md",
+      "archived": "archive/remaining_issues_20261013.md",
+      "original_sha256": "6983d096ed1e23b7d56751aae1da64ba91be8487d3535dac1a886556c5520eb5",
+      "archived_sha256": "6983d096ed1e23b7d56751aae1da64ba91be8487d3535dac1a886556c5520eb5"
+    },
+    {
+      "original": "sideways_regression_audit_20261014.md",
+      "archived": "archive/sideways_regression_audit_20261014.md",
+      "original_sha256": "afb6eec2bbc59e7f66456ae5ab6ff03356f4b6dcf61c45bc62b9614700a9c4be",
+      "archived_sha256": "afb6eec2bbc59e7f66456ae5ab6ff03356f4b6dcf61c45bc62b9614700a9c4be"
+    }
+  ]
+}

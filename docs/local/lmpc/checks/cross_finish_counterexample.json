@@ -1,0 +1,90 @@
+{
+  "scope": "scalar mathematical counterexample; not vehicle validation",
+  "qp_solver_used": "independent two-dimensional active-set enumeration; not OSQP",
+  "horizon": 2,
+  "finish": 1.0,
+  "hard_terminal": [
+    1.0,
+    1.1
+  ],
+  "frozen_stage_solution": {
+    "inputs": [
+      0.04,
+      0.06
+    ],
+    "states": [
+      0.9,
+      0.9400000000000001,
+      1.0
+    ],
+    "input_rate_cost": 0.002,
+    "literal_finish_stage_cost": 2,
+    "literal_paper_objective": 2.002,
+    "terminal_cost_to_completed_finish": 0.0
+  },
+  "signed_potential_solution": {
+    "inputs": [
+      0.08000000000000007,
+      0.120000000000001
+    ],
+    "states": [
+      0.9,
+      0.9800000000000001,
+      1.100000000000001
+    ],
+    "input_rate_cost": 0.008000000000000085,
+    "literal_finish_stage_cost": 2,
+    "literal_paper_objective": 2.008,
+    "terminal_cost_to_completed_finish": 0.0,
+    "signed_potential": -1.0000000000000098
+  },
+  "fixed_finish_subproblems": [
+    {
+      "inputs": [
+        0.1,
+        0.1
+      ],
+      "states": [
+        0.9,
+        1.0,
+        1.1
+      ],
+      "input_rate_cost": 0.010000000000000002,
+      "literal_finish_stage_cost": 1,
+      "literal_paper_objective": 1.01,
+      "terminal_cost_to_completed_finish": 0.0
+    },
+    {
+      "inputs": [
+        0.04,
+        0.06
+      ],
+      "states": [
+        0.9,
+        0.9400000000000001,
+        1.0
+      ],
+      "input_rate_cost": 0.002,
+      "literal_finish_stage_cost": 2,
+      "literal_paper_objective": 2.002,
+      "terminal_cost_to_completed_finish": 0.0
+    }
+  ],
+  "exact_piecewise_solution": {
+    "inputs": [
+      0.1,
+      0.1
+    ],
+    "states": [
+      0.9,
+      1.0,
+      1.1
+    ],
+    "input_rate_cost": 0.010000000000000002,
+    "literal_finish_stage_cost": 1,
+    "literal_paper_objective": 1.01,
+    "terminal_cost_to_completed_finish": 0.0
+  },
+  "objective_gap_frozen": 0.9919999999999998,
+  "passed": true
+}

@@ -1,0 +1,144 @@
+{
+  "date": "2026-10-20",
+  "timezone": "Asia/Taipei",
+  "scope": "Documentation only; preserved original text except relocation of Markdown file links; no solver, simulation or tests rerun.",
+  "archived": [
+    {
+      "original": "docs/local/lmpc/progress_20261014.md",
+      "archived": "docs/local/lmpc/archive/20261020_document_cleanup/progress_20261014.md",
+      "mode": "moved_history",
+      "original_sha256": "1f7f825d57fe754c0843a0945b99edffa5e82b429a66c775d08e7dbe7dcf7647",
+      "archived_sha256": "e9299e0e27a662e3dfb0a01b66d2251e7ebc47aa2263a110d91df001d7cd694b"
+    },
+    {
+      "original": "docs/local/lmpc/progress_20261015.md",
+      "archived": "docs/local/lmpc/archive/20261020_document_cleanup/progress_20261015.md",
+      "mode": "moved_history",
+      "original_sha256": "4f3b4037cb711e4a5af3c4840a1f71753c885d7e5c059b221947df5d66dd3c05",
+      "archived_sha256": "d2f7f63941b750ea248364b3cfd0e457ec7e91666fb53d5d45b666fc5f734bfc"
+    },
+    {
+      "original": "docs/local/lmpc/progress_20261019.md",
+      "archived": "docs/local/lmpc/archive/20261020_document_cleanup/progress_20261019.md",
+      "mode": "moved_history",
+      "original_sha256": "1a4b1d98db0e5d2a8228632731463a01dabb228be8151de29ad3a4287e28ef5d",
+      "archived_sha256": "b1ebc78298b9c6c56b8f1c78ae5e175b13315013ed8c81c79ad9f7c77ecbbdad"
+    },
+    {
+      "original": "docs/local/lmpc/experiments_A0_A3_1005.md",
+      "archived": "docs/local/lmpc/archive/20261020_document_cleanup/experiments_A0_A3_1005.md",
+      "mode": "moved_history",
+      "original_sha256": "6019f416f75211221475c8a403ae58b509a70c0a4a96d7a2604af2f377bfa1cf",
+      "archived_sha256": "6019f416f75211221475c8a403ae58b509a70c0a4a96d7a2604af2f377bfa1cf"
+    },
+    {
+      "original": "docs/local/lmpc/qp_implementation_comparison_20261019.md",
+      "archived": "docs/local/lmpc/archive/20261020_document_cleanup/qp_implementation_comparison_20261019.md",
+      "mode": "moved_history",
+      "original_sha256": "8074a83aa91b3ee541b30b377f35c1333ffc351778aaae2f8152cc1ee046d65f",
+      "archived_sha256": "8074a83aa91b3ee541b30b377f35c1333ffc351778aaae2f8152cc1ee046d65f"
+    },
+    {
+      "original": "docs/local/lmpc/completed.md",
+      "archived": "docs/local/lmpc/archive/20261020_document_cleanup/completed.md",
+      "mode": "pre_cleanup_snapshot",
+      "original_sha256": "168f472f3a66b125115ef83eb15d8169bcd4360f6b9f3e0244a70994fad2628a",
+      "archived_sha256": "15d53fb2d10ae47b94a446b0211443e79c9546b78dc8d16fbef6dacb1fd1d680"
+    },
+    {
+      "original": "docs/local/lmpc/paper_method.md",
+      "archived": "docs/local/lmpc/archive/20261020_document_cleanup/paper_method.md",
+      "mode": "pre_cleanup_snapshot",
+      "original_sha256": "212e453c05e9deb1eaff3acc0ea437fe0294524f556b1e651991f9d4eb459be1",
+      "archived_sha256": "5eb54fdca625679360398798e32bd3025bb4403856c83adf9437db0938f3b0fd"
+    },
+    {
+      "original": "docs/local/lmpc/progress_20261020.md",
+      "archived": "docs/local/lmpc/archive/20261020_document_cleanup/progress_20261020.md",
+      "mode": "pre_cleanup_snapshot",
+      "original_sha256": "3423bcb56879e7dcff5323903c336f243d0759f69a82d824ae11d1c67bfd43c8",
+      "archived_sha256": "647f2106bc62d0917932e73744ebcb50618c73e533b524ea3ee2170d635dafb7"
+    },
+    {
+      "original": "docs/local/lmpc/README.md",
+      "archived": "docs/local/lmpc/archive/20261020_document_cleanup/README.md",
+      "mode": "pre_cleanup_snapshot",
+      "original_sha256": "e65d5b2fbb54730b29a1b9c598874b5fd071c87aea1dc29c12cf5cd39a188ab0",
+      "archived_sha256": "736d33298765e43d960e08ecae88c7415972a9037d2d3f27b9865284cdea28ea"
+    }
+  ],
+  "updated_documents": [
+    "Data/research/lmpc/README.md",
+    "docs/README.md",
+    "docs/local/README.md",
+    "docs/local/lmpc/README.md",
+    "docs/local/lmpc/completed.md",
+    "docs/local/lmpc/paper_method.md",
+    "docs/local/lmpc/progress_20261020.md",
+    "docs/project/reports/experiment_synthesis_20261020.md"
+  ],
+  "protected_sources_checked": 136,
+  "protected_source_changes": [],
+  "refreshed_inventory": "docs/project/reports/experiment_synthesis_20261020/evidence_manifest.json",
+  "validation": {
+    "active_document_links_checked": 91,
+    "broken_active_links": [],
+    "archived_copies_hash_verified": 9,
+    "historical_unavailable_links": [
+      {
+        "document": "progress_20261015.md",
+        "target": "../../../../project/integration_plan.md",
+        "note": "Historical reference preserved; not a current document dependency."
+      },
+      {
+        "document": "completed.md",
+        "target": "../../../../project/integration_plan.md",
+        "note": "Historical reference preserved; not a current document dependency."
+      }
+    ],
+    "research_sessions_in_refreshed_inventory": 79,
+    "batch_directories_including_empty": 100,
+    "refreshed_source_count": 184,
+    "new_experiments_run": false,
+    "tests_rerun": false
+  },
+  "final_document_hashes": [
+    {
+      "path": "docs/local/lmpc/progress_20261020.md",
+      "sha256": "b7bf0c26272fa4d843e62d6c3729ff7944617d76af0c1807389a17eaa028ec52"
+    },
+    {
+      "path": "docs/local/lmpc/README.md",
+      "sha256": "841c5cf332ad84cb346eaf076328f35ee0524bd9267c33a0e7495f71af9760b1"
+    },
+    {
+      "path": "docs/local/lmpc/paper_method.md",
+      "sha256": "782f2f3fef5a4c28d930e8b67d0a35077de87a88d1f40be4902f5010b26714c4"
+    },
+    {
+      "path": "docs/local/lmpc/completed.md",
+      "sha256": "b739b6aedeb702481cbaba97a9c28424dc23b8a0d6fc9af2709f76635da500cf"
+    },
+    {
+      "path": "docs/project/reports/experiment_synthesis_20261020.md",
+      "sha256": "0242cad8952e34656b49b6cb831c84c9653c869599d0d8d4ef50d22a41414460"
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "db30c72596512cccd49a1d1a9835d3f6dc479a100e4c5e6de30f381882f83c36"
+    },
+    {
+      "path": "docs/local/README.md",
+      "sha256": "3785bb8dc6dc6d90709711b376be709fe36ff6df1ad742683fdacae1344f8e6d"
+    },
+    {
+      "path": "Data/research/lmpc/README.md",
+      "sha256": "70d637ee3da6793f75e4cdf6d861e0900595cde0025cdec42f78d57c7ada6776"
+    }
+  ],
+  "branch_documentation_update": {
+    "branch": "research/lmpc",
+    "mainline": "master",
+    "scope": "Version LMPC documents on the existing research branch; raw experiments remain ignored; mainline unchanged."
+  }
+}

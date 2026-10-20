@@ -2,6 +2,10 @@
 # Public guides and selected verification evidence; working notes stay local.
 docs/*
 !docs/README.md
+# research/lmpc branch: keep LMPC documentation versioned; other local notes stay ignored.
+!docs/local/
+docs/local/*
+!docs/local/lmpc/
 !docs/project/
 docs/project/*
 !docs/project/status.md
@@ -9,6 +13,7 @@ docs/project/*
 !docs/project/usage.md
 !docs/project/interfaces.md
 !docs/project/viewer.md
+!docs/project/steering_actuator_modes.md
 !docs/project/images/
 docs/project/images/*
 !docs/project/images/esp_projection_candidates.png
@@ -16,6 +21,8 @@ docs/project/images/*
 !docs/project/reports/
 docs/project/reports/*
 !docs/project/reports/manual_run_001_report.md
+!docs/project/reports/experiment_synthesis_20261020.md
+!docs/project/reports/experiment_synthesis_20261020/
 !docs/project/reports/figures/
 docs/project/reports/figures/*
 !docs/project/reports/figures/manual_run_001/

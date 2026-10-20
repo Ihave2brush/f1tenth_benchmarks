@@ -1,0 +1,29 @@
+[
+  {
+    "repository": "MPC-Berkeley/barc",
+    "commit": "7a481c7044fb85aacd64f2b36df9e29463ea5912",
+    "path": "workspace/src/barc/src/ControllersObject/LMPC.py",
+    "url": "https://github.com/MPC-Berkeley/barc/blob/7a481c7044fb85aacd64f2b36df9e29463ea5912/workspace/src/barc/src/ControllersObject/LMPC.py",
+    "sha256": "d1b610f02bd2912e60f02092c9bcfb66dbad92ea34800ace90124a42061291e6",
+    "saved_reference": "barc_LMPC.py.txt",
+    "role": "read-only source reference; never executed"
+  },
+  {
+    "repository": "urosolia/RacingLMPC",
+    "commit": "b49c95e7795ef6f343efacedb6b90a69c7855b32",
+    "path": "src/fnc/controller/PredictiveControllers.py",
+    "url": "https://github.com/urosolia/RacingLMPC/blob/b49c95e7795ef6f343efacedb6b90a69c7855b32/src/fnc/controller/PredictiveControllers.py",
+    "sha256": "c5ccba97116b84a7651f69a8d65c5b263aad75568afaac89fb18bed7f410b070",
+    "saved_reference": "RacingLMPC_PredictiveControllers.py.txt",
+    "role": "read-only source reference; never executed"
+  },
+  {
+    "repository": "urosolia/RacingLMPC",
+    "commit": "b49c95e7795ef6f343efacedb6b90a69c7855b32",
+    "path": "src/fnc/controller/PredictiveModel.py",
+    "url": "https://github.com/urosolia/RacingLMPC/blob/b49c95e7795ef6f343efacedb6b90a69c7855b32/src/fnc/controller/PredictiveModel.py",
+    "sha256": "17eb286dee72d8a7335d4d0ff6a6f2d7874b5c313ad2c2c7063b76266a0560f8",
+    "saved_reference": "RacingLMPC_PredictiveModel.py.txt",
+    "role": "read-only source reference; never executed"
+  }
+]
