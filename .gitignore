@@ -23,6 +23,11 @@ docs/project/reports/*
 !docs/project/reports/centerline_baseline_sources_20261021.json
 !docs/project/reports/centerline_candidates_stage2_20261021.md
 !docs/project/reports/centerline_candidates_stage2_20261021.json
+!docs/project/reports/playback_stage3_20261021.md
+!docs/project/reports/playback_40m_20261021.json
+!docs/project/reports/playback_40m_20261021.jpg
+!docs/project/reports/40m_generation_profile_20261021.json
+!docs/project/reports/40m_preview_verification_20261021.json
 !docs/project/reports/figures/
 docs/project/reports/figures/*
 !docs/project/reports/figures/manual_run_001/

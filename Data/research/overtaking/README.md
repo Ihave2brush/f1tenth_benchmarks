@@ -5,7 +5,7 @@ repository root, in the existing simulation Python environment:
 
 ```bash
 python -B -m f1tenth_benchmarks.research.run_centerline_candidates \
-  --output-dir Data/research/overtaking/NEW_SESSION --laps 1 --plan-period 2 --lookahead 3
+  --output-dir Data/research/overtaking/NEW_SESSION --laps 1 --plan-period 0.1 --lookahead 40
 python -B -m f1tenth_benchmarks.research.overtaking.verify_session \
   Data/research/overtaking/NEW_SESSION --report NEW_VERIFICATION.json
 ```
@@ -22,4 +22,16 @@ or summary, but the complete JSONL records remain recoverable.
 
 Do not reuse or overwrite an existing session. Raw outputs remain local and
 ignored by Git; selected verification reports belong in docs/project/reports.
-Browser playback and opponent/selection/control logic are not implemented yet.
+Recorded browser playback is available:
+
+```bash
+python -B -m f1tenth_benchmarks.research.overtaking.playback \
+  --session Data/research/overtaking/NEW_SESSION --port 8766
+```
+
+Open http://127.0.0.1:8766/. The official recording defaults are 40 m candidate
+lookahead and one plan per 0.1 s control step. This is offline processing, not a
+10 Hz wall-clock performance claim. Earlier 3 m / 2 s sessions remain historical
+integration checks. `--max-control-steps 3` creates a short preview only.
+Generation saves `progress.json` after each plan; `--progress-session` on the
+viewer can display it separately. Opponent/selection/control logic is not implemented.

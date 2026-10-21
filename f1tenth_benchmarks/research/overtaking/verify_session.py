@@ -122,6 +122,9 @@ def verify_session(directory, require_complete=True):
             assert abs(yaw_error) <= metadata['config']['max_start_heading_error_rad']
             np.testing.assert_allclose([error, yaw_error],
                 [p['start_position_error_m'], p['start_heading_error_rad']], rtol=0, atol=1e-12)
+    if math.isclose(metadata['config']['plan_period_s'], metadata['config']['control_dt_s'], abs_tol=1e-12):
+        assert len(plans) == len(states)
+        assert [p['source_control_step'] for p in plans] == list(range(len(states)))
     # Check every cursor in reverse order as well as before the first plan.
     assert latest_plan(plans, -1) is None
     for state in reversed(states):

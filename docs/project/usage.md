@@ -56,14 +56,27 @@ my_session 必須尚不存在。輸出包括 metadata、samples、圈事件與�
 
 ```bash
 python -B -m f1tenth_benchmarks.research.run_centerline_candidates \
-  --output-dir Data/research/overtaking/NEW_SESSION --laps 1 --plan-period 2 --lookahead 3
+  --output-dir Data/research/overtaking/NEW_SESSION --laps 1 --plan-period 0.1 --lookahead 40
 python -B -m f1tenth_benchmarks.research.overtaking.verify_session \
   Data/research/overtaking/NEW_SESSION --report NEW_VERIFICATION.json
 ```
 
-車以固定 1.2 m/s、0.6 m PP 前視跟隨 Frenet CSV 中線；候選每 2 秒模擬時間更新，前視固定 3 m。同步求解期間模擬時間暫停。session 保存實際車況、作用區間明確的控制、五條候選（含失敗原因）、byte 索引及摘要；跨線完成時另保存終止規劃事件。候選只供診斷，不接管控制，不宣稱車身可安全通行。
+車以固定 1.2 m/s、0.6 m PP 前視跟隨 Frenet CSV 中線；候選每個 0.1 秒控制步更新，前視固定 40 m。這是幾何前視距離，不是 40 秒時間預測。同步求解期間模擬時間暫停。session 保存實際車況、作用區間明確的控制、五條候選（含失敗原因）、byte 索引及摘要；跨線完成時另保存終止規劃事件。候選只供診斷，不接管控制，不宣稱車身可安全通行。
 
-本入口使用 master 的共用 core 控制與進度，不需 LMPC／osqp。驗證器做獨立物理重播、控制重算與來源／時間核對；目前尚未提供瀏覽器時間步播放。異常 session 可加 `--allow-incomplete` 核對可完整重播的資料；runtime 中斷若尚有 action 未產生下一狀態，仍須先處理不完整區間。
+本入口使用 master 的共用 core 控制與進度，不需 LMPC／osqp。驗證器做獨立物理重播、控制重算與來源／時間核對；瀏覽器時間步播放如下。異常 session 可加 `--allow-incomplete` 核對可完整重播的資料；runtime 中斷若尚有 action 未產生下一狀態，仍須先處理不完整區間。
+
+### 播放已保存的 session
+
+```bash
+python -B -m f1tenth_benchmarks.research.overtaking.playback \
+  --session Data/research/overtaking/COMPLETED_SESSION --port 8766
+```
+
+在本機開啟 http://127.0.0.1:8766/。支援播放／暫停、前後單步、相對時間／步號跳轉、拖曳時間軸、0.25×～4×、縮放／平移與圖層切換。只讀取原始記錄，不重新生成候選；失敗事件也照時刻呈現，回到以前不保留未來候選。
+
+40 m 每步生成目前很慢，可先用 `--max-control-steps 3` 生成四筆車況的短預覽，再以同一播放入口檢查；畫面會明示未完成整圈。正式完整圈必須不設此上限。`--progress-session RUNNING_SESSION` 可另顯示背景生成的 progress.json，但不播放尚未完成的即時車況。
+
+原始 session 的幾何版本、CSV、manifest、地圖來源必須與載入的 TrackData 一致。索引缺失或損壞可由 JSONL 重建，不寫回原始檔。程式只綁定 127.0.0.1；Docker 使用 host network 時也維持本機服務範圍。
 
 ## 生成 ESP 中線與邊界
 

@@ -1,6 +1,6 @@
 # 中線跟隨、五條候選路線與時間步播放整合計畫
 
-更新：2026-10-21。狀態：A 階段共用資料入口已完成首批核對；B 階段既有中線行駛已重新驗證通過；C 階段候選排程與 session 記錄已實作並完成同場一圈核對；D 播放介面與 E 最終展示待完成。超車候選工作與 LMPC 分開，不更動 LMPC。
+更新：2026-10-21。狀態：A 階段共用資料入口已完成首批核對；B 階段既有中線行駛已重新驗證通過；C 階段候選排程與 session 記錄已實作並完成同場一圈核對；D 播放介面已完成；使用者指定的 40 m／每控制步生成已啟動完整圈離線運算，E 最終驗收待該份資料完成。超車候選工作與 LMPC 分開，不更動 LMPC。
 
 ## 1. 本次目標與範圍
 
@@ -144,11 +144,11 @@ map x/y 與 s/d 使用公尺，角度使用弧度，左側 d 為正。倒車或�
 
 目前一般參數檔預設 timestep=0.01 秒、n_sim_steps=4，對應 0.04 秒；已驗證中線基礎明確使用 n_sim_steps=10，即 0.1 秒控制週期。後續候選整合先沿用中線基礎的 0.01／0.1 秒設定，若改頻率須另做回歸；實際 session 仍以解析後設定與記錄時間為準。瀏覽器顯示幀率不改變上述頻率。
 
-先量測 V5.2 再確定規劃週期，不預先承諾每步最佳化或特定 Hz。本次已量測並採每 2 秒模擬時間同步更新，候選前視長度固定 3 m，僅作第一版整合設定；正常完成跨線時額外保存終止規劃事件。每次更新固定保存五個 candidate_id；失敗者保留 rejected、reason 與可用診斷，不保證五條均有效。定位失敗時保存跳過原因，不使用假造 s/d。
+先量測 V5.2 再確定規劃週期，不預先承諾每步最佳化或特定 Hz。歷史整合測試使用 3 m／2 秒；使用者已明定正式設定為 40 m／每控制步 0.1 秒更新，已恢復正式預設並另產生新資料，不修改歷史 session；正常完成跨線時額外保存終止規劃事件。每次更新固定保存五個 candidate_id；失敗者保留 rejected、reason 與可用診斷，不保證五條均有效。定位失敗時保存跳過原因，不使用假造 s/d。
 
 ### 5.3 第一版長度、寬度與五個終點規則
 
-沿用 V5.2，不新增依速度或彎度調整 lookahead/margin 的策略。預設 lookahead_m=40、safety_margin_m=0.2、sample_step_m=0.25、max_slope=1、endpoint_tolerance_m=0；max_curvature 未指定時由 tan(vehicle.max_steer)/vehicle.wheelbase 計算。這些是既有離線預設，不代表已選為整合 session 設定；C 先量測不同前視長度的耗時與拒絕率，再固定展示設定。
+沿用 V5.2，不新增依速度或彎度調整 lookahead/margin 的策略。預設 lookahead_m=40、safety_margin_m=0.2、sample_step_m=0.25、max_slope=1、endpoint_tolerance_m=0；max_curvature 未指定時由 tan(vehicle.max_steer)/vehicle.wheelbase 計算。正式整合已指定 lookahead_m=40、plan_period_s=control_dt_s=0.1；PP 控制前視仍為 0.6 m，與候選前視不同。40 m 表示 Frenet s 的幾何前視距離，不是 40 秒的對手或車輛狀態預測。
 
 每次記錄實際解析後 lookahead_m、margin、source pose、requested/actual sample step、各截面的 s/s_progress/d_min/d_max/boundary_valid/reason、五個 target_fraction 與 requested_target_d/actual_target_d，以及 parameter_policy。每截面的可用範圍為 [d_right+margin, d_left−margin]，是原圖法線查詢結果；五個終點偏移以末截面的範圍按 0、0.25、0.5、0.75、1 等分。道路寬度隨 s 變動，前視長度與 margin 本身沒有動態規則。若啟用 endpoint_tolerance，固定終點的所有 starts 失敗後才允許有界偏移，須保存實際偏移與模式。
 
@@ -189,7 +189,7 @@ V5.2 現行驗證為密集取樣的路徑中心點與原圖幾何核對，加上
 
 候選以固定顏色對應 ID，實線／虛線區分通過與拒絕；可用時標示首個失敗點。側邊或下方顯示 s/d、速度、有效候選數、拒絕原因、規劃耗時及候選年齡。圖層可切換，但車況、候選與游標時間須一致。
 
-優先擴充既有 viewer，評估其靜態地圖與查詢元件的重用程度；新增 session 讀取及播放功能。服務預設僅綁定 127.0.0.1。現有 viewer 目前沒有上述播放能力。
+優先擴充既有 viewer，評估其靜態地圖與查詢元件的重用程度；新增 session 讀取及播放功能。服務預設僅綁定 127.0.0.1。原幾何 viewer 維持既有查詢；新增 overtaking/playback.py 與 playback.html／playback.js，重用 MapInspector 的座標與原圖輸出，提供獨立 session 播放模式。
 
 ## 7. Session 資料設計
 
@@ -231,7 +231,7 @@ schema_version=1 的現行 metadata 記錄 map、frame_id、geometry_id、CSV／
 | C0 | overtaking/robust_adaptive_paths.py、test_robust_adaptive_paths.py | 已新增起點實測誤差、來源 yaw、參數策略與實際 road_sections；保留 V5.2 求解與驗證規則 |
 | B | 既有 lmpc/initialization.py 的 CentrelinePurePursuit、lap_adapter.py 的 CoreLapTracker、run_initialization.py | **完成重新確認**；同版本 Frenet CSV 已有兩圈紀錄，物理重播、車身與控制命令重新計算通過。不新增第二套中線控制器 |
 | C | run_centerline_candidates.py、overtaking/session.py、overtaking/verify_session.py | 已接入同一迴圈並完成一圈：先記 S_k、同步規劃、再執行 action_k；五 ID、起點拒絕閘門、終止／例外保存與獨立重播已驗證。詳見 8.4 |
-| D | 擴充 geometry/viewer.py／viewer.html 或新增獨立 playback 模式 | 待實作；先核對既有 API 的重用程度，加入 session 索引及向後播放測試；維持僅綁定本機 |
+| D | overtaking/playback.py／playback.html／playback.js | 已實作獨立本機回放，重用 MapInspector 座標與原圖；播放／暫停、單步、時間跳轉、五種倍速、索引重建與無未來資料檢查均已驗證 |
 | E | 同一 session 的整合驗收報告 | 待實作；完成一圈、跨接縫持續規劃與全部播放操作，才可宣告整合完成 |
 
 保留現有 .gitignore、docs/README.md 的工作樹修改；不改 LMPC、原始地圖與既有發布幾何。A 的資料契約通過不能視為 B–E 或全域 Frenet 驗證通過。
@@ -254,7 +254,7 @@ schema_version=1 的現行 metadata 記錄 map、frame_id、geometry_id、CSV／
 - [來源與目前控制命令核對](reports/centerline_baseline_sources_20261021.json)：CSV／manifest／地圖與保存紀錄一致；將 TrackData.control_path 交給現行 CentrelinePurePursuit，重新計算全部 3,937 個控制區間，命令最大差為 0；兩次接縫 s_wrapped 回零、s_unwrapped 連續，第一圈後還有實際下一筆物理樣本。
 - 現行程式部分檔案已有後續擴充，不能宣稱歷史程式檔 hash 全部一致；已在來源報告逐檔列出，並以現行命令重算與原模型物理重播確認這份基礎仍可重用。
 
-使用者確認的四階段對應 B／C／D／E：**第 1 階段（B）重新確認、第 2 階段（C）候選與紀錄整合均已完成；剩第 3 階段時間步播放與第 4 階段同場整體驗收。** C 已產生新的整合 session；E 須回放這份實際整合資料並完成 UI 操作驗收，不能以歷史兩圈取代。
+使用者確認的四階段對應 B／C／D／E：**第 1 階段（B）重新確認、第 2 階段（C）記錄整合與第 3 階段（D）播放功能已完成；第 4 階段（E）須等待正式 40 m／每步完整圈資料生成及核對後驗收。** C 已產生新的整合 session；E 須回放這份實際整合資料並完成 UI 操作驗收，不能以歷史兩圈取代。
 
 GlobalPurePursuit 一般入口仍有將圓交點換成離散樣本的行為；已驗證的 CentrelinePurePursuit 直接使用圓交點、閉合路徑並維持低速起步目標，不必再做另一份適配器。既有 logger 為 post-step 記錄，新的候選排程仍須明確記錄 step 前的來源車況。
 
@@ -265,10 +265,19 @@ GlobalPurePursuit 一般入口仍有將圓交點換成離散樣本的行為；�
 - run_centerline_candidates.py：載入 TrackData 一次，以固定 1.2 m/s／PP 前視 0.6 m 跟隨共用中線；物理子步 0.01 s、控制週期 0.1 s。候選每 2 秒模擬時間由最新實際 x/y/yaw 生成，lookahead=3 m、margin=0.2 m；不控制車輛。
 - overtaking/session.py：五個 ID 原子保存；記錄無效來源、ValueError 與 runtime 中斷，保存已寫入的串流及 summary；起點誤差超標者拒絕。SessionConfig 凍結參數與門檻，不能覆寫舊目錄。
 - schema_version=1：states.jsonl 每列為 control_step／sim_time_s／pose／speed_mps／physical_state／Frenet；actions.jsonl 明定 source_control_step → target_control_step；plans.jsonl 保存來源與 available 步號／時間、source_pose、paths，生成器的 method／參數／road_sections 等在 result 子物件；解析後設定另存 generator_settings。
-- playback_index.json 保存每列 UTF-8 byte_offset／byte_length，索引可由 JSONL 重建。latest_plan 只選當時已 available 且 source 不晚於游標的最近事件，失敗事件取代舊成功；目前只驗證資料查找語意，尚未有瀏覽器播放 UI。
+- playback_index.json 保存每列 UTF-8 byte_offset／byte_length，索引可由 JSONL 重建。latest_plan 只選當時已 available 且 source 不晚於游標的最近事件，失敗事件取代舊成功；已接上瀏覽器 UI；不重新計算候選。
 - 獨立 verifier 重播每個實際物理狀態與轉向 buffer、重新計算 PP 命令、重建 core Frenet／完整圈，核對五 ID、來源 pose／時間、起點誤差、倒序查找與 byte index。
 
 本機 session、數值、測試與限制見 [第二階段報告](reports/centerline_candidates_stage2_20261021.md)與[獨立核對 JSON](reports/centerline_candidates_stage2_20261021.json)。同步計算的牆鐘耗時不推進模擬時間；實際效能報告不構成即時運算保證。
+
+### 8.5 第三階段與正式 40 m 設定
+
+- [第三階段報告](reports/playback_stage3_20261021.md)保存操作證據、測試與畫面；localhost:8766 的服務只讀取已保存資料，未啟動最佳化或模擬。
+- 正式設定依使用者要求為候選前視 40 m、每個控制步 0.1 秒生成一組。先前 3 m／2 秒只是歷史接軌測試，不能當作正式前視與更新驗收。
+- 新增 max_control_steps 短預覽上限；短預覽明確顯示未完成整圈。正式 job 不設定此上限，進度逐組保存於 progress.json。
+- 40 m 每步短預覽共 4 筆車況／4 組候選，物理、控制、Frenet、每步規劃與正反向 API 核對通過；完整圈在 Data/research/overtaking/40m_every_step_20261021_001 背景生成，尚未完成最終驗收。
+- 單點耗時剖析顯示完整候選驗證占約 92%，21 次最佳化求解合計約 0.85 秒；此為含 profiler 開銷的 33.6 秒測試，不能與未剖析的 22.2 秒直接相減。細節見 [profile](reports/40m_generation_profile_20261021.json)。
+- 這是離線每 0.1 秒模擬時間取樣，尚未達牆鐘即時 10 Hz。後續效能工作應區分靜態幾何預計算／快取、執行期必要檢查與離線完整核驗，再量測求解加速；不能移除檢查後直接宣稱安全或即時。
 
 ## 9. 程式對照與相關文件
 

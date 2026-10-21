@@ -139,9 +139,15 @@ def run_session(output_dir, config=None, geometry_dir='maps/frenet/esp/geometry'
         durations.append(event['wall_time_s'])
         valid_counts.append(event['sampled_valid_count'])
         rejects.update(p['reason'] for p in event['paths'] if not p['sampled_valid'])
-        if plan_id % 10 == 0 or trigger == 'terminal':
-            print(json.dumps(dict(step=state['control_step'], sim_time_s=state['sim_time_s'],
-                                  plans=plan_id, valid_candidates=event['sampled_valid_count'])), flush=True)
+        progress = dict(status='running', control_step=state['control_step'],
+            sim_time_s=state['sim_time_s'], plan_count=plan_id,
+            sampled_valid_count=event['sampled_valid_count'], lookahead_m=config.lookahead_m,
+            plan_period_s=config.plan_period_s, latest_plan_wall_time_s=event['wall_time_s'],
+            elapsed_wall_time_s=perf_counter()-wall_start)
+        progress_tmp = writer.root/'progress.tmp'
+        progress_tmp.write_text(json.dumps(progress, allow_nan=False))
+        progress_tmp.replace(writer.root/'progress.json')
+        print(json.dumps(progress), flush=True)
 
     try:
         while True:
@@ -153,13 +159,15 @@ def run_session(output_dir, config=None, geometry_dir='maps/frenet/esp/geometry'
             if sim.last_tracking_result.event:
                 events.append(asdict(sim.last_tracking_result.event))
             completed = sim.tracker.completed_full_laps >= config.laps
+            preview_limit = bool(config.max_control_steps and sim.control_steps >= config.max_control_steps)
             exceeded = bool(state['valid'] and (errors_d[-1] > config.max_lateral_error_m or
                                                errors_yaw[-1] > config.max_heading_error_rad))
-            terminal = done or completed or exceeded
+            terminal = done or completed or exceeded or preview_limit
             if terminal or schedule.due(sim.current_time):
                 record_plan(state, 'terminal' if terminal else 'periodic')
             if terminal:
-                reason = sim.terminal_reason if done else 'tracking_limit_exceeded' if exceeded else 'requested_laps_reached'
+                reason = (sim.terminal_reason if done else 'tracking_limit_exceeded' if exceeded
+                          else 'requested_laps_reached' if completed else 'control_step_limit')
                 break
             action = controller.plan(obs)
             writer.append('actions', dict(schema_version=1, source_control_step=sim.control_steps,
@@ -187,6 +195,11 @@ def run_session(output_dir, config=None, geometry_dir='maps/frenet/esp/geometry'
             footprint_verified=False, continuous_verified=False,
             recording_complete=reason == 'requested_laps_reached' and error is None)
         writer.finalize(summary)
+        with (writer.root/'progress.json').open('w') as stream:
+            json.dump(dict(status='complete' if summary['recording_complete'] else 'stopped',
+                           end_reason=reason, error=error, control_step=sim.control_steps,
+                           plan_count=plan_id, lookahead_m=config.lookahead_m,
+                           plan_period_s=config.plan_period_s), stream, allow_nan=False)
     return summary
 
 
@@ -194,12 +207,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output-dir', required=True)
     parser.add_argument('--laps', type=int, default=1)
-    parser.add_argument('--plan-period', type=float, default=2.)
-    parser.add_argument('--lookahead', type=float, default=3.)
+    parser.add_argument('--plan-period', type=float, default=.1)
+    parser.add_argument('--lookahead', type=float, default=40.)
     parser.add_argument('--timeout', type=float, default=300.)
+    parser.add_argument('--max-control-steps', type=int, default=0, help='short preview only; zero runs to lap/timeout')
     args = parser.parse_args()
     result = run_session(args.output_dir, SessionConfig(laps=args.laps, plan_period_s=args.plan_period,
-                                                       lookahead_m=args.lookahead, timeout_s=args.timeout))
+                                                       lookahead_m=args.lookahead, timeout_s=args.timeout,
+                                                       max_control_steps=args.max_control_steps))
     print(json.dumps(result, indent=2, allow_nan=False))
     if not result['recording_complete']:
         raise SystemExit(2)

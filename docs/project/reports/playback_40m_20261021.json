@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "passed": true,
+  "session": "Data/research/overtaking/40m_every_step_preview_20261021_001",
+  "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+  "forward_frames": 4,
+  "backward_frames": 4,
+  "plan_count": 4,
+  "checks": {
+    "recorded_pose_and_time": true,
+    "five_candidate_ids": true,
+    "candidate_age": true,
+    "failure_reasons": true,
+    "no_future_candidates": true,
+    "past_trail_only": true,
+    "end_state": true
+  },
+  "source_sha256": {
+    "metadata.json": "53c6884eceb14d37883a4f46c3c4a65607b7e70d0985483cd80923ee03add0a4",
+    "states.jsonl": "5270b654a4afa857528458c7224e82e3177ced66d66a4cf0169b6da2ce088def",
+    "plans.jsonl": "cf34cafb2e05bc0ad8265ff77365e7ba3af1f4902d6a14f82b4757e333886ec3",
+    "summary.json": "f3e88bfd705115343d43017a5e1b20785031e61d73f85703d3ca41f8bcd85563"
+  },
+  "code_sha256": {
+    "f1tenth_benchmarks/research/overtaking/playback.py": "7a406cd2cf46ed9e1503d846dd2b7872016639c539a37aebe45b9a5fd85ffb44",
+    "f1tenth_benchmarks/research/overtaking/playback.html": "8b25ab152fe5a6a886e1960f4efcc2c7f27188b99576a76fbf0969ffa17fd20e",
+    "f1tenth_benchmarks/research/overtaking/playback.js": "ea84ca681cb9de8fca026f6b988d6f7c5b70932c13caccc92e6e361050076bbd"
+  },
+  "planning_allowed": false,
+  "footprint_verified": false
+}

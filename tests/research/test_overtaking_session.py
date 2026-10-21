@@ -124,7 +124,7 @@ def test_version_keeps_git_ref_when_image_has_no_git(monkeypatch):
 
 def test_real_timeout_records_terminal_sample_and_replays(tmp_path):
     root = tmp_path/'timeout'
-    summary = runner.run_session(root, SessionConfig(timeout_s=.2))
+    summary = runner.run_session(root, SessionConfig(timeout_s=.2, lookahead_m=3., plan_period_s=2.))
     assert summary['end_reason'] == 'timeout'
     assert not summary['recording_complete']
     assert summary['state_count'] == 3
@@ -157,9 +157,25 @@ def test_runtime_failure_finalizes_existing_records(tmp_path, monkeypatch):
     monkeypatch.setattr(runner, 'make_plan', fail)
     root = tmp_path/'error'
     with pytest.raises(RuntimeError, match='injected planner failure'):
-        runner.run_session(root, SessionConfig(timeout_s=.2))
+        runner.run_session(root, SessionConfig(timeout_s=.2, lookahead_m=3.))
     summary = json.loads((root/'summary.json').read_text())
     plan = json.loads((root/'plans.jsonl').read_text())
     assert summary['error'] == 'RuntimeError: injected planner failure'
     assert summary['state_count'] == 1 and summary['plan_count'] == 1
     assert len(plan['paths']) == 5 and plan['status'] == 'error'
+
+
+def test_official_defaults_and_every_control_step_preview(tmp_path):
+    config = SessionConfig()
+    assert config.lookahead_m == 40.
+    assert config.plan_period_s == config.control_dt_s == .1
+    root = tmp_path/'every_step'
+    # Use a short horizon only to keep this lifecycle test inexpensive. The
+    # official 40 m generator is independently measured with actual sessions.
+    summary = runner.run_session(root, SessionConfig(lookahead_m=3., max_control_steps=2))
+    assert summary['end_reason'] == 'control_step_limit'
+    assert summary['state_count'] == summary['plan_count'] == 3
+    assert not summary['recording_complete']
+    assert verify_session(root, require_complete=False)['passed']
+    progress = json.loads((root/'progress.json').read_text())
+    assert progress['status'] == 'stopped' and progress['plan_count'] == 3

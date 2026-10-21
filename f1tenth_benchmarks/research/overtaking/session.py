@@ -15,8 +15,8 @@ class SessionConfig:
     control_dt_s: float = .1
     timeout_s: float = 300.
     laps: int = 1
-    plan_period_s: float = 2.
-    lookahead_m: float = 3.
+    plan_period_s: float = .1
+    lookahead_m: float = 40.
     safety_margin_m: float = .2
     sample_step_m: float = .25
     max_slope: float = 1.
@@ -28,10 +28,12 @@ class SessionConfig:
     max_start_heading_error_rad: float = 1e-5
     max_lateral_error_m: float = .25
     max_heading_error_rad: float = .5
+    max_control_steps: int = 0  # zero means no short-preview limit
 
     def __post_init__(self):
         nonnegative = ('safety_margin_m', 'endpoint_tolerance_m')
-        integer_limits = dict(laps=(1, 100), max_refinements=(0, 5), max_iterations=(1, 1000))
+        integer_limits = dict(laps=(1, 100), max_refinements=(0, 5), max_iterations=(1, 1000),
+                              max_control_steps=(0, 10000000))
         for name, value in asdict(self).items():
             if name in integer_limits:
                 low, high = integer_limits[name]
