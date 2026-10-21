@@ -1,10 +1,10 @@
 # 基礎、Continuous 與 Frenet 完成總結
 
-核對日期：2026-10-07。
+更新日期：2026-10-21；既有幾何／Continuous 完整驗收基準日期為 2026-10-07。
 
-**Continuous 已完成 ESP 連續圈模擬與紀錄／重播驗收；Frenet 已完成六張地圖的幾何、雙向轉換、截面範圍與檢視工具。** 兩者提供後續研究基礎，但目前仍是分開的功能：Continuous 使用既有 Pure Pursuit 與折線圈追蹤，Frenet 尚未接入控制迴路。
+**Continuous 已完成 ESP 連續圈模擬與紀錄／重播驗收；Frenet 已完成六張地圖的幾何、雙向轉換、截面範圍與檢視工具。** 一般 Continuous 入口仍使用既有 Pure Pursuit 與折線圈追蹤；另外已存在使用同版本 Frenet CSV 與 core 進度的中線 Pure Pursuit 兩圈流程（位於 research/lmpc，該流程不執行 LMPC 學習）。2026-10-21 已[重新驗證通過](reports/centerline_baseline_confirmation_20261021.md)，其 PP 與圈追蹤已抽至 master 共用 core。新增的候選整合入口已完成同場一圈、100 次規劃與獨立重播；瀏覽器時間步播放仍待實作。詳見[第二階段報告](reports/centerline_candidates_stage2_20261021.md)。
 
-行車與幾何批次數值取自保存的驗收 JSON 與報告。本次提交前另重新執行完整研究 pytest；原三圈／五圈行車、全量幾何生成、GUI 與 hosted CI 未重跑。
+下列舊行車與幾何數值取自保存的驗收 JSON 與 2026-10-07 回歸。2026-10-21 另完成中線＋候選同場一圈、56 項相關回歸及修改後 15 項重驗；沒有宣稱本次重跑整份研究測試、舊三圈／五圈行車、全量幾何生成、GUI 或 hosted CI。
 
 ## 1. 基礎建立到哪裡
 
@@ -144,9 +144,9 @@ my_map 另逐格驗證所選主賽道 **5,204 格中心**，全部通過雙向�
 尚未完成的項目：
 
 - 全道路連續有效域及邊界插值批准；目前 domain_verified、continuous_verified、planning_allowed 皆為 false。
-- 使用 d(s) 的路線規劃、整段軌跡與 Cartesian 車身／動態檢查。
+- 候選的連續曲線／完整車身 swept footprint 與動態安全驗證；已有 V5.2 取樣候選生成及記錄，不等於通行安全認證。
 - Frenet 接入控制迴路、各圖閉迴路行車與不同控制器的驗收。
 - ROS2 Frenet 節點、TF／外參校準及端到端實車部署。
-- 超車、對手行為、五路線決策與 LMPC；目前只有目錄預留。
+- 超車閉迴路、對手預測與五路線決策，以及瀏覽器時間步播放。master 已有 V5.2 生成與中線同場記錄；LMPC 研究維持獨立 research/lmpc 分支。
 
 正式文件、五圈精簡證據與本機研究筆記的位置及 Git 納入規則已整理；提交紀錄以 Git 為準。執行方式見[操作指南](usage.md)，接線細節見[介面規格](interfaces.md)，互動查詢見[檢視器](viewer.md)。

@@ -270,6 +270,11 @@ def generate_robust_paths(geometry,x,y,yaw=None,lookahead_m=40.,safety_margin_m=
             reason=points[invalid]['reason']if invalid is not None else'optimizer_constraints_not_satisfied'
         actual=None if c is None else float(basis(length)@c)
         deviation=None if actual is None or target is None else actual-target
+        first_point=points[0]if points else None
+        start_position_error=None if first_point is None or first_point['x']is None or first_point['y']is None else float(
+            math.hypot(first_point['x']-x,first_point['y']-y))
+        start_heading_error=None if yaw is None or first_point is None or first_point['yaw']is None else float(
+            (first_point['yaw']-yaw+math.pi)%(2*math.pi)-math.pi)
         paths.append(dict(candidate_id=cid,geometry_id=geometry.geometry_id,frame_id='map',
             target_fraction=float(fraction),requested_target_d=target,target_d=actual if actual is not None else target,target_s=last['s'],
             actual_target_d=actual,terminal_deviation_m=deviation,endpoint_tolerance_m=tolerance,
@@ -278,12 +283,18 @@ def generate_robust_paths(geometry,x,y,yaw=None,lookahead_m=40.,safety_margin_m=
             sampled_valid=selected is not None,status='sampled_valid'if selected is not None else'rejected',
             reason=reason,first_invalid_sample=invalid,points=points,attempts=attempts,
             polyline_collision_verified=selected is not None,heading_matched=selected is not None and yaw is not None,
+            start_position_error_m=start_position_error,start_heading_error_rad=start_heading_error,
             spline=None if c is None else dict(knots=basis.t.tolist(),coefficients=c.tolist(),degree=basis.k,source_s_origin=s0)))
     return dict(schema_version=1,method='robust_constrained_adaptive_v52',geometry_id=geometry.geometry_id,frame_id='map',
-        start=dict(x=float(x),y=float(y),s=s0,d=d0),paths=paths,candidate_count=5,
+        start=dict(x=float(x),y=float(y),yaw=None if yaw is None else float(yaw),s=s0,d=d0,
+                   e_psi=epsi,d_prime=slope0),paths=paths,candidate_count=5,
         valid_target_count=sum(p['target_valid']for p in paths),sampled_valid_count=sum(p['sampled_valid']for p in paths),
         lookahead_m=length,safety_margin_m=margin,requested_sample_step_m=step,actual_sample_step_m=length/(len(dense)-1),
         max_slope=max_slope,max_curvature_inv_m=max_curvature,endpoint_tolerance_m=tolerance,initial_heading_assumed=yaw is None,
+        parameter_policy=dict(lookahead='fixed_input',margin='fixed_input',
+                              targets='five_equal_fractions_of_exact_terminal_section',
+                              speed_adaptation=False),
+        road_sections=sections,
         inspection_only=True,planning_allowed=False,domain_verified=False,continuous_verified=False,
         footprint_verified=False,dynamics_verified=False,opponents_verified=False,
         verification_level='dense_original_geometry_and_exact_polyline_point_sweep')

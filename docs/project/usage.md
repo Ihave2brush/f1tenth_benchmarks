@@ -50,6 +50,21 @@ my_session 必須尚不存在。輸出包括 metadata、samples、圈事件與�
 `--save-scans` 可另記錄 LiDAR。這個入口仍使用既有 Pure Pursuit 與折線圈數追蹤，
 沒有改為 Frenet 控制。圈追蹤的 s 與新 Frenet s 不可直接混用。
 
+## 中線行駛與候選 session（master）
+
+使用既有模擬 Python 環境，從 repository 根目錄執行；NEW_SESSION 與 NEW_VERIFICATION.json 都須不存在：
+
+```bash
+python -B -m f1tenth_benchmarks.research.run_centerline_candidates \
+  --output-dir Data/research/overtaking/NEW_SESSION --laps 1 --plan-period 2 --lookahead 3
+python -B -m f1tenth_benchmarks.research.overtaking.verify_session \
+  Data/research/overtaking/NEW_SESSION --report NEW_VERIFICATION.json
+```
+
+車以固定 1.2 m/s、0.6 m PP 前視跟隨 Frenet CSV 中線；候選每 2 秒模擬時間更新，前視固定 3 m。同步求解期間模擬時間暫停。session 保存實際車況、作用區間明確的控制、五條候選（含失敗原因）、byte 索引及摘要；跨線完成時另保存終止規劃事件。候選只供診斷，不接管控制，不宣稱車身可安全通行。
+
+本入口使用 master 的共用 core 控制與進度，不需 LMPC／osqp。驗證器做獨立物理重播、控制重算與來源／時間核對；目前尚未提供瀏覽器時間步播放。異常 session 可加 `--allow-incomplete` 核對可完整重播的資料；runtime 中斷若尚有 action 未產生下一狀態，仍須先處理不完整區間。
+
 ## 生成 ESP 中線與邊界
 
 ```bash

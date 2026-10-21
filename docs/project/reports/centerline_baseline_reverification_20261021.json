@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "physical_replay": {
+    "passed": true,
+    "physics_ticks": 39380,
+    "tolerance": 1e-12,
+    "method": "original_dynamics_and_recorded_pid_targets"
+  },
+  "independent_frenet_and_events": true,
+  "verifier_sha256": "c148fc3068bb2f3d9d1f1dd158a1fcc0d2bceb14be1b73914c797a8933733c87",
+  "sampled_footprint_checks": 78760,
+  "sample_count": 3938,
+  "lap_times": [
+    196.93948771153916,
+    196.722210589633
+  ],
+  "planning_allowed": false,
+  "continuous_verified": false
+}

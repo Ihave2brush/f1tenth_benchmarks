@@ -9,6 +9,7 @@ docs/project/*
 !docs/project/usage.md
 !docs/project/interfaces.md
 !docs/project/viewer.md
+!docs/project/centerline_candidates_playback_plan.md
 !docs/project/images/
 docs/project/images/*
 !docs/project/images/esp_projection_candidates.png
@@ -16,6 +17,12 @@ docs/project/images/*
 !docs/project/reports/
 docs/project/reports/*
 !docs/project/reports/manual_run_001_report.md
+!docs/project/reports/centerline_track_audit_20261021.json
+!docs/project/reports/centerline_baseline_confirmation_20261021.md
+!docs/project/reports/centerline_baseline_reverification_20261021.json
+!docs/project/reports/centerline_baseline_sources_20261021.json
+!docs/project/reports/centerline_candidates_stage2_20261021.md
+!docs/project/reports/centerline_candidates_stage2_20261021.json
 !docs/project/reports/figures/
 docs/project/reports/figures/*
 !docs/project/reports/figures/manual_run_001/

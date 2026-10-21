@@ -9,6 +9,8 @@
 | [操作指南](project/usage.md) | 如何安裝、執行與產生資料？ |
 | [介面與座標定義](project/interfaces.md) | 輸入輸出、座標與有效性怎麼接？ |
 | [Frenet 檢視器](project/viewer.md) | 如何看六張圖、查詢與解讀結果？ |
+| [中線跟隨、五條候選與時間步播放計畫](project/centerline_candidates_playback_plan.md) | 如何接軌 CSV、模擬器、候選生成及本機瀏覽器時間軸？（含已完成階段與驗收） |
+| [中線候選整合第二階段](project/reports/centerline_candidates_stage2_20261021.md) | master 同場一圈、100 次候選記錄與獨立重播 |
 | [Continuous 五圈驗收報告](project/reports/manual_run_001_report.md) | 行車結果、圖表、規劃對照與重播證據 |
 
 ## 維護與對外閱讀

@@ -51,6 +51,8 @@ def test_all_seeds_diagnostics_same_limits_and_fixed_target():
             assert sum(a['validation_accepted']is True for a in path['attempts'])==1
             p=path['points'][0]
             assert p['yaw']==pytest.approx(.1,abs=1e-6)
+            assert path['start_position_error_m'] < 1e-6
+            assert abs(path['start_heading_error_rad']) < 1e-6
             assert p['d_prime']==pytest.approx(math.tan(.1),abs=1e-6)
             assert path['terminal_deviation_m']==pytest.approx(0,abs=1e-6)
             assert path['polyline_collision_verified']
@@ -58,6 +60,25 @@ def test_all_seeds_diagnostics_same_limits_and_fixed_target():
     assert not r['continuous_verified'] and not r['footprint_verified'] and not r['dynamics_verified']
     assert any(a['validation_accepted']is None for p in r['paths']for a in p['attempts'])
     json.dumps(r,allow_nan=False)
+    assert r['start']['yaw'] == .1
+    assert r['parameter_policy']['speed_adaptation'] is False
+    assert len(r['road_sections']) == len(r['paths'][0]['points'])
+    assert r['road_sections'][-1]['d_min'] == pytest.approx(-1.8)
+
+
+def test_actual_offset_pose_and_yaw_near_closed_seam():
+    g=load_geometry('maps/frenet/esp/geometry','maps/esp.yaml',inspect=True)
+    pose=g.to_cartesian(g.curve.L-.5,.12,e_psi=.08)
+    assert pose['valid']
+    r=v52.generate_robust_paths(g,*pose['xy'],yaw=pose['yaw'],lookahead_m=3,max_refinements=0)
+    assert r['sampled_valid_count'] > 0
+    assert not r['initial_heading_assumed']
+    assert r['start']['d'] == pytest.approx(.12,abs=1e-6)
+    for path in r['paths']:
+        if path['sampled_valid']:
+            assert path['start_position_error_m'] < 1e-6
+            assert abs(path['start_heading_error_rad']) < 1e-6
+    assert r['road_sections'][-1]['s'] < r['road_sections'][0]['s']
 
 
 def test_bounded_endpoint_explicit_and_never_outside_allowed_interval():

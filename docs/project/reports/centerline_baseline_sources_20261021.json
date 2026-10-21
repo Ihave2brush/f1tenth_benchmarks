@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-21",
+  "timezone": "Asia/Taipei",
+  "passed": true,
+  "source_session": "Data/research/lmpc/b1_esp_centerline_20261007_001",
+  "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+  "source_artifacts_sha256": {
+    "session.json": "307c480bd88ff63656d776299e7fa618857afe1f0fd626cfc4f4c9b3a2efae8f",
+    "samples.jsonl": "c10241f4fa9d69b8341e5c1351814158c1947d4e298e8adc3ab272a0bec04b7c",
+    "events.jsonl": "1574c65e995a79b1bc8c720cd49ffd8365da9b6b91dbd963f9b0e0e0e1bd1721",
+    "verification_final.json": "c4d0b3c22b446a938c2b54ac8d78a066807df8d97e3ad296541ea7d6b8d9c9d0"
+  },
+  "shared_track_audit": {
+    "schema_version": 1,
+    "provenance": {
+      "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+      "frame_id": "map",
+      "data_mode": "csv_samples_with_same_version_json",
+      "reference_method": "reference_curve.json",
+      "boundary_method": "exact_grid_ray",
+      "manifest_sha256": "50c054f579a909f3e05d2e47714f77a01acd3ddd4bb7f2449d4fa2502f05c77e",
+      "file_hashes": {
+        "boundaries.csv": "8f1af5d5bfcf2f604760c56b388b0250e1fd2e0a2a7e3107344282960ed3d0c9",
+        "centerline.csv": "7ba098a3155be840d38c89e02c44a697cdd3f7a27ad775b0fa27a5ac3ded3188",
+        "reference_curve.json": "6b103d224deb5b8d90d971cf11ebeb801d116961321872eaac9266d4d4a4d6df",
+        "validity.json": "79ace2b90d330f4857aa42137de166d6bcc271e48aba871e6e6e3ea321931c46",
+        "waypoints_ros.csv": "48ee48e58ce6734f0e2c6097d64545314b16e80f9b7da8b64b271d5bd25285d1"
+      },
+      "source_hashes": {
+        "yaml": "b08b397c40df0ca57075dbf5df82366dc483d8a9279dfe13ebbbd605ede516c1",
+        "image": "0b43f364d034535de135730f8f111addd217f5362cd2727edd12f3f8d233289e"
+      },
+      "inspection_only": true,
+      "planning_allowed": false,
+      "footprint_verified": false
+    },
+    "passed": true,
+    "checks": {
+      "sample_agreement": true,
+      "boundary_rows": true,
+      "seam": true
+    },
+    "limits": {
+      "position_m": 1e-08,
+      "heading_rad": 1e-08,
+      "curvature_inv_m": 1e-08,
+      "boundary_m": 1e-07
+    },
+    "max_errors": {
+      "position_m": 0.0,
+      "heading_rad": 0.0,
+      "curvature_inv_m": 0.0,
+      "boundary_m": 0.0
+    },
+    "centerline_samples": 4739,
+    "boundary_rows": 4739,
+    "rejected_boundary_rows": [],
+    "seam": {
+      "position_m": 5.3291724435240114e-15,
+      "heading_rad": 0.0,
+      "curvature_inv_m": 1.3552527156068805e-19
+    },
+    "interval_probe_count": 4739,
+    "invalid_midpoint_intervals": [],
+    "csv_chord_midpoint_error_max_m": 0.00044100017731115706,
+    "interval_policy": "exact JSON reference and original-map boundary queries; no interpolation",
+    "runtime_invalid_policy": "reject invalid exact queries; midpoint probes are not a domain proof",
+    "planning_allowed": false,
+    "domain_verified": false,
+    "continuous_verified": false,
+    "footprint_verified": false
+  },
+  "controller_command_recomputation": {
+    "passed": true,
+    "control_intervals": 3937,
+    "max_abs_command_error": 0.0,
+    "tolerance": 1e-12,
+    "speed_mps": 1.2,
+    "lookahead_m": 0.6
+  },
+  "crossing_checks": [
+    {
+      "row_index": 1970,
+      "next_actual_sample_exists": true,
+      "before_s_wrapped_m": 236.86011429104147,
+      "after_s_wrapped_m": 0.07261203113390025,
+      "before_s_unwrapped_m": 236.86011429104326,
+      "after_s_unwrapped_m": 236.98010980438755
+    },
+    {
+      "row_index": 3937,
+      "next_actual_sample_exists": false,
+      "before_s_wrapped_m": 236.8334605193223,
+      "after_s_wrapped_m": 0.045961598983211616,
+      "before_s_unwrapped_m": 473.74095829257726,
+      "after_s_unwrapped_m": 473.86095714549003
+    }
+  ],
+  "code_comparison": [
+    {
+      "path": "f1tenth_benchmarks/research/lmpc/__init__.py",
+      "historical_sha256": "da557484e2cb0a85463cfbca31b214f8642631f86b2c4302e22a6c8e13d6f623",
+      "current_sha256": "bfbc48ba08049a7167558c9b4c9a30040fa0659e9f8706d70ba41acc654b5dc4",
+      "same": false
+    },
+    {
+      "path": "f1tenth_benchmarks/research/lmpc/config.py",
+      "historical_sha256": "d08c2d50931772ea9f9f250a582734853f39cfc32b54f82c2e767e98b6009f28",
+      "current_sha256": "7bdcc4d912201eff2c94c8681c209eb60ec128d2282185846733b2f35a245b94",
+      "same": false
+    },
+    {
+      "path": "f1tenth_benchmarks/research/lmpc/dynamics.py",
+      "historical_sha256": "6b3ad852f4fdf18e77f765245b8031d4462fb6b377e477b8f43cc81ed2b0555d",
+      "current_sha256": "f9a4a7f92289afdb97ca1c8b9081c268750547e359b42f4ab88edb119a3416f0",
+      "same": false
+    },
+    {
+      "path": "f1tenth_benchmarks/research/lmpc/initialization.py",
+      "historical_sha256": "54eaa562fd291f37b1484048b2262e49542eadfe50bd10656887707a0a5900b5",
+      "current_sha256": "a3f0f3b893e880b96e249374557379c5e2948d8b889982f5bef009980759074b",
+      "same": false
+    },
+    {
+      "path": "f1tenth_benchmarks/research/lmpc/lap_adapter.py",
+      "historical_sha256": "0b6236650d472338c873949172313ffe44482fb49c0919108ea4ce8150cbe5f4",
+      "current_sha256": "0b6236650d472338c873949172313ffe44482fb49c0919108ea4ce8150cbe5f4",
+      "same": true
+    },
+    {
+      "path": "f1tenth_benchmarks/research/lmpc/run_initialization.py",
+      "historical_sha256": "00b32c3cbc4e5a2a3891587ab30a9613cac8ee0d4c5bf199cc138c1f8d356a3d",
+      "current_sha256": "05ad0e8cd5078b59872a026fd3ce28731abc6982864b255bf3f611c042181c0a",
+      "same": false
+    },
+    {
+      "path": "f1tenth_benchmarks/research/lmpc/run_smoke.py",
+      "historical_sha256": "0744918cfe2bbbf7d30f331213b7277b765858a580dafea347c1f55072b1e01f",
+      "current_sha256": "0744918cfe2bbbf7d30f331213b7277b765858a580dafea347c1f55072b1e01f",
+      "same": true
+    },
+    {
+      "path": "f1tenth_benchmarks/research/lmpc/state.py",
+      "historical_sha256": "5816e8c92421183df2da77e1fe7be5958794597f0806bbb8e71f84805a508e71",
+      "current_sha256": "5816e8c92421183df2da77e1fe7be5958794597f0806bbb8e71f84805a508e71",
+      "same": true
+    },
+    {
+      "path": "f1tenth_benchmarks/research/lmpc/validation.py",
+      "historical_sha256": "4eec845e6977ca0d99930145e550c23afe7abd3c3b9b32b86fc5f5d615cfd6f9",
+      "current_sha256": "4eec845e6977ca0d99930145e550c23afe7abd3c3b9b32b86fc5f5d615cfd6f9",
+      "same": true
+    }
+  ],
+  "scope": "Existing recorded centreline baseline and current-controller command recomputation; no new driving session",
+  "planning_allowed": false,
+  "continuous_verified": false,
+  "note": "Recorded vehicle footprint verification does not certify the five overtaking candidates.",
+  "audit_source": "\"\"\"Read-only reconfirmation of the existing centreline PP baseline.\"\"\"\nimport hashlib\nimport json\nfrom pathlib import Path\n\nimport numpy as np\n\nfrom f1tenth_benchmarks.research.lmpc.initialization import CentrelinePurePursuit\nfrom f1tenth_benchmarks.research.overtaking.track_data import TrackData\n\n\ndef digest(path):\n    return hashlib.sha256(path.read_bytes()).hexdigest()\n\n\nroot = Path('Data/research/lmpc/b1_esp_centerline_20261007_001')\nsaved = json.loads((root/'session.json').read_text())\nrows = [json.loads(line) for line in (root/'samples.jsonl').read_text().splitlines()]\nevents = [json.loads(line) for line in (root/'events.jsonl').read_text().splitlines()]\ntrack = TrackData('maps/frenet/esp/geometry', 'maps/esp.yaml')\nassert track.geometry.geometry_id == saved['geometry_id']\nassert track.provenance['source_hashes'] == saved['source_map_hashes']\nassert track.provenance['file_hashes']['centerline.csv'] == saved['input_hashes'][\n    'maps/frenet/esp/geometry/centerline.csv']\ncontroller = CentrelinePurePursuit(\n    track.control_path, saved['config']['paper']['initialization_speed'],\n    saved['config']['initialization']['lookahead_m'],\n    saved['vehicle_params']['wheelbase'], saved['vehicle_params']['max_steer'])\nmax_error = 0.\nfor previous, row in zip(rows, rows[1:]):\n    action = controller.plan({'pose': np.asarray(previous['physical_state'])[[0, 1, 4]]})\n    error = float(np.max(np.abs(action-np.asarray(row['command']))))\n    max_error = max(max_error, error)\n    np.testing.assert_allclose(action, row['command'], rtol=0, atol=1e-12)\nseams = []\nfor event in events:\n    i = event['row_index']\n    before, after = rows[i-1], rows[i]\n    assert event['kind'] == 'full'\n    assert before['frenet']['s_wrapped'] > after['frenet']['s_wrapped']\n    assert after['frenet']['s_unwrapped'] > before['frenet']['s_unwrapped']\n    assert after['reset_count'] == before['reset_count'] == 1\n    continued = i+1 < len(rows)\n    if continued:\n        np.testing.assert_array_equal(rows[i+1]['physics_ticks'][0]['pre_state'], after['physical_state'])\n    seams.append(dict(row_index=i, next_actual_sample_exists=continued,\n                      before_s_wrapped_m=before['frenet']['s_wrapped'],\n                      after_s_wrapped_m=after['frenet']['s_wrapped'],\n                      before_s_unwrapped_m=before['frenet']['s_unwrapped'],\n                      after_s_unwrapped_m=after['frenet']['s_unwrapped']))\ncode_comparison = []\nfor name, historical in saved['code_hashes'].items():\n    path = Path(name.removeprefix('/workspace/'))\n    current = digest(path) if path.exists() else None\n    code_comparison.append(dict(path=str(path), historical_sha256=historical,\n                                current_sha256=current, same=current == historical))\nresult = dict(\n    schema_version=1, date='2026-10-21', timezone='Asia/Taipei', passed=True,\n    source_session=str(root), geometry_id=track.geometry.geometry_id,\n    source_artifacts_sha256={name: digest(root/name) for name in\n                            ('session.json', 'samples.jsonl', 'events.jsonl', 'verification_final.json')},\n    shared_track_audit=track.audit,\n    controller_command_recomputation=dict(passed=True, control_intervals=len(rows)-1,\n                                         max_abs_command_error=max_error, tolerance=1e-12,\n                                         speed_mps=controller.speed, lookahead_m=controller.lookahead),\n    crossing_checks=seams, code_comparison=code_comparison,\n    scope='Existing recorded centreline baseline and current-controller command recomputation; no new driving session',\n    planning_allowed=False, continuous_verified=False,\n    note='Recorded vehicle footprint verification does not certify the five overtaking candidates.',\n    # Preserve the exact standalone audit so the report can reproduce these\n    # extra checks without changing the historical session or LMPC sources.\n    audit_source=Path(__file__).read_text())\nout = Path('docs/project/reports/centerline_baseline_sources_20261021.json')\nwith out.open('x') as stream:\n    json.dump(result, stream, indent=2, allow_nan=False)\n    stream.write('\\n')\nprint(json.dumps(dict(passed=True, control_intervals=len(rows)-1,\n                      max_abs_command_error=max_error, report=str(out))))\n"
+}
