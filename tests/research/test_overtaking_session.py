@@ -1,6 +1,7 @@
 """Contracts for phase 2 without importing LMPC or an optimizer for control."""
 import json
 import math
+from pathlib import Path
 import subprocess
 from types import SimpleNamespace
 
@@ -120,6 +121,39 @@ def test_version_keeps_git_ref_when_image_has_no_git(monkeypatch):
     fallback = runner.source_version()
     assert fallback['commit'] == expected['commit']
     assert fallback['branch'] == expected['branch']
+
+
+@pytest.mark.parametrize('branch', ['test-branch', None])
+def test_version_branch_consistent_with_and_without_git(tmp_path, monkeypatch, branch):
+    # CI checks out a detached HEAD; local development usually has a branch.
+    source = Path('f1tenth_benchmarks').resolve()
+    (tmp_path/'f1tenth_benchmarks').symlink_to(source, target_is_directory=True)
+    git_dir = tmp_path/'.git'
+    git_dir.mkdir()
+    commit = 'a'*40
+    if branch is None:
+        (git_dir/'HEAD').write_text(commit+'\n')
+    else:
+        ref = git_dir/'refs'/'heads'/branch
+        ref.parent.mkdir(parents=True)
+        ref.write_text(commit+'\n')
+        (git_dir/'HEAD').write_text('ref: refs/heads/'+branch+'\n')
+    monkeypatch.chdir(tmp_path)
+
+    outputs = {('rev-parse', 'HEAD'): commit.encode(),
+               ('branch', '--show-current'): (branch or '').encode(),
+               ('diff', 'HEAD', '--binary'): b''}
+    monkeypatch.setattr(subprocess, 'check_output',
+                        lambda command, **kwargs: outputs[tuple(command[1:])])
+    expected = runner.source_version()
+
+    def missing_git(*args, **kwargs):
+        raise FileNotFoundError('git absent from simulation image')
+    monkeypatch.setattr(subprocess, 'check_output', missing_git)
+    fallback = runner.source_version()
+    assert expected['branch'] == fallback['branch'] == branch
+    assert expected['commit'] == fallback['commit'] == commit
+    assert expected['code_sha256'] == fallback['code_sha256']
 
 
 def test_real_timeout_records_terminal_sample_and_replays(tmp_path):

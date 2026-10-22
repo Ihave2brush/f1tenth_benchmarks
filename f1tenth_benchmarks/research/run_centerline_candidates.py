@@ -26,7 +26,7 @@ def source_version():
         return subprocess.check_output(['git', *args], stderr=subprocess.DEVNULL)
     try:
         version = dict(commit=git('rev-parse', 'HEAD').decode().strip(),
-                       branch=git('branch', '--show-current').decode().strip(),
+                       branch=git('branch', '--show-current').decode().strip() or None,
                        tracked_diff_sha256=hashlib.sha256(git('diff', 'HEAD', '--binary')).hexdigest())
     except (OSError, subprocess.CalledProcessError):
         version = dict(commit=None, branch=None, tracked_diff_sha256=None)
