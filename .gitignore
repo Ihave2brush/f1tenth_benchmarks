@@ -10,6 +10,7 @@ docs/project/*
 !docs/project/interfaces.md
 !docs/project/viewer.md
 !docs/project/centerline_candidates_playback_plan.md
+!docs/project/frenet_runtime_validation_plan.md
 !docs/project/images/
 docs/project/images/*
 !docs/project/images/esp_projection_candidates.png
@@ -24,6 +25,11 @@ docs/project/reports/*
 !docs/project/reports/centerline_candidates_stage2_20261021.md
 !docs/project/reports/centerline_candidates_stage2_20261021.json
 !docs/project/reports/playback_stage3_20261021.md
+!docs/project/reports/daily_progress_20261021.md
+!docs/project/reports/2026-10-22_路線生成方案與模擬器驗證.md
+!docs/project/reports/planner_cases_20261022.json
+!docs/project/reports/planner_step310_20261022.jpg
+!docs/project/reports/planner_step317_20261022.jpg
 !docs/project/reports/playback_40m_20261021.json
 !docs/project/reports/playback_40m_20261021.jpg
 !docs/project/reports/40m_generation_profile_20261021.json

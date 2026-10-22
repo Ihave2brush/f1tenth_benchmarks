@@ -12,6 +12,9 @@
 | [中線跟隨、五條候選與時間步播放計畫](project/centerline_candidates_playback_plan.md) | 如何接軌 CSV、模擬器、候選生成及本機瀏覽器時間軸？（含已完成階段與驗收） |
 | [中線候選整合第二階段](project/reports/centerline_candidates_stage2_20261021.md) | master 同場一圈、100 次候選記錄與獨立重播 |
 | [回放與 40 m 每步生成](project/reports/playback_stage3_20261021.md) | 播放操作、正式設定修正、短預覽、背景生成與耗時剖析 |
+| [2026-10-21 進度與交接](project/reports/daily_progress_20261021.md) | 今日成果、驗證證據、背景工作快照與下一步 |
+| [路線生成方案與模擬器驗證（2026-10-22）](project/reports/2026-10-22_路線生成方案與模擬器驗證.md) | 整體完成狀態、現行算法、整圈容量／耗時、案例截圖及待實作設計 |
+| [Frenet 優先驗證改造方案](project/frenet_runtime_validation_plan.md) | CSV 道路表、Frenet 快速檢查、XY 回退與效能驗收（尚未實作） |
 | [Continuous 五圈驗收報告](project/reports/manual_run_001_report.md) | 行車結果、圖表、規劃對照與重播證據 |
 
 ## 維護與對外閱讀
