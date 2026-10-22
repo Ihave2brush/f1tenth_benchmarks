@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "provenance": {
+    "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+    "frame_id": "map",
+    "data_mode": "csv_samples_with_same_version_json",
+    "reference_method": "reference_curve.json",
+    "boundary_method": "exact_grid_ray",
+    "manifest_sha256": "50c054f579a909f3e05d2e47714f77a01acd3ddd4bb7f2449d4fa2502f05c77e",
+    "file_hashes": {
+      "boundaries.csv": "8f1af5d5bfcf2f604760c56b388b0250e1fd2e0a2a7e3107344282960ed3d0c9",
+      "centerline.csv": "7ba098a3155be840d38c89e02c44a697cdd3f7a27ad775b0fa27a5ac3ded3188",
+      "reference_curve.json": "6b103d224deb5b8d90d971cf11ebeb801d116961321872eaac9266d4d4a4d6df",
+      "validity.json": "79ace2b90d330f4857aa42137de166d6bcc271e48aba871e6e6e3ea321931c46",
+      "waypoints_ros.csv": "48ee48e58ce6734f0e2c6097d64545314b16e80f9b7da8b64b271d5bd25285d1"
+    },
+    "source_hashes": {
+      "yaml": "b08b397c40df0ca57075dbf5df82366dc483d8a9279dfe13ebbbd605ede516c1",
+      "image": "0b43f364d034535de135730f8f111addd217f5362cd2727edd12f3f8d233289e"
+    },
+    "inspection_only": true,
+    "planning_allowed": false,
+    "footprint_verified": false
+  },
+  "passed": true,
+  "checks": {
+    "sample_agreement": true,
+    "boundary_rows": true,
+    "seam": true
+  },
+  "limits": {
+    "position_m": 1e-08,
+    "heading_rad": 1e-08,
+    "curvature_inv_m": 1e-08,
+    "boundary_m": 1e-07
+  },
+  "max_errors": {
+    "position_m": 0.0,
+    "heading_rad": 0.0,
+    "curvature_inv_m": 0.0,
+    "boundary_m": 0.0
+  },
+  "centerline_samples": 4739,
+  "boundary_rows": 4739,
+  "rejected_boundary_rows": [],
+  "seam": {
+    "position_m": 5.3291724435240114e-15,
+    "heading_rad": 0.0,
+    "curvature_inv_m": 1.3552527156068805e-19
+  },
+  "interval_probe_count": 4739,
+  "invalid_midpoint_intervals": [],
+  "csv_chord_midpoint_error_max_m": 0.00044100017731115706,
+  "interval_policy": "exact JSON reference and original-map boundary queries; no interpolation",
+  "runtime_invalid_policy": "reject invalid exact queries; midpoint probes are not a domain proof",
+  "planning_allowed": false,
+  "domain_verified": false,
+  "continuous_verified": false,
+  "footprint_verified": false
+}

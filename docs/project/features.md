@@ -16,6 +16,6 @@
 | TF 資料適配 | 檢查 map→base_link 相容資料的框架、時間、版本與偏移 | `FrenetTracker.update_tf()` |
 | 共用研究入口 | simulator／lap tracker／logger 轉匯出既有實作 | `core/continuous_sim.py`、`core/lap_tracking.py`、`core/logging.py` |
 
-Continuous 沿用原動力學、LiDAR、碰撞模型與 Pure Pursuit；新增的是模擬生命週期、圈事件與紀錄。Frenet 是另一組共用幾何能力，目前尚未接入該控制迴路。
+Continuous 沿用原動力學、LiDAR、碰撞模型與 Pure Pursuit。master 已接上同版本 Frenet CSV 中線、core 進度、五條候選記錄與瀏覽器時間步播放。3 m／2 秒歷史整合已完成一圈；正式 40 m／每 0.1 秒的短預覽已通過，完整圈仍在計算，尚未達即時 10 Hz。
 
-超車與 LMPC 只有預留目錄。TF 適配器尚未構成 ROS2 訂閱／TF buffer／publisher 節點；路線規劃、車身／動態驗證與部署需另行完成。
+超車已有 V5.2 候選生成與中線 session 整合，候選不接管控制；LMPC 研究維持獨立分支。TF 適配器尚未構成 ROS2 訂閱／TF buffer／publisher 節點；路線規劃、車身／動態驗證與部署需另行完成。

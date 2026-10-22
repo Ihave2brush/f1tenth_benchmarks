@@ -1,0 +1,254 @@
+{
+  "profile_wall_time_s": 33.57660572900022,
+  "lookahead_m": 40.0,
+  "sampled_valid_count": 3,
+  "samples_per_path": 1601,
+  "solver_attempts": 21,
+  "timings": [
+    {
+      "file": "f1tenth_benchmarks/research/overtaking/robust_adaptive_paths.py",
+      "function": "generate_robust_paths",
+      "calls": 1,
+      "own_s": 0.003211017,
+      "cumulative_s": 33.576587223000004
+    },
+    {
+      "file": "f1tenth_benchmarks/research/overtaking/robust_adaptive_paths.py",
+      "function": "_validate",
+      "calls": 9,
+      "own_s": 0.147518371,
+      "cumulative_s": 30.748777051
+    },
+    {
+      "file": "f1tenth_benchmarks/research/core/geometry/frenet.py",
+      "function": "boundaries",
+      "calls": 30420,
+      "own_s": 0.10882619800000001,
+      "cumulative_s": 21.156820216
+    },
+    {
+      "file": "f1tenth_benchmarks/research/core/geometry/frenet.py",
+      "function": "to_cartesian",
+      "calls": 14409,
+      "own_s": 0.09247788200000001,
+      "cumulative_s": 20.378480124000003
+    },
+    {
+      "file": "f1tenth_benchmarks/research/core/geometry/frenet.py",
+      "function": "to_frenet",
+      "calls": 14410,
+      "own_s": 0.07766983400000001,
+      "cumulative_s": 17.460388688000002
+    },
+    {
+      "file": "f1tenth_benchmarks/research/core/geometry/extraction.py",
+      "function": "ray_boundary",
+      "calls": 60840,
+      "own_s": 8.307808127000001,
+      "cumulative_s": 15.231980802
+    },
+    {
+      "file": "f1tenth_benchmarks/research/core/geometry/frenet.py",
+      "function": "_check_candidate",
+      "calls": 14410,
+      "own_s": 0.078379181,
+      "cumulative_s": 12.982337448000001
+    },
+    {
+      "file": "f1tenth_benchmarks/research/core/geometry/frenet.py",
+      "function": "reference",
+      "calls": 64042,
+      "own_s": 0.146543652,
+      "cumulative_s": 12.207628702000001
+    },
+    {
+      "file": "f1tenth_benchmarks/research/core/geometry/extraction.py",
+      "function": "sample",
+      "calls": 64042,
+      "own_s": 0.42520051000000003,
+      "cumulative_s": 12.028674442000002
+    },
+    {
+      "file": "f1tenth_benchmarks/research/core/geometry/extraction.py",
+      "function": "<listcomp>",
+      "calls": 64042,
+      "own_s": 0.044654745,
+      "cumulative_s": 9.428487652000001
+    },
+    {
+      "file": "f1tenth_benchmarks/research/core/geometry/extraction.py",
+      "function": "u_at_s",
+      "calls": 64042,
+      "own_s": 0.137209044,
+      "cumulative_s": 9.383832907
+    },
+    {
+      "file": "/usr/local/lib/python3.9/site-packages/scipy/optimize/_zeros_py.py",
+      "function": "brentq",
+      "calls": 64042,
+      "own_s": 0.062685871,
+      "cumulative_s": 9.094670056
+    },
+    {
+      "file": "/usr/local/lib/python3.9/site-packages/scipy/optimize/_zeros_py.py",
+      "function": "f_raise",
+      "calls": 383463,
+      "own_s": 0.35915372300000004,
+      "cumulative_s": 8.902468243000001
+    },
+    {
+      "file": "f1tenth_benchmarks/research/core/geometry/extraction.py",
+      "function": "integral",
+      "calls": 397873,
+      "own_s": 0.15792302400000002,
+      "cumulative_s": 8.740268999000001
+    },
+    {
+      "file": "f1tenth_benchmarks/research/core/geometry/extraction.py",
+      "function": "<lambda>",
+      "calls": 383463,
+      "own_s": 0.16088723400000002,
+      "cumulative_s": 8.543314520000001
+    },
+    {
+      "file": "f1tenth_benchmarks/research/core/geometry/extraction.py",
+      "function": "evaluate",
+      "calls": 633229,
+      "own_s": 0.28218023200000003,
+      "cumulative_s": 5.980315643
+    },
+    {
+      "file": "f1tenth_benchmarks/research/core/geometry/extraction.py",
+      "function": "<lambda>",
+      "calls": 397873,
+      "own_s": 0.194455399,
+      "cumulative_s": 5.317650939
+    },
+    {
+      "file": "f1tenth_benchmarks/research/core/geometry/frenet.py",
+      "function": "_candidates",
+      "calls": 14410,
+      "own_s": 0.367707123,
+      "cumulative_s": 4.160468152
+    },
+    {
+      "file": "f1tenth_benchmarks/research/overtaking/constrained_adaptive_paths.py",
+      "function": "query_road_sections",
+      "calls": 1,
+      "own_s": 0.004702504000000001,
+      "cumulative_s": 1.098090841
+    },
+    {
+      "file": "/usr/local/lib/python3.9/site-packages/numpy/polynomial/polynomial.py",
+      "function": "polyroots",
+      "calls": 28990,
+      "own_s": 0.043091050000000006,
+      "cumulative_s": 1.0295393160000001
+    },
+    {
+      "file": "f1tenth_benchmarks/research/overtaking/robust_adaptive_paths.py",
+      "function": "fit_multistart",
+      "calls": 7,
+      "own_s": 0.000965833,
+      "cumulative_s": 0.861071684
+    },
+    {
+      "file": "/usr/local/lib/python3.9/site-packages/scipy/optimize/_minimize.py",
+      "function": "minimize",
+      "calls": 21,
+      "own_s": 0.000220062,
+      "cumulative_s": 0.8525308020000001
+    },
+    {
+      "file": "/usr/local/lib/python3.9/site-packages/scipy/optimize/_slsqp_py.py",
+      "function": "_minimize_slsqp",
+      "calls": 21,
+      "own_s": 0.6250081540000001,
+      "cumulative_s": 0.8521995560000001
+    },
+    {
+      "file": "f1tenth_benchmarks/research/overtaking/constrained_adaptive_paths.py",
+      "function": "_reference_data",
+      "calls": 1,
+      "own_s": 0.00180016,
+      "cumulative_s": 0.8509366960000001
+    },
+    {
+      "file": "f1tenth_benchmarks/research/core/geometry/map_raster.py",
+      "function": "map_to_pixel",
+      "calls": 89660,
+      "own_s": 0.37875625500000004,
+      "cumulative_s": 0.6450689980000001
+    },
+    {
+      "file": "f1tenth_benchmarks/research/core/geometry/map_raster.py",
+      "function": "classify",
+      "calls": 75250,
+      "own_s": 0.048560208,
+      "cumulative_s": 0.60142753
+    },
+    {
+      "file": "<__array_function__ internals>",
+      "function": "eigvals",
+      "calls": 28990,
+      "own_s": 0.009555982000000001,
+      "cumulative_s": 0.49949167000000005
+    },
+    {
+      "file": "/usr/local/lib/python3.9/site-packages/numpy/linalg/linalg.py",
+      "function": "eigvals",
+      "calls": 28990,
+      "own_s": 0.23068996200000003,
+      "cumulative_s": 0.47872669100000004
+    },
+    {
+      "file": "f1tenth_benchmarks/research/core/geometry/frenet.py",
+      "function": "_s_from_u",
+      "calls": 14410,
+      "own_s": 0.009332876,
+      "cumulative_s": 0.433909425
+    },
+    {
+      "file": "f1tenth_benchmarks/research/core/geometry/extraction.py",
+      "function": "arc",
+      "calls": 14410,
+      "own_s": 0.02561408,
+      "cumulative_s": 0.424576549
+    },
+    {
+      "file": "f1tenth_benchmarks/research/overtaking/constrained_adaptive_paths.py",
+      "function": "<listcomp>",
+      "calls": 1,
+      "own_s": 0.000526505,
+      "cumulative_s": 0.283263096
+    },
+    {
+      "file": "f1tenth_benchmarks/research/core/geometry/map_raster.py",
+      "function": "map_to_local",
+      "calls": 155300,
+      "own_s": 0.200426459,
+      "cumulative_s": 0.22315642700000002
+    },
+    {
+      "file": "f1tenth_benchmarks/research/overtaking/constrained_adaptive_paths.py",
+      "function": "validate_path_segments",
+      "calls": 3,
+      "own_s": 0.08481147300000001,
+      "cumulative_s": 0.132675773
+    },
+    {
+      "file": "/usr/local/lib/python3.9/site-packages/scipy/optimize/_slsqp_py.py",
+      "function": "_eval_constraint",
+      "calls": 1955,
+      "own_s": 0.002199869,
+      "cumulative_s": 0.093373828
+    },
+    {
+      "file": "/usr/local/lib/python3.9/site-packages/scipy/optimize/_slsqp_py.py",
+      "function": "<listcomp>",
+      "calls": 1955,
+      "own_s": 0.001218087,
+      "cumulative_s": 0.081010731
+    }
+  ]
+}
