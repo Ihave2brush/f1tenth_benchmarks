@@ -1,0 +1,2407 @@
+{
+  "completed": true,
+  "map": "my_map",
+  "config": {
+    "speed_mps": 1.2,
+    "pp_lookahead_m": 0.3,
+    "control_dt_s": 0.1,
+    "timeout_s": 300.0,
+    "laps": 1,
+    "plan_period_s": 0.1,
+    "lookahead_m": 3.0,
+    "safety_margin_m": 0.185,
+    "sample_step_m": 0.25,
+    "max_slope": 1.0,
+    "max_curvature_inv_m": 1.7144629642053641,
+    "endpoint_tolerance_m": 0.0,
+    "max_refinements": 2,
+    "max_iterations": 150,
+    "max_start_position_error_m": 0.0001,
+    "max_start_heading_error_rad": 1e-05,
+    "max_lateral_error_m": 0.25,
+    "max_heading_error_rad": 0.5,
+    "max_control_steps": 0,
+    "query_mode": "exact",
+    "generation_mode": "direct_only",
+    "validation_step_m": null
+  },
+  "profile": {
+    "vehicle_width_m": 0.27,
+    "vehicle_length_m": 0.51,
+    "requested_body_edge_clearance_m": 0.05,
+    "centre_prefilter_margin_m": 0.185,
+    "footprint_verified": false,
+    "limitation": "half-width prefilter only; oriented body corners and swept footprint not verified"
+  },
+  "code_sha256": {
+    "/workspace/f1tenth_benchmarks/research/run_mm_bspline_comparison.py": "e28f46850917de0a53713426bba761e506a375e51771f939bcc0f1900751f6d9",
+    "/workspace/f1tenth_benchmarks/research/overtaking/mm_bspline_repair.py": "b95a975aeb0ac1aa373735d0252db73cc35e5f0f9e8c9f4f2d511f84ab6bbd3d"
+  },
+  "arms": [
+    {
+      "name": "budget_0ms",
+      "budget_ms": 0.0,
+      "verification_passed": true,
+      "repaired_instances": 0,
+      "requested_instances": 35,
+      "timed_out_instances": 0,
+      "reference_valid_count": 102,
+      "valid_id_counts": {
+        "1": 14,
+        "2": 78,
+        "3": 102,
+        "4": 91,
+        "5": 19
+      },
+      "steps_34_35": [
+        {
+          "step": 34,
+          "valid_ids": [
+            3
+          ],
+          "repaired": [],
+          "wall_time_s": 0.003383728995686397
+        },
+        {
+          "step": 35,
+          "valid_ids": [
+            3,
+            4
+          ],
+          "repaired": [],
+          "wall_time_s": 0.0033616339787840843
+        }
+      ],
+      "session_summary": {
+        "schema_version": 1,
+        "end_reason": "requested_laps_reached",
+        "error": null,
+        "completed_full_laps": 1,
+        "reset_count": 1,
+        "collision": false,
+        "control_steps": 101,
+        "state_count": 102,
+        "action_count": 101,
+        "plan_count": 102,
+        "sim_elapsed_s": 10.099999999999827,
+        "wall_time_s": 0.49845001101493835,
+        "sim_seconds_per_wall_second": 20.262814277873762,
+        "planning_wall_time_s": {
+          "total": 0.3451405332307331,
+          "median": 0.003344160009874031,
+          "p95": 0.0037479023711057373,
+          "max": 0.004696433985373005
+        },
+        "valid_candidate_count_min": 1,
+        "valid_candidate_count_max": 5,
+        "rejected_reasons": {
+          "outside_safe_domain": 205,
+          "smoothness_limit": 1
+        },
+        "max_abs_d_m": 0.03814480377481668,
+        "max_abs_e_psi_rad": 0.1352075284324452,
+        "lap_events": [
+          {
+            "kind": "full",
+            "lap_label": "standing_start",
+            "completed_full_laps": 1,
+            "finish_s": 11.93004280322861,
+            "crossing_time_estimate": 10.107089070320015,
+            "lap_start_time": 0.09999999999999999,
+            "duration": 10.007089070320015,
+            "alpha": 0.07089070320186133,
+            "previous_sample": {
+              "index": 100,
+              "time": 10.09999999999983,
+              "projection": {
+                "segment": 0,
+                "fraction": 0.0,
+                "s_wrapped": 11.921533286417947,
+                "distance": 0.005786463655834212,
+                "e_y": -0.005786463655834212,
+                "e_psi": 0.017428366129776496
+              },
+              "s_unwrapped": 11.921533286417947,
+              "speed": 1.1999999999999977
+            },
+            "current_sample": {
+              "index": 101,
+              "time": 10.199999999999827,
+              "projection": {
+                "segment": 0,
+                "fraction": 0.0,
+                "s_wrapped": 0.11152761678118672,
+                "distance": 0.00427616309131066,
+                "e_y": -0.00427616309131066,
+                "e_psi": 0.020788707198948764
+              },
+              "s_unwrapped": 12.041570420009796,
+              "speed": 1.1999999999999977
+            },
+            "epoch": 0,
+            "timing_method": "linear_s_interpolation"
+          }
+        ],
+        "candidate_control_enabled": false,
+        "planning_allowed": false,
+        "footprint_verified": false,
+        "continuous_verified": false,
+        "recording_complete": true,
+        "cycle_timings": [
+          {
+            "source_control_step": 0,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.016628674988169223
+          },
+          {
+            "source_control_step": 1,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005031179025536403
+          },
+          {
+            "source_control_step": 2,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004794438980752602
+          },
+          {
+            "source_control_step": 3,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00509149901336059
+          },
+          {
+            "source_control_step": 4,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004701844998635352
+          },
+          {
+            "source_control_step": 5,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0047698709822725505
+          },
+          {
+            "source_control_step": 6,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004551566991722211
+          },
+          {
+            "source_control_step": 7,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004593399993609637
+          },
+          {
+            "source_control_step": 8,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004496207024203613
+          },
+          {
+            "source_control_step": 9,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004826362011954188
+          },
+          {
+            "source_control_step": 10,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004660333011997864
+          },
+          {
+            "source_control_step": 11,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0045426599972415715
+          },
+          {
+            "source_control_step": 12,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004829098004847765
+          },
+          {
+            "source_control_step": 13,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0047938080097083
+          },
+          {
+            "source_control_step": 14,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004865921015152708
+          },
+          {
+            "source_control_step": 15,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005159013002412394
+          },
+          {
+            "source_control_step": 16,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004842574999202043
+          },
+          {
+            "source_control_step": 17,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004832904989598319
+          },
+          {
+            "source_control_step": 18,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004718559008324519
+          },
+          {
+            "source_control_step": 19,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004902692977339029
+          },
+          {
+            "source_control_step": 20,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004634953016648069
+          },
+          {
+            "source_control_step": 21,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00461465198895894
+          },
+          {
+            "source_control_step": 22,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004772896005306393
+          },
+          {
+            "source_control_step": 23,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004599471983965486
+          },
+          {
+            "source_control_step": 24,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004600735002895817
+          },
+          {
+            "source_control_step": 25,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004670543014071882
+          },
+          {
+            "source_control_step": 26,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004817334993276745
+          },
+          {
+            "source_control_step": 27,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004530385020188987
+          },
+          {
+            "source_control_step": 28,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004607809009030461
+          },
+          {
+            "source_control_step": 29,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004686265019699931
+          },
+          {
+            "source_control_step": 30,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005017100978875533
+          },
+          {
+            "source_control_step": 31,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00489708298118785
+          },
+          {
+            "source_control_step": 32,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0048161020094994456
+          },
+          {
+            "source_control_step": 33,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004997643001843244
+          },
+          {
+            "source_control_step": 34,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004786312987562269
+          },
+          {
+            "source_control_step": 35,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004732386005343869
+          },
+          {
+            "source_control_step": 36,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00492577999830246
+          },
+          {
+            "source_control_step": 37,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004794299020431936
+          },
+          {
+            "source_control_step": 38,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004628580005373806
+          },
+          {
+            "source_control_step": 39,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004579201980959624
+          },
+          {
+            "source_control_step": 40,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004848958022193983
+          },
+          {
+            "source_control_step": 41,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004711835994385183
+          },
+          {
+            "source_control_step": 42,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004632116993889213
+          },
+          {
+            "source_control_step": 43,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004571847006445751
+          },
+          {
+            "source_control_step": 44,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004494964989135042
+          },
+          {
+            "source_control_step": 45,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004354996024630964
+          },
+          {
+            "source_control_step": 46,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004256501008057967
+          },
+          {
+            "source_control_step": 47,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004519542999332771
+          },
+          {
+            "source_control_step": 48,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0044005669769831
+          },
+          {
+            "source_control_step": 49,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0044067190028727055
+          },
+          {
+            "source_control_step": 50,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004450466018170118
+          },
+          {
+            "source_control_step": 51,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004680662997998297
+          },
+          {
+            "source_control_step": 52,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004556827014312148
+          },
+          {
+            "source_control_step": 53,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004547199001535773
+          },
+          {
+            "source_control_step": 54,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004568740987451747
+          },
+          {
+            "source_control_step": 55,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004880510008661076
+          },
+          {
+            "source_control_step": 56,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004754298977786675
+          },
+          {
+            "source_control_step": 57,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005070166982477531
+          },
+          {
+            "source_control_step": 58,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004902503977064043
+          },
+          {
+            "source_control_step": 59,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004752957000164315
+          },
+          {
+            "source_control_step": 60,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004825982003239915
+          },
+          {
+            "source_control_step": 61,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005015647999243811
+          },
+          {
+            "source_control_step": 62,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005303189012920484
+          },
+          {
+            "source_control_step": 63,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005060176976257935
+          },
+          {
+            "source_control_step": 64,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005093493004096672
+          },
+          {
+            "source_control_step": 65,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005313831003149971
+          },
+          {
+            "source_control_step": 66,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0051664370112121105
+          },
+          {
+            "source_control_step": 67,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0050227619940415025
+          },
+          {
+            "source_control_step": 68,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0050995149940717965
+          },
+          {
+            "source_control_step": 69,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004763798002386466
+          },
+          {
+            "source_control_step": 70,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004526096017798409
+          },
+          {
+            "source_control_step": 71,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004481818003114313
+          },
+          {
+            "source_control_step": 72,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0045380199735518545
+          },
+          {
+            "source_control_step": 73,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004571215977193788
+          },
+          {
+            "source_control_step": 74,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004656023986171931
+          },
+          {
+            "source_control_step": 75,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004759680014103651
+          },
+          {
+            "source_control_step": 76,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004599111998686567
+          },
+          {
+            "source_control_step": 77,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004472158994758502
+          },
+          {
+            "source_control_step": 78,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004396509000798687
+          },
+          {
+            "source_control_step": 79,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004725641978438944
+          },
+          {
+            "source_control_step": 80,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004474675020901486
+          },
+          {
+            "source_control_step": 81,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00466497300658375
+          },
+          {
+            "source_control_step": 82,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004928706010105088
+          },
+          {
+            "source_control_step": 83,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0049133250140585005
+          },
+          {
+            "source_control_step": 84,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0047443489893339574
+          },
+          {
+            "source_control_step": 85,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00487198299379088
+          },
+          {
+            "source_control_step": 86,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0048772939771879464
+          },
+          {
+            "source_control_step": 87,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00461168700712733
+          },
+          {
+            "source_control_step": 88,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004538530018180609
+          },
+          {
+            "source_control_step": 89,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0048939670086838305
+          },
+          {
+            "source_control_step": 90,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004719410004327074
+          },
+          {
+            "source_control_step": 91,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004642316984245554
+          },
+          {
+            "source_control_step": 92,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00471504099550657
+          },
+          {
+            "source_control_step": 93,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00490953799453564
+          },
+          {
+            "source_control_step": 94,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004659861995605752
+          },
+          {
+            "source_control_step": 95,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004595845006406307
+          },
+          {
+            "source_control_step": 96,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00627020001411438
+          },
+          {
+            "source_control_step": 97,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005288170010317117
+          },
+          {
+            "source_control_step": 98,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005907839979045093
+          },
+          {
+            "source_control_step": 99,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00538206598139368
+          },
+          {
+            "source_control_step": 100,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004823637020308524
+          },
+          {
+            "source_control_step": 101,
+            "terminal": true,
+            "plan_generated": true,
+            "wall_time_s": 0.0038696939882356673
+          }
+        ],
+        "cycle_timing_scope": "snapshot, state/plan/action JSON and writes, progress, planning, PP and physics/scan/tracker; excludes initialization, finalization and timing-list append"
+      },
+      "plan_s": {
+        "median": 0.003344160009874031,
+        "p95": 0.0037479023711057373,
+        "p99": 0.004127066382498015,
+        "max": 0.004696433985373005
+      },
+      "complete_cycle_s": {
+        "median": 0.0047443489893339574,
+        "p95": 0.005303189012920484,
+        "p99": 0.00627020001411438,
+        "max": 0.016628674988169223
+      },
+      "plan_over_100ms": 0,
+      "cycle_over_100ms": 0,
+      "plan_count": 102,
+      "nonterminal_cycle_count": 101,
+      "mean_valid_candidates": 2.980392156862745,
+      "zero_valid_plan_count": 0,
+      "zero_valid_steps": [],
+      "timely_nonzero_plans": 102,
+      "rejected_reasons": {
+        "outside_safe_domain": 205,
+        "smoothness_limit": 1
+      },
+      "original_density_audit": {
+        "checked": 304,
+        "failed": 0
+      }
+    },
+    {
+      "name": "budget_20ms",
+      "budget_ms": 20.0,
+      "verification_passed": true,
+      "repaired_instances": 30,
+      "requested_instances": 35,
+      "timed_out_instances": 2,
+      "reference_valid_count": 102,
+      "valid_id_counts": {
+        "1": 14,
+        "2": 98,
+        "3": 102,
+        "4": 101,
+        "5": 19
+      },
+      "steps_34_35": [
+        {
+          "step": 34,
+          "valid_ids": [
+            2,
+            3,
+            4
+          ],
+          "repaired": [
+            2,
+            4
+          ],
+          "wall_time_s": 0.018757627985905856
+        },
+        {
+          "step": 35,
+          "valid_ids": [
+            2,
+            3,
+            4
+          ],
+          "repaired": [
+            2
+          ],
+          "wall_time_s": 0.01092054002219811
+        }
+      ],
+      "session_summary": {
+        "schema_version": 1,
+        "end_reason": "requested_laps_reached",
+        "error": null,
+        "completed_full_laps": 1,
+        "reset_count": 1,
+        "collision": false,
+        "control_steps": 101,
+        "state_count": 102,
+        "action_count": 101,
+        "plan_count": 102,
+        "sim_elapsed_s": 10.099999999999827,
+        "wall_time_s": 0.7486399119952694,
+        "sim_seconds_per_wall_second": 13.49113216937818,
+        "planning_wall_time_s": {
+          "total": 0.6071390559372958,
+          "median": 0.0033847740123746917,
+          "p95": 0.01863383814052213,
+          "max": 0.021129857981577516
+        },
+        "valid_candidate_count_min": 2,
+        "valid_candidate_count_max": 5,
+        "rejected_reasons": {
+          "outside_safe_domain": 175,
+          "smoothness_limit": 1
+        },
+        "max_abs_d_m": 0.03814480377481668,
+        "max_abs_e_psi_rad": 0.1352075284324452,
+        "lap_events": [
+          {
+            "kind": "full",
+            "lap_label": "standing_start",
+            "completed_full_laps": 1,
+            "finish_s": 11.93004280322861,
+            "crossing_time_estimate": 10.107089070320015,
+            "lap_start_time": 0.09999999999999999,
+            "duration": 10.007089070320015,
+            "alpha": 0.07089070320186133,
+            "previous_sample": {
+              "index": 100,
+              "time": 10.09999999999983,
+              "projection": {
+                "segment": 0,
+                "fraction": 0.0,
+                "s_wrapped": 11.921533286417947,
+                "distance": 0.005786463655834212,
+                "e_y": -0.005786463655834212,
+                "e_psi": 0.017428366129776496
+              },
+              "s_unwrapped": 11.921533286417947,
+              "speed": 1.1999999999999977
+            },
+            "current_sample": {
+              "index": 101,
+              "time": 10.199999999999827,
+              "projection": {
+                "segment": 0,
+                "fraction": 0.0,
+                "s_wrapped": 0.11152761678118672,
+                "distance": 0.00427616309131066,
+                "e_y": -0.00427616309131066,
+                "e_psi": 0.020788707198948764
+              },
+              "s_unwrapped": 12.041570420009796,
+              "speed": 1.1999999999999977
+            },
+            "epoch": 0,
+            "timing_method": "linear_s_interpolation"
+          }
+        ],
+        "candidate_control_enabled": false,
+        "planning_allowed": false,
+        "footprint_verified": false,
+        "continuous_verified": false,
+        "recording_complete": true,
+        "cycle_timings": [
+          {
+            "source_control_step": 0,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005319810996297747
+          },
+          {
+            "source_control_step": 1,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0047043400118127465
+          },
+          {
+            "source_control_step": 2,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005467465001856908
+          },
+          {
+            "source_control_step": 3,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004635592980775982
+          },
+          {
+            "source_control_step": 4,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004774158005602658
+          },
+          {
+            "source_control_step": 5,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005311303975759074
+          },
+          {
+            "source_control_step": 6,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004645151988370344
+          },
+          {
+            "source_control_step": 7,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.013504248985555023
+          },
+          {
+            "source_control_step": 8,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.012452010996639729
+          },
+          {
+            "source_control_step": 9,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004790200007846579
+          },
+          {
+            "source_control_step": 10,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004651494004065171
+          },
+          {
+            "source_control_step": 11,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0045549930073320866
+          },
+          {
+            "source_control_step": 12,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004859767999732867
+          },
+          {
+            "source_control_step": 13,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004769107006723061
+          },
+          {
+            "source_control_step": 14,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005006510007660836
+          },
+          {
+            "source_control_step": 15,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004891671007499099
+          },
+          {
+            "source_control_step": 16,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004937903024256229
+          },
+          {
+            "source_control_step": 17,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004809368023416027
+          },
+          {
+            "source_control_step": 18,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00470040098298341
+          },
+          {
+            "source_control_step": 19,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004863766022026539
+          },
+          {
+            "source_control_step": 20,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004587256989907473
+          },
+          {
+            "source_control_step": 21,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00456584501080215
+          },
+          {
+            "source_control_step": 22,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004565233015455306
+          },
+          {
+            "source_control_step": 23,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004783035983564332
+          },
+          {
+            "source_control_step": 24,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.020659964997321367
+          },
+          {
+            "source_control_step": 25,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.01627552098943852
+          },
+          {
+            "source_control_step": 26,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.015455893997568637
+          },
+          {
+            "source_control_step": 27,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.022507002984639257
+          },
+          {
+            "source_control_step": 28,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.020009875006508082
+          },
+          {
+            "source_control_step": 29,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.021509260986931622
+          },
+          {
+            "source_control_step": 30,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.020092078018933535
+          },
+          {
+            "source_control_step": 31,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.019775709981331602
+          },
+          {
+            "source_control_step": 32,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.022522163024405017
+          },
+          {
+            "source_control_step": 33,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.019589269999414682
+          },
+          {
+            "source_control_step": 34,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.020199621008941904
+          },
+          {
+            "source_control_step": 35,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.012507371022365987
+          },
+          {
+            "source_control_step": 36,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.012313937011640519
+          },
+          {
+            "source_control_step": 37,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.012619212997378781
+          },
+          {
+            "source_control_step": 38,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.012585585005581379
+          },
+          {
+            "source_control_step": 39,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.012510055006714538
+          },
+          {
+            "source_control_step": 40,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.012231172004248947
+          },
+          {
+            "source_control_step": 41,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.01263447297969833
+          },
+          {
+            "source_control_step": 42,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.012841603980632499
+          },
+          {
+            "source_control_step": 43,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004696463991422206
+          },
+          {
+            "source_control_step": 44,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004300236993003637
+          },
+          {
+            "source_control_step": 45,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004514814005233347
+          },
+          {
+            "source_control_step": 46,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004279185988707468
+          },
+          {
+            "source_control_step": 47,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004309545998694375
+          },
+          {
+            "source_control_step": 48,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004430666012922302
+          },
+          {
+            "source_control_step": 49,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00459256800240837
+          },
+          {
+            "source_control_step": 50,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004472539003472775
+          },
+          {
+            "source_control_step": 51,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004546867014141753
+          },
+          {
+            "source_control_step": 52,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00451419097953476
+          },
+          {
+            "source_control_step": 53,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004723407997516915
+          },
+          {
+            "source_control_step": 54,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00459171601687558
+          },
+          {
+            "source_control_step": 55,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004665882996050641
+          },
+          {
+            "source_control_step": 56,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004993682989152148
+          },
+          {
+            "source_control_step": 57,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004773957974975929
+          },
+          {
+            "source_control_step": 58,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004732084984425455
+          },
+          {
+            "source_control_step": 59,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0047656510141678154
+          },
+          {
+            "source_control_step": 60,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004986899992218241
+          },
+          {
+            "source_control_step": 61,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005011489003663883
+          },
+          {
+            "source_control_step": 62,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005106598022393882
+          },
+          {
+            "source_control_step": 63,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005248179018963128
+          },
+          {
+            "source_control_step": 64,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005081787996459752
+          },
+          {
+            "source_control_step": 65,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005097760003991425
+          },
+          {
+            "source_control_step": 66,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005313849018421024
+          },
+          {
+            "source_control_step": 67,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005064013006631285
+          },
+          {
+            "source_control_step": 68,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004892943979939446
+          },
+          {
+            "source_control_step": 69,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0049275929923169315
+          },
+          {
+            "source_control_step": 70,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004659278987674043
+          },
+          {
+            "source_control_step": 71,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004475465015275404
+          },
+          {
+            "source_control_step": 72,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0043683419935405254
+          },
+          {
+            "source_control_step": 73,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0046592699945904315
+          },
+          {
+            "source_control_step": 74,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004671133996453136
+          },
+          {
+            "source_control_step": 75,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00462286698166281
+          },
+          {
+            "source_control_step": 76,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004558340006042272
+          },
+          {
+            "source_control_step": 77,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004625953995855525
+          },
+          {
+            "source_control_step": 78,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004401518002850935
+          },
+          {
+            "source_control_step": 79,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004549671983113512
+          },
+          {
+            "source_control_step": 80,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004600514017511159
+          },
+          {
+            "source_control_step": 81,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004657787008909509
+          },
+          {
+            "source_control_step": 82,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004666794993681833
+          },
+          {
+            "source_control_step": 83,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004863044014200568
+          },
+          {
+            "source_control_step": 84,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0048872019979171455
+          },
+          {
+            "source_control_step": 85,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004860388988163322
+          },
+          {
+            "source_control_step": 86,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004703237005742267
+          },
+          {
+            "source_control_step": 87,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004774717992404476
+          },
+          {
+            "source_control_step": 88,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00987347899354063
+          },
+          {
+            "source_control_step": 89,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.012765519990352914
+          },
+          {
+            "source_control_step": 90,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.012500384007580578
+          },
+          {
+            "source_control_step": 91,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0046495590067934245
+          },
+          {
+            "source_control_step": 92,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004756882990477607
+          },
+          {
+            "source_control_step": 93,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004619419982191175
+          },
+          {
+            "source_control_step": 94,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004795710003236309
+          },
+          {
+            "source_control_step": 95,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004538048000540584
+          },
+          {
+            "source_control_step": 96,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004569771001115441
+          },
+          {
+            "source_control_step": 97,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004653306998079643
+          },
+          {
+            "source_control_step": 98,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004725810984382406
+          },
+          {
+            "source_control_step": 99,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004688507004175335
+          },
+          {
+            "source_control_step": 100,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0045244919892866164
+          },
+          {
+            "source_control_step": 101,
+            "terminal": true,
+            "plan_generated": true,
+            "wall_time_s": 0.0036982720193918794
+          }
+        ],
+        "cycle_timing_scope": "snapshot, state/plan/action JSON and writes, progress, planning, PP and physics/scan/tracker; excludes initialization, finalization and timing-list append"
+      },
+      "plan_s": {
+        "median": 0.0033847740123746917,
+        "p95": 0.01863383814052213,
+        "p99": 0.021018571337626777,
+        "max": 0.021129857981577516
+      },
+      "complete_cycle_s": {
+        "median": 0.004774717992404476,
+        "p95": 0.020092078018933535,
+        "p99": 0.022507002984639257,
+        "max": 0.022522163024405017
+      },
+      "plan_over_100ms": 0,
+      "cycle_over_100ms": 0,
+      "plan_count": 102,
+      "nonterminal_cycle_count": 101,
+      "mean_valid_candidates": 3.2745098039215685,
+      "zero_valid_plan_count": 0,
+      "zero_valid_steps": [],
+      "timely_nonzero_plans": 102,
+      "rejected_reasons": {
+        "outside_safe_domain": 175,
+        "smoothness_limit": 1
+      },
+      "original_density_audit": {
+        "checked": 30,
+        "failed": 0
+      }
+    },
+    {
+      "name": "budget_40ms",
+      "budget_ms": 40.0,
+      "verification_passed": true,
+      "repaired_instances": 32,
+      "requested_instances": 35,
+      "timed_out_instances": 0,
+      "reference_valid_count": 102,
+      "valid_id_counts": {
+        "1": 14,
+        "2": 99,
+        "3": 102,
+        "4": 102,
+        "5": 19
+      },
+      "steps_34_35": [
+        {
+          "step": 34,
+          "valid_ids": [
+            2,
+            3,
+            4
+          ],
+          "repaired": [
+            2,
+            4
+          ],
+          "wall_time_s": 0.018873093998990953
+        },
+        {
+          "step": 35,
+          "valid_ids": [
+            2,
+            3,
+            4
+          ],
+          "repaired": [
+            2
+          ],
+          "wall_time_s": 0.011076414986746386
+        }
+      ],
+      "session_summary": {
+        "schema_version": 1,
+        "end_reason": "requested_laps_reached",
+        "error": null,
+        "completed_full_laps": 1,
+        "reset_count": 1,
+        "collision": false,
+        "control_steps": 101,
+        "state_count": 102,
+        "action_count": 101,
+        "plan_count": 102,
+        "sim_elapsed_s": 10.099999999999827,
+        "wall_time_s": 0.754318430001149,
+        "sim_seconds_per_wall_second": 13.38957076785787,
+        "planning_wall_time_s": {
+          "total": 0.6098140140238684,
+          "median": 0.0033951494988286868,
+          "p95": 0.018856552647775967,
+          "max": 0.021467284008394927
+        },
+        "valid_candidate_count_min": 2,
+        "valid_candidate_count_max": 5,
+        "rejected_reasons": {
+          "outside_safe_domain": 173,
+          "smoothness_limit": 1
+        },
+        "max_abs_d_m": 0.03814480377481668,
+        "max_abs_e_psi_rad": 0.1352075284324452,
+        "lap_events": [
+          {
+            "kind": "full",
+            "lap_label": "standing_start",
+            "completed_full_laps": 1,
+            "finish_s": 11.93004280322861,
+            "crossing_time_estimate": 10.107089070320015,
+            "lap_start_time": 0.09999999999999999,
+            "duration": 10.007089070320015,
+            "alpha": 0.07089070320186133,
+            "previous_sample": {
+              "index": 100,
+              "time": 10.09999999999983,
+              "projection": {
+                "segment": 0,
+                "fraction": 0.0,
+                "s_wrapped": 11.921533286417947,
+                "distance": 0.005786463655834212,
+                "e_y": -0.005786463655834212,
+                "e_psi": 0.017428366129776496
+              },
+              "s_unwrapped": 11.921533286417947,
+              "speed": 1.1999999999999977
+            },
+            "current_sample": {
+              "index": 101,
+              "time": 10.199999999999827,
+              "projection": {
+                "segment": 0,
+                "fraction": 0.0,
+                "s_wrapped": 0.11152761678118672,
+                "distance": 0.00427616309131066,
+                "e_y": -0.00427616309131066,
+                "e_psi": 0.020788707198948764
+              },
+              "s_unwrapped": 12.041570420009796,
+              "speed": 1.1999999999999977
+            },
+            "epoch": 0,
+            "timing_method": "linear_s_interpolation"
+          }
+        ],
+        "candidate_control_enabled": false,
+        "planning_allowed": false,
+        "footprint_verified": false,
+        "continuous_verified": false,
+        "recording_complete": true,
+        "cycle_timings": [
+          {
+            "source_control_step": 0,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.006052084005204961
+          },
+          {
+            "source_control_step": 1,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005256214004475623
+          },
+          {
+            "source_control_step": 2,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0047312020033132285
+          },
+          {
+            "source_control_step": 3,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00470199398114346
+          },
+          {
+            "source_control_step": 4,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004547416989225894
+          },
+          {
+            "source_control_step": 5,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005384367977967486
+          },
+          {
+            "source_control_step": 6,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004787022015079856
+          },
+          {
+            "source_control_step": 7,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.013254020013846457
+          },
+          {
+            "source_control_step": 8,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.012598118017194793
+          },
+          {
+            "source_control_step": 9,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0045985680189915
+          },
+          {
+            "source_control_step": 10,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00495538700488396
+          },
+          {
+            "source_control_step": 11,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004587887990055606
+          },
+          {
+            "source_control_step": 12,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004671143018640578
+          },
+          {
+            "source_control_step": 13,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004824266012292355
+          },
+          {
+            "source_control_step": 14,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005083389987703413
+          },
+          {
+            "source_control_step": 15,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004979454999556765
+          },
+          {
+            "source_control_step": 16,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004815277992747724
+          },
+          {
+            "source_control_step": 17,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00507964298594743
+          },
+          {
+            "source_control_step": 18,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0047936050104908645
+          },
+          {
+            "source_control_step": 19,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004671744012739509
+          },
+          {
+            "source_control_step": 20,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004863544018007815
+          },
+          {
+            "source_control_step": 21,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004678677010815591
+          },
+          {
+            "source_control_step": 22,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004622274980647489
+          },
+          {
+            "source_control_step": 23,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004640171013306826
+          },
+          {
+            "source_control_step": 24,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.020807142980629578
+          },
+          {
+            "source_control_step": 25,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.016033296997193247
+          },
+          {
+            "source_control_step": 26,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.01516722800442949
+          },
+          {
+            "source_control_step": 27,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.022893424989888445
+          },
+          {
+            "source_control_step": 28,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.020290537999244407
+          },
+          {
+            "source_control_step": 29,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.021327095979359
+          },
+          {
+            "source_control_step": 30,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.020276360010029748
+          },
+          {
+            "source_control_step": 31,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.019724784971913323
+          },
+          {
+            "source_control_step": 32,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.022327951999614015
+          },
+          {
+            "source_control_step": 33,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.01951814498170279
+          },
+          {
+            "source_control_step": 34,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.020362209004815668
+          },
+          {
+            "source_control_step": 35,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.01250801602145657
+          },
+          {
+            "source_control_step": 36,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.01256091200048104
+          },
+          {
+            "source_control_step": 37,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.01236454097670503
+          },
+          {
+            "source_control_step": 38,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.012393479002639651
+          },
+          {
+            "source_control_step": 39,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.01253008100320585
+          },
+          {
+            "source_control_step": 40,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.012421855994034559
+          },
+          {
+            "source_control_step": 41,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.012666530994465575
+          },
+          {
+            "source_control_step": 42,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.01259996899170801
+          },
+          {
+            "source_control_step": 43,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004780368006322533
+          },
+          {
+            "source_control_step": 44,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004355845012469217
+          },
+          {
+            "source_control_step": 45,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004448490013601258
+          },
+          {
+            "source_control_step": 46,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004533327999524772
+          },
+          {
+            "source_control_step": 47,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004377900011604652
+          },
+          {
+            "source_control_step": 48,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004528579011093825
+          },
+          {
+            "source_control_step": 49,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004409351997310296
+          },
+          {
+            "source_control_step": 50,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0046801599964965135
+          },
+          {
+            "source_control_step": 51,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004551242978777736
+          },
+          {
+            "source_control_step": 52,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004550852987449616
+          },
+          {
+            "source_control_step": 53,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00461641201400198
+          },
+          {
+            "source_control_step": 54,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004786811012309045
+          },
+          {
+            "source_control_step": 55,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0046525049838237464
+          },
+          {
+            "source_control_step": 56,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004819366004085168
+          },
+          {
+            "source_control_step": 57,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005011215980630368
+          },
+          {
+            "source_control_step": 58,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004773335007485002
+          },
+          {
+            "source_control_step": 59,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004772171989316121
+          },
+          {
+            "source_control_step": 60,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004853914986597374
+          },
+          {
+            "source_control_step": 61,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005323056015186012
+          },
+          {
+            "source_control_step": 62,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0051619550213217735
+          },
+          {
+            "source_control_step": 63,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005106265016365796
+          },
+          {
+            "source_control_step": 64,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005313366011250764
+          },
+          {
+            "source_control_step": 65,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005131284007802606
+          },
+          {
+            "source_control_step": 66,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005184159992495552
+          },
+          {
+            "source_control_step": 67,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.006590881996089593
+          },
+          {
+            "source_control_step": 68,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.005034172994783148
+          },
+          {
+            "source_control_step": 69,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004866529983701184
+          },
+          {
+            "source_control_step": 70,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0047390460094902664
+          },
+          {
+            "source_control_step": 71,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004516104003414512
+          },
+          {
+            "source_control_step": 72,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004459440999198705
+          },
+          {
+            "source_control_step": 73,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004573777987388894
+          },
+          {
+            "source_control_step": 74,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004924373992253095
+          },
+          {
+            "source_control_step": 75,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004738736024592072
+          },
+          {
+            "source_control_step": 76,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004582947003655136
+          },
+          {
+            "source_control_step": 77,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.00469749397598207
+          },
+          {
+            "source_control_step": 78,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0045308530097827315
+          },
+          {
+            "source_control_step": 79,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004657494981074706
+          },
+          {
+            "source_control_step": 80,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004572175006614998
+          },
+          {
+            "source_control_step": 81,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004909225011942908
+          },
+          {
+            "source_control_step": 82,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004713686008471996
+          },
+          {
+            "source_control_step": 83,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004845558025408536
+          },
+          {
+            "source_control_step": 84,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004953941999701783
+          },
+          {
+            "source_control_step": 85,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004915377008728683
+          },
+          {
+            "source_control_step": 86,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004700118995970115
+          },
+          {
+            "source_control_step": 87,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004621262982254848
+          },
+          {
+            "source_control_step": 88,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.010201016993960366
+          },
+          {
+            "source_control_step": 89,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.012801870005205274
+          },
+          {
+            "source_control_step": 90,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.012620349996723235
+          },
+          {
+            "source_control_step": 91,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004740678996313363
+          },
+          {
+            "source_control_step": 92,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004756470996653661
+          },
+          {
+            "source_control_step": 93,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004691040987381712
+          },
+          {
+            "source_control_step": 94,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004851529985899106
+          },
+          {
+            "source_control_step": 95,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.0046122650092002004
+          },
+          {
+            "source_control_step": 96,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004571773984935135
+          },
+          {
+            "source_control_step": 97,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004799946997081861
+          },
+          {
+            "source_control_step": 98,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004708626016508788
+          },
+          {
+            "source_control_step": 99,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004747832979774103
+          },
+          {
+            "source_control_step": 100,
+            "terminal": false,
+            "plan_generated": true,
+            "wall_time_s": 0.004575361992465332
+          },
+          {
+            "source_control_step": 101,
+            "terminal": true,
+            "plan_generated": true,
+            "wall_time_s": 0.0037716660008300096
+          }
+        ],
+        "cycle_timing_scope": "snapshot, state/plan/action JSON and writes, progress, planning, PP and physics/scan/tracker; excludes initialization, finalization and timing-list append"
+      },
+      "plan_s": {
+        "median": 0.0033951494988286868,
+        "p95": 0.018856552647775967,
+        "p99": 0.020821757146040905,
+        "max": 0.021467284008394927
+      },
+      "complete_cycle_s": {
+        "median": 0.004819366004085168,
+        "p95": 0.020290537999244407,
+        "p99": 0.022327951999614015,
+        "max": 0.022893424989888445
+      },
+      "plan_over_100ms": 0,
+      "cycle_over_100ms": 0,
+      "plan_count": 102,
+      "nonterminal_cycle_count": 101,
+      "mean_valid_candidates": 3.2941176470588234,
+      "zero_valid_plan_count": 0,
+      "zero_valid_steps": [],
+      "timely_nonzero_plans": 102,
+      "rejected_reasons": {
+        "outside_safe_domain": 173,
+        "smoothness_limit": 1
+      },
+      "original_density_audit": {
+        "checked": 32,
+        "failed": 0
+      }
+    }
+  ],
+  "deadline_policy": "cooperative callback checks, no hard native interruption or end-to-end deadline",
+  "candidate_control_enabled": false,
+  "footprint_verified": false,
+  "identical_states": true,
+  "identical_actions": true,
+  "unrepaired_paths_unchanged": true,
+  "one_mm_repair_audits": [
+    {
+      "arm": "budget_20ms",
+      "step": 34,
+      "candidate_id": 2,
+      "passed": true,
+      "reason": null,
+      "max_abs_curvature_inv_m": 1.352758185104239,
+      "polyline": {
+        "valid": true,
+        "reason": null,
+        "segment_index": null
+      }
+    },
+    {
+      "arm": "budget_20ms",
+      "step": 34,
+      "candidate_id": 4,
+      "passed": true,
+      "reason": null,
+      "max_abs_curvature_inv_m": 1.3840564580852261,
+      "polyline": {
+        "valid": true,
+        "reason": null,
+        "segment_index": null
+      }
+    },
+    {
+      "arm": "budget_40ms",
+      "step": 34,
+      "candidate_id": 2,
+      "passed": true,
+      "reason": null,
+      "max_abs_curvature_inv_m": 1.3527581851042387,
+      "polyline": {
+        "valid": true,
+        "reason": null,
+        "segment_index": null
+      }
+    },
+    {
+      "arm": "budget_40ms",
+      "step": 34,
+      "candidate_id": 4,
+      "passed": true,
+      "reason": null,
+      "max_abs_curvature_inv_m": 1.384056458085225,
+      "polyline": {
+        "valid": true,
+        "reason": null,
+        "segment_index": null
+      }
+    },
+    {
+      "arm": "budget_20ms",
+      "step": 35,
+      "candidate_id": 2,
+      "passed": true,
+      "reason": null,
+      "max_abs_curvature_inv_m": 1.3522374041182461,
+      "polyline": {
+        "valid": true,
+        "reason": null,
+        "segment_index": null
+      }
+    },
+    {
+      "arm": "budget_40ms",
+      "step": 35,
+      "candidate_id": 2,
+      "passed": true,
+      "reason": null,
+      "max_abs_curvature_inv_m": 1.3522374041182463,
+      "polyline": {
+        "valid": true,
+        "reason": null,
+        "segment_index": null
+      }
+    }
+  ],
+  "all_audits_passed": true
+}

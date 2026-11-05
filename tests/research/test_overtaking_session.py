@@ -21,6 +21,18 @@ def state():
                 valid=True, reason=None, frenet=dict(valid=True))
 
 
+def test_pp_default_resolves_by_map_and_preserves_explicit_override():
+    config = SessionConfig()
+    assert config.for_map('my_map').pp_lookahead_m == .3
+    assert config.for_map('esp').pp_lookahead_m == .6
+    explicit = SessionConfig(pp_lookahead_m=.45)
+    assert explicit.for_map('my_map').pp_lookahead_m == .45
+    assert explicit.for_map('esp').pp_lookahead_m == .45
+    for invalid in (0., -.1, float('nan'), True):
+        with pytest.raises(ValueError):
+            SessionConfig(pp_lookahead_m=invalid)
+
+
 def generator(geometry, x, y, yaw, **settings):
     return dict(paths=[dict(candidate_id=i, geometry_id=geometry.geometry_id,
         sampled_valid=True, status='sampled_valid', reason=None,
@@ -201,11 +213,10 @@ def test_runtime_failure_finalizes_existing_records(tmp_path, monkeypatch):
 
 def test_official_defaults_and_every_control_step_preview(tmp_path):
     config = SessionConfig()
-    assert config.lookahead_m == 40.
+    assert config.lookahead_m == 3.
     assert config.plan_period_s == config.control_dt_s == .1
     root = tmp_path/'every_step'
-    # Use a short horizon only to keep this lifecycle test inexpensive. The
-    # official 40 m generator is independently measured with actual sessions.
+    # The standard horizon is 3 m; historical 40 m recordings remain readable.
     summary = runner.run_session(root, SessionConfig(lookahead_m=3., max_control_steps=2))
     assert summary['end_reason'] == 'control_step_limit'
     assert summary['state_count'] == summary['plan_count'] == 3

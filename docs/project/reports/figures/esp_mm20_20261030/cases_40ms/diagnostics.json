@@ -1,0 +1,174 @@
+{
+  "source_report_sha256": "59393ef411b72410f8b01fbd70b64a0c3cc93f0e68d8d0d7e331b6d5597b193e",
+  "plot_program_sha256": "5d704a8c797bac3f9fa6e1661d4db9c7499823e3c418aca1fba38056663cb65d",
+  "domain_npz_sha256": "6ac72ca2cd33606293f402a49098bb0325dea753ab293ba93e235b3046159dad",
+  "cases": [
+    {
+      "step": 21,
+      "source_pose": [
+        2.3348853344827543,
+        1.299770145901316e-05,
+        0.003606372978004958
+      ],
+      "start": {
+        "s": 2.2579809690166712,
+        "d": 9.217821851228608e-05,
+        "d_prime": -0.0017430119974271815
+      },
+      "proposals": [
+        {
+          "candidate_id": 1,
+          "target_d_m": -0.717,
+          "boundary_valid": true,
+          "min_safe_band_slack_m": 0.0,
+          "first_bad_distance_m": null,
+          "exact_max_abs_curvature_inv_m": 0.40820636497190116,
+          "peak_distance_m": 2.962,
+          "exact_sampled_curvature_valid": true,
+          "recorded_valid": true,
+          "recorded_reason": null
+        },
+        {
+          "candidate_id": 2,
+          "target_d_m": -0.358,
+          "boundary_valid": true,
+          "min_safe_band_slack_m": 0.3590000000000001,
+          "first_bad_distance_m": null,
+          "exact_max_abs_curvature_inv_m": 0.2372347785143915,
+          "peak_distance_m": 3.0,
+          "exact_sampled_curvature_valid": true,
+          "recorded_valid": true,
+          "recorded_reason": null
+        },
+        {
+          "candidate_id": 3,
+          "target_d_m": 0.0,
+          "boundary_valid": true,
+          "min_safe_band_slack_m": 0.7010000000000001,
+          "first_bad_distance_m": null,
+          "exact_max_abs_curvature_inv_m": 0.00039919115280704135,
+          "peak_distance_m": 3.0,
+          "exact_sampled_curvature_valid": true,
+          "recorded_valid": true,
+          "recorded_reason": null
+        },
+        {
+          "candidate_id": 4,
+          "target_d_m": 0.368,
+          "boundary_valid": true,
+          "min_safe_band_slack_m": 0.3689999999999999,
+          "first_bad_distance_m": null,
+          "exact_max_abs_curvature_inv_m": 0.24747850707225577,
+          "peak_distance_m": 0.0,
+          "exact_sampled_curvature_valid": true,
+          "recorded_valid": true,
+          "recorded_reason": null
+        },
+        {
+          "candidate_id": 5,
+          "target_d_m": 0.737,
+          "boundary_valid": true,
+          "min_safe_band_slack_m": 0.0,
+          "first_bad_distance_m": null,
+          "exact_max_abs_curvature_inv_m": 0.4236238211378627,
+          "peak_distance_m": 0.036000000000000004,
+          "exact_sampled_curvature_valid": true,
+          "recorded_valid": true,
+          "recorded_reason": null
+        }
+      ],
+      "comparison_kind": "reference_centerline",
+      "comparison_max_abs_curvature_at_1mm_inv_m": 0.00039919115280704135,
+      "original_c3_recorded_accepted": null,
+      "original_c3_target_d_m": null,
+      "original_c3_max_abs_curvature_at_1mm_inv_m": null,
+      "original_c3_1mm_curvature_pass": null,
+      "original_accepted_paths_one_mm_curvature_audit": []
+    },
+    {
+      "step": 1309,
+      "source_pose": [
+        -25.334519213027203,
+        -6.6778815182802855,
+        2.618357215718828
+      ],
+      "start": {
+        "s": 157.17874024356658,
+        "d": 0.0016508504294025634,
+        "d_prime": 0.0002524036888703973
+      },
+      "proposals": [
+        {
+          "candidate_id": 1,
+          "target_d_m": -0.75,
+          "boundary_valid": false,
+          "min_safe_band_slack_m": -2.220446049250313e-16,
+          "first_bad_distance_m": null,
+          "exact_max_abs_curvature_inv_m": 0.7897357358198956,
+          "peak_distance_m": 2.553,
+          "exact_sampled_curvature_valid": true,
+          "recorded_valid": false,
+          "recorded_reason": "outside_safe_domain"
+        },
+        {
+          "candidate_id": 2,
+          "target_d_m": -0.375,
+          "boundary_valid": true,
+          "min_safe_band_slack_m": 0.3750000000000001,
+          "first_bad_distance_m": null,
+          "exact_max_abs_curvature_inv_m": 0.9574442371939808,
+          "peak_distance_m": 2.553,
+          "exact_sampled_curvature_valid": true,
+          "recorded_valid": true,
+          "recorded_reason": null
+        },
+        {
+          "candidate_id": 3,
+          "target_d_m": 0.0,
+          "boundary_valid": true,
+          "min_safe_band_slack_m": 0.654,
+          "first_bad_distance_m": null,
+          "exact_max_abs_curvature_inv_m": 1.2222001540234275,
+          "peak_distance_m": 2.555,
+          "exact_sampled_curvature_valid": true,
+          "recorded_valid": true,
+          "recorded_reason": null
+        },
+        {
+          "candidate_id": 4,
+          "target_d_m": 0.327,
+          "boundary_valid": true,
+          "min_safe_band_slack_m": 0.327,
+          "first_bad_distance_m": null,
+          "exact_max_abs_curvature_inv_m": 1.7018390843664195,
+          "peak_distance_m": 2.553,
+          "exact_sampled_curvature_valid": true,
+          "recorded_valid": true,
+          "recorded_reason": null
+        },
+        {
+          "candidate_id": 5,
+          "target_d_m": 0.654,
+          "boundary_valid": false,
+          "min_safe_band_slack_m": -1.1102230246251565e-16,
+          "first_bad_distance_m": null,
+          "exact_max_abs_curvature_inv_m": 8.048137628623719,
+          "peak_distance_m": 2.553,
+          "exact_sampled_curvature_valid": false,
+          "recorded_valid": false,
+          "recorded_reason": "outside_safe_domain"
+        }
+      ],
+      "comparison_kind": "reference_centerline",
+      "comparison_max_abs_curvature_at_1mm_inv_m": 1.2222001540234275,
+      "original_c3_recorded_accepted": null,
+      "original_c3_target_d_m": null,
+      "original_c3_max_abs_curvature_at_1mm_inv_m": null,
+      "original_c3_1mm_curvature_pass": null,
+      "original_accepted_paths_one_mm_curvature_audit": []
+    }
+  ],
+  "source_plans_sha256": "51d5c44f381c7b585c353c637ca0496ebff6ad768b196240a869110868beb6e4",
+  "pp_lookahead_m": 0.6,
+  "scope": "read-only visualization; does not change recorded acceptance results"
+}

@@ -6,10 +6,10 @@ from f1tenth_benchmarks.research.core.geometry import FrenetTracker
 
 
 class CoreLapTracker(ContinuousLapTracker):
-    def __init__(self, geometry, sampled_xy, config=None):
+    def __init__(self, geometry, sampled_xy, config=None, frenet_options=None):
         super().__init__(sampled_xy, config)
         self.geometry = geometry
-        self.frenet_tracker = FrenetTracker(geometry, source_reference='sim_cog',
+        self.frenet_tracker = FrenetTracker(geometry, options=frenet_options, source_reference='sim_cog',
                                            offset_calibrated=True)
         self.L = geometry.curve.L
         reference = geometry.reference(0.)

@@ -4,7 +4,6 @@ docs/*
 !docs/README.md
 !docs/project/
 docs/project/*
-!docs/project/status.md
 !docs/project/features.md
 !docs/project/usage.md
 !docs/project/interfaces.md
@@ -17,16 +16,22 @@ docs/project/images/*
 !docs/project/images/my_map_frenet.png
 !docs/project/reports/
 docs/project/reports/*
-!docs/project/reports/manual_run_001_report.md
+!docs/project/reports/algorithm_p01_20261027.json
+!docs/project/reports/algorithm_p01_cases_20261027.json
+!docs/project/reports/algorithm_p2_20261027.json
+!docs/project/reports/hybrid_direct_repair_20261028.json
+!docs/project/reports/short_horizon_baseline_20261028.json
+!docs/project/reports/short_horizon_inputs_20261028.json
+!docs/project/reports/fixed_grid_trial_20261028.json
+!docs/project/reports/generator_abc_20261029.json
+!docs/project/reports/density_20261029.json
+!docs/project/reports/my_map_3m_20261029.json
+!docs/project/reports/my_map_3m_inputs_20261029.json
+!docs/project/reports/fixed_lookup_20261029.json
 !docs/project/reports/centerline_track_audit_20261021.json
-!docs/project/reports/centerline_baseline_confirmation_20261021.md
 !docs/project/reports/centerline_baseline_reverification_20261021.json
 !docs/project/reports/centerline_baseline_sources_20261021.json
-!docs/project/reports/centerline_candidates_stage2_20261021.md
 !docs/project/reports/centerline_candidates_stage2_20261021.json
-!docs/project/reports/playback_stage3_20261021.md
-!docs/project/reports/daily_progress_20261021.md
-!docs/project/reports/2026-10-22_路線生成方案與模擬器驗證.md
 !docs/project/reports/planner_cases_20261022.json
 !docs/project/reports/planner_step310_20261022.jpg
 !docs/project/reports/planner_step317_20261022.jpg
@@ -34,14 +39,7 @@ docs/project/reports/*
 !docs/project/reports/playback_40m_20261021.jpg
 !docs/project/reports/40m_generation_profile_20261021.json
 !docs/project/reports/40m_preview_verification_20261021.json
-!docs/project/reports/figures/
 docs/project/reports/figures/*
-!docs/project/reports/figures/manual_run_001/
-docs/project/reports/figures/manual_run_001/*
-!docs/project/reports/figures/manual_run_001/analysis.json
-!docs/project/reports/figures/manual_run_001/route_overview.png
-!docs/project/reports/figures/manual_run_001/routes_by_lap.png
-!docs/project/reports/figures/manual_run_001/session_diagnostics.png
 !Logs/.gitkeep
 Logs/
 !Data/.gitkeep
@@ -184,3 +182,22 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+!docs/project/reports/my_map_bspline_budget_20261030.json
+
+!docs/project/reports/my_map_vehicle27_51_20261030.json
+!docs/project/reports/figures/mm_vehicle27_51_20261030/
+
+
+!docs/project/CHANGELOG.md
+!docs/project/archive/
+docs/project/archive/*
+!docs/project/archive/experiments_through_20261030.zip
+
+!docs/project/reports/figures/esp_mm20_20261030/
+!docs/project/reports/figures/my_map_mm40_outer_20261030/
+!docs/project/reports/figures/aligned_warm_start_20261105/
+
+# Permit the selected evidence directories through every ignored parent.
+!docs/project/reports/figures/
+!docs/project/reports/latest_experiments/

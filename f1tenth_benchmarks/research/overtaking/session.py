@@ -1,26 +1,34 @@
 """Streaming recording and synchronous planning; candidates never control the car."""
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field, replace
 import json
 import math
 from pathlib import Path
 from time import perf_counter
 
 from .robust_adaptive_paths import generate_robust_paths
+from .reference_path import REFERENCE_PATH, STATE_PATH, check_reference_path
+
+
+def vehicle_curvature_limit():
+    """Use the same steering/wheelbase parameters as the PP controller."""
+    import yaml
+    parameters = yaml.safe_load((Path(__file__).resolve().parents[3]/'params'/'vehicle_params.yaml').read_text())
+    return math.tan(float(parameters['max_steer']))/float(parameters['wheelbase'])
 
 
 @dataclass(frozen=True)
 class SessionConfig:
     speed_mps: float = 1.2
-    pp_lookahead_m: float = .6
+    pp_lookahead_m: float = None  # resolved by map: MY 0.3 m, ESP 0.6 m
     control_dt_s: float = .1
     timeout_s: float = 300.
     laps: int = 1
     plan_period_s: float = .1
-    lookahead_m: float = 40.
+    lookahead_m: float = 3.
     safety_margin_m: float = .2
     sample_step_m: float = .25
     max_slope: float = 1.
-    max_curvature_inv_m: float = math.tan(.4)/.33
+    max_curvature_inv_m: float = field(default_factory=vehicle_curvature_limit)
     endpoint_tolerance_m: float = 0.
     max_refinements: int = 2
     max_iterations: int = 150
@@ -29,12 +37,34 @@ class SessionConfig:
     max_lateral_error_m: float = .25
     max_heading_error_rad: float = .5
     max_control_steps: int = 0  # zero means no short-preview limit
+    query_mode: str = 'exact'
+    generation_mode: str = 'optimized'
+    validation_step_m: float = None  # research override; None keeps original raster-half policy
 
     def __post_init__(self):
         nonnegative = ('safety_margin_m', 'endpoint_tolerance_m')
         integer_limits = dict(laps=(1, 100), max_refinements=(0, 5), max_iterations=(1, 1000),
                               max_control_steps=(0, 10000000))
         for name, value in asdict(self).items():
+            if name == 'pp_lookahead_m':
+                if value is not None and (isinstance(value, bool) or not math.isfinite(value) or value <= 0):
+                    raise ValueError('invalid pp_lookahead_m')
+                continue
+            if name == 'validation_step_m':
+                if value is not None and (isinstance(value, bool) or not math.isfinite(value)
+                                         or not 0 < value <= .05
+                                         or self.query_mode in ('fixed_grid_with_fallback', 'fixed_grid_lookup')):
+                    raise ValueError('invalid validation_step_m')
+                continue
+            if name == 'query_mode':
+                if value not in ('exact', 'reused_exact', 'fast_with_fallback', 'fixed_grid_with_fallback', 'fixed_grid_lookup'):
+                    raise ValueError('invalid query_mode')
+                continue
+            if name == 'generation_mode':
+                if value not in ('optimized', 'direct_only', 'direct_then_repair',
+                                  'width_fraction_only', 'width_fraction_then_repair'):
+                    raise ValueError('invalid generation_mode')
+                continue
             if name in integer_limits:
                 low, high = integer_limits[name]
                 if type(value) is not int or not low <= value <= high:
@@ -42,6 +72,12 @@ class SessionConfig:
             elif isinstance(value, bool) or not math.isfinite(value) or (
                     value < 0 if name in nonnegative else value <= 0):
                 raise ValueError('invalid '+name)
+
+    def for_map(self, map_id):
+        """Resolve an automatic PP distance, preserving explicit overrides."""
+        if self.pp_lookahead_m is not None:
+            return self
+        return replace(self, pp_lookahead_m=.3 if map_id == 'my_map' else .6)
 
 
 def reject_paths(reason, status='rejected'):
@@ -62,7 +98,10 @@ def make_plan(geometry, state, config, plan_id, trigger='periodic', generator=No
                  footprint_verified=False, planning_allowed=False,
                  generator_settings={k: v for k, v in asdict(config).items() if k in (
                      'lookahead_m', 'safety_margin_m', 'sample_step_m', 'max_slope',
-                     'max_curvature_inv_m', 'endpoint_tolerance_m', 'max_refinements', 'max_iterations')})
+                     'max_curvature_inv_m', 'endpoint_tolerance_m', 'max_refinements', 'max_iterations',
+                     'query_mode', 'generation_mode')})
+    if config.validation_step_m is not None:
+        event['generator_settings']['validation_step_m'] = config.validation_step_m
     if not state['valid'] or not state['frenet']['valid']:
         event.update(status='skipped', reason=state.get('reason') or state['frenet'].get('reason'),
                      paths=reject_paths('invalid_source_state', 'skipped'))
@@ -74,7 +113,11 @@ def make_plan(geometry, state, config, plan_id, trigger='periodic', generator=No
                 sample_step_m=config.sample_step_m, max_slope=config.max_slope,
                 max_curvature=config.max_curvature_inv_m,
                 endpoint_tolerance_m=config.endpoint_tolerance_m,
-                max_refinements=config.max_refinements, max_iterations=config.max_iterations)
+                max_refinements=config.max_refinements, max_iterations=config.max_iterations,
+                query_mode=config.query_mode,
+                **({'validation_step_m': config.validation_step_m}
+                   if config.validation_step_m is not None else {}),
+                **({'generation_mode': config.generation_mode} if config.generation_mode != 'optimized' else {}))
         except ValueError as exc:
             event.update(status='rejected', reason=str(exc), paths=reject_paths(str(exc)))
         else:
@@ -94,6 +137,20 @@ def make_plan(geometry, state, config, plan_id, trigger='periodic', generator=No
                     except (KeyError, TypeError, ValueError):
                         pass
                 path.update(start_position_error_m=position_error, start_heading_error_rad=heading_error)
+                path_type = path.get('path_type', STATE_PATH)
+                if path_type == REFERENCE_PATH:
+                    if path['sampled_valid']:
+                        check = check_reference_path(geometry, path, state['pose'], config.lookahead_m,
+                            config.max_lateral_error_m, config.max_heading_error_rad)
+                        path['reference_contract_check'] = check
+                        if not check['valid']:
+                            path.update(sampled_valid=False, status='rejected', reason=check['reason'])
+                    # A genuine d=0 reference is expected to differ from the
+                    # current vehicle pose. Never apply the trajectory gate.
+                    continue
+                if path_type != STATE_PATH:
+                    path.update(sampled_valid=False, status='rejected', reason='unknown_path_type')
+                    continue
                 if path['sampled_valid'] and (
                     position_error is None or heading_error is None or
                     not math.isfinite(position_error) or not math.isfinite(heading_error) or
@@ -101,10 +158,21 @@ def make_plan(geometry, state, config, plan_id, trigger='periodic', generator=No
                     abs(heading_error) > config.max_start_heading_error_rad):
                     path.update(sampled_valid=False, status='rejected', reason='start_pose_mismatch')
             result['sampled_valid_count'] = sum(p['sampled_valid'] for p in paths)
+            if 'valid_ids' in result:
+                result['valid_ids'] = [p['candidate_id'] for p in paths if p['sampled_valid']]
+            if 'fallback_candidate_id' in result:
+                result['fallback_candidate_id'] = (3 if paths[2].get('path_type') == REFERENCE_PATH
+                                                    and paths[2]['sampled_valid'] else None)
+                result['requires_stop'] = result['sampled_valid_count'] == 0
             event.update(status='completed', reason=None, paths=paths,
                          result={k: v for k, v in result.items() if k != 'paths'})
     event['sampled_valid_count'] = sum(p['sampled_valid'] for p in event['paths'])
     event['wall_time_s'] = perf_counter()-started
+    if config.generation_mode != 'optimized':
+        event['cycle_budget_observation'] = dict(target_s=config.control_dt_s,
+            completed_within_target=event['wall_time_s'] <= config.control_dt_s,
+            timely_valid_count=event['sampled_valid_count'] if event['wall_time_s'] <= config.control_dt_s else 0,
+            deadline_enforced=False, scope='make_plan_excludes_recording_and_control')
     return event
 
 

@@ -15,6 +15,7 @@ import numpy as np
 from .continuous_sim import F1TenthSim_Continuous
 from .core.centreline_control import CentrelinePurePursuit
 from .core.frenet_lap_tracking import CoreLapTracker
+from .core.geometry.tracker import TrackingOptions
 from .continuous_logging import _json_safe
 from .overtaking.session import SessionConfig, PlanScheduler, SessionWriter, make_plan, reject_paths
 from .overtaking.track_data import TrackData
@@ -73,15 +74,21 @@ def snapshot(sim):
         reset_count=sim.reset_count, collision=bool(sim.collision), terminal_reason=sim.terminal_reason))
 
 
-def run_session(output_dir, config=None, geometry_dir='maps/frenet/esp/geometry', map_yaml='maps/esp.yaml'):
+def run_session(output_dir, config=None, geometry_dir='maps/frenet/esp/geometry', map_yaml='maps/esp.yaml',
+                generator=None, experimental_metadata=None):
     config = config or SessionConfig()
     if Path(output_dir).exists():
         raise FileExistsError('choose a new session directory')
     track = TrackData(geometry_dir, map_yaml)
+    if config.query_mode in ('fast_with_fallback', 'fixed_grid_with_fallback', 'fixed_grid_lookup'):
+        from .overtaking.road_table import get_road_table
+        get_road_table(track.geometry, geometry_dir)
     if not track.geometry.curve.closed:
         raise ValueError('continuous laps require a closed reference')
-    if track.manifest['map_id'] != 'esp' or Path(map_yaml).resolve() != Path('maps/esp.yaml').resolve():
-        raise ValueError('first integration runner supports ESP only')
+    map_id = track.manifest['map_id']
+    if map_id not in ('esp', 'my_map') or Path(map_yaml).resolve() != Path('maps', map_id+'.yaml').resolve():
+        raise ValueError('runner requires a matching ESP or MY map bundle')
+    config = config.for_map(map_id)
     physics = load_parameter_file('simulator_params')
     vehicle = load_parameter_file('vehicle_params')
     substeps = round(config.control_dt_s/physics.timestep)
@@ -93,21 +100,25 @@ def run_session(output_dir, config=None, geometry_dir='maps/frenet/esp/geometry'
         raise ValueError('candidate lookahead must be shorter than lap length')
     controller = CentrelinePurePursuit(track.control_path, config.speed_mps,
                                       config.pp_lookahead_m, vehicle.wheelbase, vehicle.max_steer)
-    sim = F1TenthSim_Continuous('esp', timeout=config.timeout_s, centreline_xy=track.control_path,
+    sim = F1TenthSim_Continuous(map_id, timeout=config.timeout_s, centreline_xy=track.control_path,
                                extra_params={'n_sim_steps': substeps})
-    sim.tracker = CoreLapTracker(track.geometry, track.control_path)
+    tracking_options = TrackingOptions(max_speed_mps=float(vehicle.max_speed))
+    sim.tracker = CoreLapTracker(track.geometry, track.control_path, frenet_options=tracking_options)
     reference = track.geometry.reference(0.)
     start = [*reference['xy'], reference['psi']]
     obs, done, actual_start = sim.reset(start)
     metadata = _json_safe(dict(schema_version=1, kind='centerline_candidates_recording',
-        map='esp', frame_id='map', geometry_id=track.geometry.geometry_id,
+        map=map_id, frame_id='map', geometry_id=track.geometry.geometry_id,
         track=track.provenance, track_audit=track.audit, config=asdict(config),
+        tracking_options=asdict(tracking_options),
         simulator_params=vars(sim.params), vehicle_params=vars(vehicle),
         program=source_version(), python_version=platform.python_version(), numpy_version=np.__version__,
         created_at_utc=datetime.now(timezone.utc).isoformat(), initial_pose=actual_start.tolist(),
         initial_speed_mps=0., initialization_action=[0., 0.], playback_origin_s=sim.current_time,
         planning_mode='synchronous_inspection_only', control_source='shared_centreline_pure_pursuit',
         candidate_control_enabled=False, footprint_verified=False, planning_allowed=False))
+    if experimental_metadata is not None:
+        metadata['experimental_planner'] = experimental_metadata
     writer = SessionWriter(output_dir, metadata)
     schedule = PlanScheduler(config.plan_period_s, sim.current_time)
     wall_start = perf_counter()
@@ -115,12 +126,15 @@ def run_session(output_dir, config=None, geometry_dir='maps/frenet/esp/geometry'
     rejects = Counter()
     events = []
     plan_id = 0
+    cycle_timings = []
     reason, error = 'error', None
 
     def record_plan(state, trigger):
         nonlocal plan_id
         try:
-            event = make_plan(track.geometry, state, config, plan_id, trigger)
+            event = make_plan(track.geometry, state, config, plan_id, trigger, generator=generator)
+            if experimental_metadata is not None:
+                event['validation_scope'] = experimental_metadata['validation_scope']
         except BaseException as exc:
             # Persist source and all IDs even when a programming/runtime error
             # interrupts generation. Fail the session instead of swallowing it.
@@ -151,6 +165,8 @@ def run_session(output_dir, config=None, geometry_dir='maps/frenet/esp/geometry'
 
     try:
         while True:
+            cycle_start = perf_counter()
+            previous_plan_count = plan_id
             state = snapshot(sim)
             writer.append('states', state)
             if state['valid']:
@@ -168,6 +184,8 @@ def run_session(output_dir, config=None, geometry_dir='maps/frenet/esp/geometry'
             if terminal:
                 reason = (sim.terminal_reason if done else 'tracking_limit_exceeded' if exceeded
                           else 'requested_laps_reached' if completed else 'control_step_limit')
+                cycle_timings.append(dict(source_control_step=state['control_step'], terminal=True,
+                    plan_generated=plan_id != previous_plan_count, wall_time_s=perf_counter()-cycle_start))
                 break
             action = controller.plan(obs)
             writer.append('actions', dict(schema_version=1, source_control_step=sim.control_steps,
@@ -175,6 +193,8 @@ def run_session(output_dir, config=None, geometry_dir='maps/frenet/esp/geometry'
                 action=action.tolist(), control_source='centreline_pure_pursuit',
                 controller_diagnostic=controller.diagnostic))
             obs, done = sim.step(action)
+            cycle_timings.append(dict(source_control_step=state['control_step'], terminal=False,
+                plan_generated=plan_id != previous_plan_count, wall_time_s=perf_counter()-cycle_start))
     except BaseException as exc:
         error = f'{type(exc).__name__}: {exc}'
         raise
@@ -194,6 +214,9 @@ def run_session(output_dir, config=None, geometry_dir='maps/frenet/esp/geometry'
             lap_events=events, candidate_control_enabled=False, planning_allowed=False,
             footprint_verified=False, continuous_verified=False,
             recording_complete=reason == 'requested_laps_reached' and error is None)
+        summary['cycle_timings'] = cycle_timings
+        summary['cycle_timing_scope'] = ('snapshot, state/plan/action JSON and writes, progress, planning, '
+            'PP and physics/scan/tracker; excludes initialization, finalization and timing-list append')
         writer.finalize(summary)
         with (writer.root/'progress.json').open('w') as stream:
             json.dump(dict(status='complete' if summary['recording_complete'] else 'stopped',
@@ -206,15 +229,25 @@ def run_session(output_dir, config=None, geometry_dir='maps/frenet/esp/geometry'
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output-dir', required=True)
+    parser.add_argument('--map', choices=('esp', 'my_map'), default='esp')
     parser.add_argument('--laps', type=int, default=1)
     parser.add_argument('--plan-period', type=float, default=.1)
-    parser.add_argument('--lookahead', type=float, default=40.)
+    parser.add_argument('--lookahead', type=float, default=3.)
+    parser.add_argument('--pp-lookahead', type=float, default=None,
+                        help='PP distance in metres; default my_map=0.3, esp=0.6')
+    parser.add_argument('--query-mode', choices=('exact', 'reused_exact', 'fast_with_fallback', 'fixed_grid_with_fallback', 'fixed_grid_lookup'), default='exact')
+    parser.add_argument('--generation-mode', choices=('optimized', 'direct_only', 'direct_then_repair', 'width_fraction_only', 'width_fraction_then_repair'), default='optimized')
     parser.add_argument('--timeout', type=float, default=300.)
     parser.add_argument('--max-control-steps', type=int, default=0, help='short preview only; zero runs to lap/timeout')
     args = parser.parse_args()
     result = run_session(args.output_dir, SessionConfig(laps=args.laps, plan_period_s=args.plan_period,
+                                                       pp_lookahead_m=args.pp_lookahead,
                                                        lookahead_m=args.lookahead, timeout_s=args.timeout,
-                                                       max_control_steps=args.max_control_steps))
+                                                       query_mode=args.query_mode,
+                                                       generation_mode=args.generation_mode,
+                                                       max_control_steps=args.max_control_steps),
+                         geometry_dir='maps/frenet/'+args.map+'/geometry',
+                         map_yaml='maps/'+args.map+'.yaml')
     print(json.dumps(result, indent=2, allow_nan=False))
     if not result['recording_complete']:
         raise SystemExit(2)

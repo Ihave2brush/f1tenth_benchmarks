@@ -1,6 +1,6 @@
 # Frenet 地圖檢視器
 
-本機離線工具可切換 ESP、AUT、GBR、MCO、CornerHall 與實際 PGM `my_map`，檢查中線、邊界與座標轉換。完成狀態及數值證據見[完成總結](status.md)。
+本機離線工具可切換 ESP、AUT、GBR、MCO、CornerHall 與實際 PGM `my_map`，檢查中線、邊界與座標轉換。完成狀態及數值證據見[完成總結](CHANGELOG.md)。
 
 ## 啟動
 
@@ -80,4 +80,4 @@ ESP 另一候選距離差≤0.025 m、且沿中線相隔>1 m 時，單點查詢�
 
 ## 已記錄車況與候選播放
 
-另有獨立入口 `research.overtaking.playback --session SESSION --port 8766`，重用原圖與座標轉換，提供播放／暫停、前後單步、步號／時間跳轉與五種倍速。原幾何查詢入口與此模式分開，詳見[操作指南](usage.md)及[第三階段驗收](reports/playback_stage3_20261021.md)。畫面明示候選前視、規劃週期、車況週期；每控制步生成仍不代表達到即時運算。
+另有獨立入口 `research.overtaking.playback --session SESSION --port 8766`，重用原圖與座標轉換，提供播放／暫停、前後單步、步號／時間跳轉與五種倍速。原幾何查詢入口與此模式分開，詳見[操作指南](usage.md)及[第三階段驗收](CHANGELOG.md)。畫面明示候選前視、規劃週期、車況週期；每控制步生成仍不代表達到即時運算。
