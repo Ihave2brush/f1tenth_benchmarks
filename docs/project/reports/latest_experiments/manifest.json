@@ -1,0 +1,67 @@
+{
+  "snapshot_date": "2026-11-05",
+  "timezone": "Asia/Taipei",
+  "scope": "code, tests, configuration, compact experiment reports and selected figures; original large sessions/domains remain local",
+  "canonical_document": "docs/project/CHANGELOG.md",
+  "website": {
+    "repository": "/data/f1tenth/sites/my-map-lab-20261029",
+    "commit": "cd646ba663b817bf7db55f39c2dbe7f3eedd1ab3",
+    "tracked_export_sha256": {
+      "dist/my_map/data.json": "0f49b49bc2471d515c0fa9f6de55f9955fa173ccf17f88f4c1818161ca891548",
+      "dist/esp/data.json": "d5320eb04afcd0da85c1292b708f8c62def8ea3139e90084c757cf7eb0a26f11",
+      "dist/report.md": "aa35df4944886cf59b2bdc10a5b96de9077705cadf2cf67ebd8002add73cf891"
+    }
+  },
+  "reports": [
+    {
+      "file": "my_map_40ms.json",
+      "original_path": "Data/research/overtaking/my_map_mm40_outer_20261030_001/validation/report.json",
+      "sha256": "2da5b2c765b89e96248bf78057d79645bca66e87310053f8c298d60671f0fc8a",
+      "bytes": 51365
+    },
+    {
+      "file": "esp_20ms.json",
+      "original_path": "Data/research/overtaking/esp_mm_20ms_20261030_001/validation/report.json",
+      "sha256": "e0743220029f9a27d42d8dc923df9565ad33cc0d5bedb2d154950a63f1abc51e",
+      "bytes": 367979
+    },
+    {
+      "file": "esp_40ms.json",
+      "original_path": "Data/research/overtaking/esp_mm40_outer_20261030_001/validation/report.json",
+      "sha256": "59393ef411b72410f8b01fbd70b64a0c3cc93f0e68d8d0d7e331b6d5597b193e",
+      "bytes": 732329
+    },
+    {
+      "file": "cpu_baseline.json",
+      "original_path": "Data/research/overtaking/cpu_baseline_20261105/report.json",
+      "sha256": "ba12bb66f4df712a927ff3087bb4dca99f5e32486c1bfd8c330fa4237c943bb1",
+      "bytes": 8198
+    },
+    {
+      "file": "aligned_warm_start.json",
+      "original_path": "Data/research/overtaking/aligned_warm_start_20261105_001/report.json",
+      "sha256": "3f471d15e3eb98bddd727f1fa5dedb828b6ff8fa818aa10846f9e39edcd6d6a1",
+      "bytes": 8613
+    },
+    {
+      "file": "warm_start_diagnosis.json",
+      "original_path": "Data/research/overtaking/aligned_warm_start_20261105_001/diagnosis.json",
+      "sha256": "e4b38b8e5f3e9d5aa292037d58c0c42cab8b961860d831199895c88fc4d9c59b",
+      "bytes": 37689
+    }
+  ],
+  "verification": {
+    "research_pytest": {
+      "passed": 461,
+      "deselected": 1,
+      "reason": "existing not local_archive marker",
+      "warnings": 18
+    },
+    "playback_node_test": "passed",
+    "dashboard_portable_assets": "passed",
+    "dashboard_original_source_verification": "passed",
+    "markdown_local_links": "passed",
+    "diff_whitespace": "passed"
+  },
+  "main_repository_parent_commit": "3a8492c7997c758711dc3690996b8dedbc9632c6"
+}

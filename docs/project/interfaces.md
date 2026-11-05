@@ -1,6 +1,10 @@
 # 介面與座標定義
 
-本文件定義現行介面；完成狀態、驗收數值與限制見[完成總結](status.md)。
+本文件定義現行介面；完成狀態、驗收數值與限制見[完成總結](CHANGELOG.md)。
+
+歷史研究基準為 my_map／1 mm 安全域＋直接生成＋二／四號 B-spline 修正（共享 20 ms）；最新實驗／展示為兩圖 40 ms 修 C1／2／4／5。`BudgetedDomainGenerator(domain, budget_s=.020)` 明確選用 20 ms；主 CLI 不會自動切換，`run_mm_bspline_comparison --budgets-ms 0 20` 另做相同車況對照。20 ms 是包含基本生成、排除 session gate／控制的協作式截止，非底層硬中斷；原曲率上限由車輛參數 `tan(max_steer)/wheelbase` 取得，修正另保留 0.01 /m 餘量。
+
+1 mm 安全域對來源／幾何／margin 核對；新車體 margin=0.185 m，舊 0.15 m 表不能混用。安全帶只代表中心路徑整格預篩；發布解析曲線及單一起點，尚未發布給 PP 接管。8768 畫圖每 1 cm 取樣，橙色平滑牆線只供顯示，不替代離線安全域或原驗證密度。
 
 ## 程式入口與用途
 
@@ -22,6 +26,28 @@
 核心雙向轉換在 `f1tenth_benchmarks/research/core/geometry/frenet.py`。
 tracker 重用候選投影並加入歷史判斷，domain 重用精確反轉換；兩者不是另外一套
 座標公式。批次驗證程式不需要在每個控制步驟執行。
+
+## 候選生成與 session 契約
+
+`run_centerline_candidates` 載入同版本 TrackData，串接 CSV 中線 PP、CoreLapTracker、候選生成與 SessionWriter；`overtaking.verify_session` 做獨立重播，`overtaking.playback` 只讀取保存事件。入口支援 esp／my_map，主 CLI 預設 esp；目前研究基準明確選 MY map／3 m。
+
+| 設定／資料 | 契約 |
+|---|---|
+| SessionConfig | 候選前視預設 3 m、plan_period_s／control_dt_s 預設 0.1 s；PP 前視 None 代表依地圖解析，my_map=0.3 m、esp=0.6 m，明確數值則保留；session 記錄解析後值。來源位置 ≤1e−4 m、yaw ≤1e−5 rad 起點閘門 |
+| query_mode | exact（預設）、reused_exact、fast_with_fallback、fixed_grid_with_fallback、fixed_grid_lookup；模式與限制見[查詢設計](frenet_runtime_validation_plan.md) |
+| generation_mode | optimized（預設）、direct_only、direct_then_repair、width_fraction_only、width_fraction_then_repair；實驗基準 A 為 direct_then_repair |
+| validation_step_m | None 保留原半像素核驗；MY／ESP 為 2.5 cm。粗取樣僅實驗覆寫，不等價於原密度；固定網格兩模式不接受此覆寫 |
+| metadata.json | 設定、車輛／模擬參數、geometry_id、來源與程式 hash、初始狀態及 tracking_options；重播使用保存設定 |
+| states／actions／plans.jsonl | 依步記錄實際車況、作用控制與五 ID 候選，成功／拒絕／錯誤皆保留來源及原因；索引保存 byte offset／length |
+| plans | 保留來源／available 步號與時間、source_pose、五 ID、取樣結果及設定；起點閘門不通過不能發布為合格 |
+| path_type | 缺省／state_matched_trajectory 必須匹配實際起點與 yaw；reference_centerline 僅允許三號，必須為整段 d=0 spline，獨立核對來源投影 s、參考起點與方向，並套用來源車況追蹤範圍；不能僅憑標記跳過檢查 |
+| 1 mm 保底狀態 | reference_centerline 策略中三號獨立查道路域與曲率，不參與外側 Hermite 包覆推論；通過時 fallback_candidate_id=3。沒有合格候選時 requires_stop=true，此為狀態回報，尚非已接管控制的制動指令 |
+| verify_session | 核對物理／控制／Frenet／圈事件、來源、五 ID／起點、串流 hash／索引與幾何檔案；候選內部曲線不由此工具獨立重驗，需另跑原密度核驗 |
+| playback | 依 available 時間選當下可取得事件；倒退跳轉不保留未來候選，播放不重新求解 |
+
+目前同步規劃會暫停模擬時間；`cycle_budget_observation` 若存在，只記錄 make_plan 是否在目標內，排除記錄／控制，`deadline_enforced=false`，不代表有中止或排程保證。`candidate_control_enabled=false`，planning_allowed／footprint_verified 維持 false。
+
+fixed_grid_lookup 的 5 cm 格是弧長定位輔助，原候選 2.5 cm 檢查點、原圖邊界及必要 XY／折線核驗仍保留。道路表命中不能當作新曲線整段通過。未使用 tracking_options 的歷史 session 沿用預設；MY 小圈整合依車輛物理速度上限記錄專用選項，不回寫全域 TrackingOptions 預設。
 
 ## 座標定義
 
@@ -91,7 +117,7 @@ necessary_d_min/max 只檢查 J 的必要條件，不保證唯一投影；sample
    不自動改選較遠候選，也不先排除無效候選再判定歧義。
 
 反向 `to_cartesian(s,d)` 先以同一公式計算 x/y，再用單點投影確認來源 s/d：
-環狀 s 差及 d 差均須≤0.0001 m，且來源 J 也必須≥0.2。
+s 差（閉合取環狀距離、開放取一般距離）及 d 差均須≤0.0001 m，且來源 J 也必須≥0.2。
 即使該 x/y 可用另一分支表達，原來源不一致仍拒絕；診斷 x/y 可以保留。
 目前 `ambiguous_projection` 同時用於單點近似等距歧義，以及反向轉換的來源
 s/d 不一致；兩者不能只靠原因代碼區分。兩個候選存在本身不會觸發拒絕。
@@ -206,3 +232,5 @@ CornerHall 的 waypoints_ros.csv 保留有限路徑的兩個端點；CSV只提�
 正式 ranges/manifest.json 使用 csv_location=source_geometry；load_ranges 必須
 傳入 geometry_path，對該目錄的兩份CSV與幾何manifest核對hash，避免重複CSV。
 舊本機bundle仍支援CSV在同目錄與普通JSON，格式選擇不影響轉換算法。
+
+最新全候選實驗明確指定 `repair_candidates=(1,2,4,5)`；生成器預設仍為 `(2,4)`、40 ms。`warm_start_mode="coefficients"` 是原係數初值；可選 `"aligned"` 只改位移擬合初值，重新驗證契約與預設不變，實驗結果見修改紀錄第 12～13 節。

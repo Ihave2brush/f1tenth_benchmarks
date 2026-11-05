@@ -10,12 +10,14 @@ not a continuous spline, vehicle footprint or dynamic safety claim.
 import argparse
 import json
 import math
+from time import perf_counter
 
 import numpy as np
 from scipy.optimize import minimize
 
 from ..core.geometry import load_geometry
 from .candidate_validation import MAX_SAMPLES
+from .width_fraction_paths import width_fraction_spline
 from .constrained_adaptive_paths import (
     _basis, _positive, _reference_data, evaluate_path_smoothness,
     query_road_sections, validate_path_segments,
@@ -24,6 +26,42 @@ from .constrained_adaptive_paths import (
 SEEDS = ('road_fraction', 'hermite', 'road_center')
 GROUPS = ('right_margin', 'left_margin', 'positive_slope', 'negative_slope',
           'jacobian', 'positive_curvature', 'negative_curvature')
+
+
+def direct_hermite_coefficients(length, d0, slope0, target):
+    """Cubic Hermite in a degree-five Bernstein basis, no optimizer.
+
+    Same smoothstep family as the reference when slope0=0, extended to match
+    the actual start yaw. End slope is zero. No extra curvature boundary is
+    invented. The legacy dense verifier accepts or rejects the entire curve.
+    """
+    powers = [d0, length*slope0, 3*(target-d0)-2*length*slope0,
+              2*(d0-target)+length*slope0]
+    return np.array([sum(powers[j]*math.comb(i, j)/math.comb(5, j)
+                         for j in range(min(i, 3)+1)) for i in range(6)])
+
+
+def direct_constraint_screen(basis, c, dense, sections, k, kp, max_slope, max_curvature):
+    """Reject known constraint violations before expensive geometry checks.
+
+    Uses the same dense grid and thresholds as _validate. Passing this screen
+    never accepts a candidate: the full legacy verifier still runs afterward.
+    """
+    d, p, q = [basis(dense, nu=i)@c for i in range(3)]
+    J, curvature = evaluate_path_smoothness(d, p, q, k, kp)
+    lo = np.array([section['d_min'] for section in sections])
+    hi = np.array([section['d_max'] for section in sections])
+    margin = (d >= lo-1e-8) & (d <= hi+1e-8)
+    smooth = ((np.abs(p) <= max_slope+1e-7) & (np.abs(curvature) <= max_curvature+1e-7)
+              & (J >= .2-1e-7) & np.isfinite(d+p+q+J+curvature))
+    bad = np.flatnonzero(~(margin & smooth))
+    if not len(bad):
+        return None
+    index = int(bad[0])
+    return dict(first_invalid_sample=index, reason='insufficient_lateral_margin' if not margin[index]
+                else 'smoothness_limit', stage='dense_constraint_screen',
+                min_margin_slack_m=float(np.minimum(d-lo, hi-d).min()),
+                max_abs_curvature_inv_m=float(np.abs(curvature).max()))
 
 
 def _finite_number(value):
@@ -134,20 +172,29 @@ def fit_multistart(basis, distances, bounds, preferred, d0, slope0, target,
 
 def _validate(geometry,basis,c,dense,sections,k,kp,target,endpoint_tolerance_m,
               d0,slope0,max_slope,max_curvature):
-    """Fresh original geometry/boundary queries, independent of solver success."""
+    """Exact geometry checks, independent of solver success and solver arrays."""
     d,p,q=[basis(dense,nu=i)@c for i in range(3)]
     J,curvature=evaluate_path_smoothness(d,p,q,k,kp)
+    batch = getattr(geometry, 'candidate_cartesian_many', None)
+    converted = None
+    if batch is not None:
+        headings = [math.atan2(float(slope), float(jacobian)) for slope, jacobian in zip(p, J)]
+        converted = batch([section['s'] for section in sections], d, headings)
+    boundary_batch = getattr(geometry, 'candidate_boundaries_many', None)
+    raw_sections = (None if boundary_batch is None else
+                    boundary_batch([section['s'] for section in sections]))
     points=[]
     for i,(distance,lateral)in enumerate(zip(dense,d)):
         section=sections[i]
-        # Use fresh boundaries, not the arrays used by the optimizer.
-        raw=geometry.boundaries(section['s'])
+        # Use the exact query interface, not mutable solver bound arrays.
+        raw=geometry.boundaries(section['s']) if raw_sections is None else raw_sections[i]
         right,left=raw.get('d_right'),raw.get('d_left')
         boundary_valid=bool(raw['valid']and right is not None and left is not None
             and np.isfinite([right,left]).all()and right+section['margin']<left-section['margin'])
         margin_valid=bool(boundary_valid and raw['d_right']+section['margin']-1e-8<=lateral<=raw['d_left']-section['margin']+1e-8)
         heading=math.atan2(float(p[i]),float(J[i]))
-        exact=geometry.to_cartesian(section['s'],float(lateral),e_psi=heading)
+        exact=(geometry.to_cartesian(section['s'],float(lateral),e_psi=heading)
+               if converted is None else converted[i])
         if exact.get('geometry_id')!=geometry.geometry_id:raise ValueError('Exact geometry version mismatch')
         xy=exact.get('xy');finite=xy is not None and np.shape(xy)==(2,)and np.isfinite(xy).all()
         geometric=bool(exact['valid']and finite)
@@ -173,12 +220,39 @@ def _validate(geometry,basis,c,dense,sections,k,kp,target,endpoint_tolerance_m,
         if not segment['valid']:
             invalid=segment['segment_index']+1
             points[invalid].update(valid=False,reason=segment['reason'])
+    legacy_indices = getattr(geometry, '_candidate_legacy_grid_indices', None)
+    if invalid is None and legacy_indices is not None:
+        # A denser union polyline can bend away from a blocked legacy chord.
+        # Preserve the legacy chord checks as well as all its sampled sites.
+        legacy_segment = validate_path_segments(geometry.raster,
+            [[points[i]['x'], points[i]['y']] for i in legacy_indices])
+        if not legacy_segment['valid']:
+            invalid = int(legacy_indices[legacy_segment['segment_index']+1])
+            segment = dict(legacy_segment, sampling_policy='legacy_grid_guard')
+            points[invalid].update(valid=False, reason=legacy_segment['reason'])
     return points,invalid,segment
 
 
-def generate_robust_paths(geometry,x,y,yaw=None,lookahead_m=40.,safety_margin_m=.2,
+def generate_robust_paths(geometry,x,y,yaw=None,lookahead_m=3.,safety_margin_m=.2,
                           sample_step_m=.25,max_slope=1.,max_curvature=None,
-                          endpoint_tolerance_m=0.,max_refinements=2,max_iterations=150):
+                          endpoint_tolerance_m=0.,max_refinements=2,max_iterations=150,
+                          query_mode='exact', generation_mode='optimized', validation_step_m=None):
+    generation_started = perf_counter()
+    if generation_mode not in ('optimized', 'direct_only', 'direct_then_repair',
+                               'width_fraction_only', 'width_fraction_then_repair'):
+        raise ValueError('invalid generation_mode')
+    width_fraction_mode = generation_mode.startswith('width_fraction_')
+    direct_only_mode = generation_mode in ('direct_only', 'width_fraction_only')
+    if query_mode not in ('exact', 'reused_exact', 'fast_with_fallback', 'fixed_grid_with_fallback', 'fixed_grid_lookup'):
+        raise ValueError('invalid query_mode')
+    context = None
+    if query_mode != 'exact':
+        from .geometry_queries import ExactQueryContext, FastQueryContext, FixedLookupQueryContext
+        context_type = (FixedLookupQueryContext if query_mode == 'fixed_grid_lookup' else
+                        FastQueryContext if query_mode in ('fast_with_fallback', 'fixed_grid_with_fallback')
+                        else ExactQueryContext)
+        context = context_type(geometry)
+        geometry = context.geometry
     length=_positive(lookahead_m,'lookahead_m');step=_positive(sample_step_m,'sample_step_m')
     max_slope=_positive(max_slope,'max_slope')
     margin=float(safety_margin_m);tolerance=float(endpoint_tolerance_m)
@@ -192,7 +266,13 @@ def generate_robust_paths(geometry,x,y,yaw=None,lookahead_m=40.,safety_margin_m=
         vehicle=load_parameter_file('vehicle_params')
         max_curvature=math.tan(vehicle.max_steer)/vehicle.wheelbase
     max_curvature=_positive(max_curvature,'max_curvature')
-    ratio=length/min(step,geometry.raster.resolution/2,.05)
+    # Explicit research override: coarsening changes the sampled acceptance policy.
+    validation_step = min(step, geometry.raster.resolution/2, .05)
+    if validation_step_m is not None:
+        validation_step = _positive(validation_step_m, 'validation_step_m')
+        if validation_step > .05 or query_mode in ('fixed_grid_with_fallback', 'fixed_grid_lookup'):
+            raise ValueError('validation_step_m requires <= .05 m and non-fixed-grid mode')
+    ratio=length/validation_step
     if not math.isfinite(ratio)or ratio>MAX_SAMPLES-1:raise ValueError('validation sampling budget exceeded')
     start=geometry.to_frenet([x,y],yaw=yaw)
     if not start['valid']:raise ValueError('Invalid start: '+str(start.get('reason')))
@@ -203,24 +283,121 @@ def generate_robust_paths(geometry,x,y,yaw=None,lookahead_m=40.,safety_margin_m=
     if abs(epsi)>=math.pi/2-1e-3:raise ValueError('initial heading must point forward')
     slope0=(1-start['kappa']*d0)*math.tan(epsi)
     dense=np.linspace(0,length,math.ceil(ratio)+1)
-    sections=query_road_sections(geometry,s0+dense,margin)
+    source_s = s0+dense
+    grid_summary = None
+    legacy_constraint_indices = None
+    if query_mode == 'fixed_grid_with_fallback':
+        from .fixed_grid import sample_window
+        legacy_dense, legacy_source = dense, source_s
+        progress_s, fixed_source, grid_summary = sample_window(
+            context.table, s0, length, length/math.ceil(ratio))
+        fixed_dense = progress_s-s0
+        fixed_dense[0], fixed_dense[-1] = 0., length
+        # Fixed-site certificates do not certify the gaps in s. Keep every
+        # previous validation site until a continuous interval policy exists.
+        sites = {float(d): float(s % geometry.curve.L if geometry.curve.closed else s)
+                 for d, s in zip(legacy_dense, legacy_source)}
+        for distance, source in zip(fixed_dense, fixed_source):
+            sites.setdefault(float(distance), float(source))
+        dense = np.array(sorted(sites))
+        source_s = np.array([sites[float(d)] for d in dense])
+        progress_s = s0+dense
+        legacy_indices = np.searchsorted(dense, legacy_dense)
+        geometry._candidate_legacy_grid_indices = legacy_indices
+        legacy_constraint_indices = legacy_indices[np.unique(np.linspace(
+            0, len(legacy_dense)-1, min(161, len(legacy_dense))).astype(int))]
+        grid_summary.update(fixed_site_count=grid_summary['actual_site_count'],
+            legacy_guard_site_count=len(legacy_dense), actual_site_count=len(dense),
+            max_gap_m=float(np.max(np.diff(dense))), legacy_sampling_guard=True,
+            interval_reuse_certified=False)
+        if len(dense) > MAX_SAMPLES:
+            raise ValueError('validation sampling budget exceeded')
+    if query_mode == 'fixed_grid_lookup':
+        context.prepare_window(s0, length)
+    if context is not None:
+        wrapped = source_s % geometry.curve.L if geometry.curve.closed else source_s
+        low, high = source_s-.001, source_s+.001
+        if not geometry.curve.closed:
+            low, high = np.maximum(0, low), np.minimum(geometry.curve.L, high)
+        context.prefetch_reference(np.r_[source_s, wrapped, low, high])
+    sections=query_road_sections(geometry,source_s,margin)
+    if grid_summary is not None:
+        for section, progress in zip(sections, progress_s):
+            section['s_progress'] = float(progress)
     for section in sections:section['margin']=margin
     first,last=sections[0],sections[-1]
     if not first['boundary_valid']or not first['d_min']<=d0<=first['d_max']:
         raise ValueError('Invalid or insufficient boundary at start')
     fraction0=(d0-first['d_min'])/(first['d_max']-first['d_min'])
     basis=_basis(length,min(20,max(6,math.ceil(length/2)+5)))
-    k,kp=_reference_data(geometry,s0+dense)
+    k,kp=_reference_data(geometry,source_s)
+    preparation_s = perf_counter()-generation_started
+    direct_basis = _basis(length, 6) if generation_mode != 'optimized' else None
     paths=[]
     for cid,fraction in enumerate(np.linspace(0,1,5),1):
+        candidate_started = perf_counter()
+        path_basis = diagnostic_basis = basis
+        direct_attempt = None
+        direct_generation_s = direct_screen_s = direct_validation_s = repair_s = 0.
         target=None if not last['boundary_valid']else last['d_min']+fraction*(last['d_max']-last['d_min'])
         attempts=[];selected=None;diagnostic=None;reason='no_validated_solution'
         if not all(v['boundary_valid']for v in sections):reason='invalid_road_section'
         elif abs(slope0)>max_slope:reason='initial_heading_exceeds_slope_limit'
         else:
-            modes=[0.]+([tolerance]if tolerance>0 else[])
+            if generation_mode != 'optimized':
+                started = perf_counter()
+                construction_error = None
+                if width_fraction_mode:
+                    try:
+                        direct_basis, direct_c = width_fraction_spline(
+                            dense, sections, fraction0, fraction, d0, slope0, target)
+                    except (ValueError, np.linalg.LinAlgError) as exc:
+                        construction_error = str(exc)
+                    direct_method = 'width_fraction_c2_hermite_pose_correction_v1'
+                    direct_seed = 'direct_width_fraction'
+                else:
+                    direct_c = direct_hermite_coefficients(length, d0, slope0, target)
+                    direct_method = 'cubic_hermite_actual_start_heading'
+                    direct_seed = 'direct_hermite'
+                direct_generation_s = perf_counter()-started
+                if construction_error is not None:
+                    direct_attempt = dict(method=direct_method, accepted=False,
+                        reason='width_fraction_construction_failed', stage='construction',
+                        detail=construction_error, segment_check=None)
+                    if direct_only_mode:
+                        reason = direct_attempt['reason']
+                else:
+                    started = perf_counter()
+                    screening = direct_constraint_screen(direct_basis, direct_c, dense, sections,
+                        k, kp, max_slope, max_curvature)
+                    direct_screen_s = perf_counter()-started
+                    if screening is not None:
+                        direct_attempt = dict(screening, method=direct_method,
+                                              accepted=False, segment_check=None)
+                        if direct_only_mode:
+                            reason = screening['reason']
+                    else:
+                        started = perf_counter()
+                        direct_points, direct_invalid, direct_segment = _validate(
+                            geometry, direct_basis, direct_c, dense, sections, k, kp,
+                            target, 0., d0, slope0, max_slope, max_curvature)
+                        direct_validation_s = perf_counter()-started
+                        direct_attempt = dict(method=direct_method,
+                            accepted=direct_invalid is None, first_invalid_sample=direct_invalid,
+                            reason=None if direct_invalid is None else direct_points[direct_invalid]['reason'],
+                            segment_check=direct_segment, stage='full_validation')
+                        diagnostic = (direct_c.copy(), direct_points, direct_invalid, 0.)
+                        diagnostic_basis = direct_basis
+                        if direct_invalid is None:
+                            selected = (0., direct_c, direct_points, 0., direct_seed)
+                            path_basis = direct_basis
+                            reason = None
+            modes = ([] if selected is not None or direct_only_mode else
+                     [0.]+([tolerance]if tolerance>0 else[]))
+            repair_started = perf_counter()
             for allowed in modes:
-                indices=np.unique(np.linspace(0,len(dense)-1,min(161,len(dense))).astype(int))
+                indices=(np.unique(np.linspace(0,len(dense)-1,min(161,len(dense))).astype(int))
+                         if legacy_constraint_indices is None else legacy_constraint_indices.copy())
                 for refinement in range(max_refinements+1):
                     ds=dense[indices];u=ds/length;blend=3*u*u-2*u*u*u
                     bounds=[sections[i]for i in indices]
@@ -249,6 +426,7 @@ def generate_robust_paths(geometry,x,y,yaw=None,lookahead_m=40.,safety_margin_m=
                         detail['dense_max_abs_slope']=max(abs(p['d_prime'])for p in points)
                         detail['dense_max_abs_curvature_inv_m']=max(abs(p['curvature_inv_m'])for p in points)
                         diagnostic=(c.copy(),points,invalid,allowed)
+                        diagnostic_basis = basis
                         if invalid is None:
                             valid_fits.append((float(detail['objective']),c.copy(),points,allowed,detail['seed']))
                             break
@@ -261,14 +439,16 @@ def generate_robust_paths(geometry,x,y,yaw=None,lookahead_m=40.,safety_margin_m=
                     if np.array_equal(expanded,indices):break
                     indices=expanded
                 if selected is not None:break
+            repair_s = perf_counter()-repair_started if modes else 0.
         if selected is not None:
             _,c,points,allowed,seed=selected;invalid=None
         elif diagnostic is not None:
             c,points,invalid,allowed=diagnostic;seed=None
+            path_basis = diagnostic_basis
         else:c=None;points=[];invalid=None;allowed=None;seed=None
         if selected is None and reason=='no_validated_solution':
             reason=points[invalid]['reason']if invalid is not None else'optimizer_constraints_not_satisfied'
-        actual=None if c is None else float(basis(length)@c)
+        actual=None if c is None else float(path_basis(length)@c)
         deviation=None if actual is None or target is None else actual-target
         first_point=points[0]if points else None
         start_position_error=None if first_point is None or first_point['x']is None or first_point['y']is None else float(
@@ -284,8 +464,16 @@ def generate_robust_paths(geometry,x,y,yaw=None,lookahead_m=40.,safety_margin_m=
             reason=reason,first_invalid_sample=invalid,points=points,attempts=attempts,
             polyline_collision_verified=selected is not None,heading_matched=selected is not None and yaw is not None,
             start_position_error_m=start_position_error,start_heading_error_rad=start_heading_error,
-            spline=None if c is None else dict(knots=basis.t.tolist(),coefficients=c.tolist(),degree=basis.k,source_s_origin=s0)))
-    return dict(schema_version=1,method='robust_constrained_adaptive_v52',geometry_id=geometry.geometry_id,frame_id='map',
+            spline=None if c is None else dict(knots=path_basis.t.tolist(),coefficients=c.tolist(),degree=path_basis.k,source_s_origin=s0)))
+        if generation_mode != 'optimized':
+            paths[-1].update(direct_attempt=direct_attempt,
+                generation_route=('direct' if seed in ('direct_hermite', 'direct_width_fraction') else
+                                  'repaired' if selected is not None else 'rejected'),
+                repair_attempted=bool(attempts),
+                timing=dict(direct_generation_s=direct_generation_s,
+                            direct_screen_s=direct_screen_s, direct_validation_s=direct_validation_s, repair_s=repair_s,
+                            candidate_total_s=perf_counter()-candidate_started))
+    result = dict(schema_version=1,method='robust_constrained_adaptive_v52',geometry_id=geometry.geometry_id,frame_id='map',
         start=dict(x=float(x),y=float(y),yaw=None if yaw is None else float(yaw),s=s0,d=d0,
                    e_psi=epsi,d_prime=slope0),paths=paths,candidate_count=5,
         valid_target_count=sum(p['target_valid']for p in paths),sampled_valid_count=sum(p['sampled_valid']for p in paths),
@@ -298,20 +486,50 @@ def generate_robust_paths(geometry,x,y,yaw=None,lookahead_m=40.,safety_margin_m=
         inspection_only=True,planning_allowed=False,domain_verified=False,continuous_verified=False,
         footprint_verified=False,dynamics_verified=False,opponents_verified=False,
         verification_level='dense_original_geometry_and_exact_polyline_point_sweep')
+    if validation_step_m is not None:
+        result['validation_sampling_policy'] = dict(
+            requested_override_m=validation_step_m, raster_half_cap_overridden=True,
+            original_dense_grid_verified=False)
+    if context is not None:
+        result['query_reuse'] = context.summary()
+        if query_mode in ('fast_with_fallback', 'fixed_grid_with_fallback', 'fixed_grid_lookup'):
+            result['verification_level'] = 'dense_frenet_certified_columns_exact_fallback_and_polyline_point_sweep'
+        context.close()
+    if grid_summary is not None:
+        result['validation_grid'] = grid_summary
+        result['actual_sample_step_m'] = float(np.max(np.diff(dense)))
+        result['verification_level'] = 'fixed_grid_with_legacy_sites_and_polyline_guard'
+    if generation_mode != 'optimized':
+        elapsed = perf_counter()-generation_started
+        result.update(method=('direct_width_fraction_' if width_fraction_mode else 'direct_hermite_')+generation_mode, generation_mode=generation_mode,
+            timing=dict(preparation_s=preparation_s,
+                direct_generation_s=sum(p['timing']['direct_generation_s'] for p in paths),
+                direct_screen_s=sum(p['timing']['direct_screen_s'] for p in paths),
+                direct_validation_s=sum(p['timing']['direct_validation_s'] for p in paths),
+                repair_s=sum(p['timing']['repair_s'] for p in paths), generation_total_s=elapsed),
+            budget_observation=dict(target_cycle_s=.1, completed_within_target=elapsed <= .1,
+                timely_valid_count=result['sampled_valid_count'] if elapsed <= .1 else 0,
+                deadline_enforced=False, scope='generation_only_excludes_session_and_io'),
+            direct_valid_count=sum(p['generation_route']=='direct' for p in paths),
+            repaired_valid_count=sum(p['generation_route']=='repaired' for p in paths))
+    return result
 
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--geometry-dir',required=True);parser.add_argument('--map-yaml',required=True)
     parser.add_argument('--x',type=float,required=True);parser.add_argument('--y',type=float,required=True)
-    parser.add_argument('--yaw',type=float);parser.add_argument('--lookahead',type=float,default=40.)
+    parser.add_argument('--yaw',type=float);parser.add_argument('--lookahead',type=float,default=3.)
     parser.add_argument('--margin',type=float,default=.2);parser.add_argument('--sample-step',type=float,default=.25)
     parser.add_argument('--endpoint-tolerance',type=float,default=0.)
     parser.add_argument('--max-slope',type=float,default=1.);parser.add_argument('--max-curvature',type=float)
+    parser.add_argument('--query-mode', choices=('exact', 'reused_exact', 'fast_with_fallback', 'fixed_grid_with_fallback', 'fixed_grid_lookup'), default='exact')
+    parser.add_argument('--generation-mode', choices=('optimized', 'direct_only', 'direct_then_repair', 'width_fraction_only', 'width_fraction_then_repair'), default='optimized')
     parser.add_argument('--save');parser.add_argument('--no-show',action='store_true')
     args=parser.parse_args();g=load_geometry(args.geometry_dir,args.map_yaml,inspect=True)
     try:r=generate_robust_paths(g,args.x,args.y,args.yaw,args.lookahead,args.margin,args.sample_step,
-                               args.max_slope,args.max_curvature,args.endpoint_tolerance)
+                               args.max_slope,args.max_curvature,args.endpoint_tolerance,
+                               query_mode=args.query_mode, generation_mode=args.generation_mode)
     except ValueError as exc:parser.error(str(exc))
     print(json.dumps(r,allow_nan=False))
     if args.save or not args.no_show:

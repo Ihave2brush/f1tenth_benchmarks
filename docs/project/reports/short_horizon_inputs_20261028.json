@@ -1,0 +1,2596 @@
+{
+  "schema_version": 1,
+  "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+  "source_session": "Data/research/overtaking/40m_every_step_20261021_001",
+  "source_sha256": {
+    "metadata.json": "ba8f8b16e97530210ce5c87b6b379619b589af2b401c09e822c91f0843806e2e",
+    "playback_index.json": "09fd86ac33582577f8631877363b7a713706fc48229df8b1ae27ededd246a396",
+    "states.jsonl": "05066895edea5c3206b7faf9786a34a9d3fbebf40d8e355c7889a23ebe477c26"
+  },
+  "parent_cases_sha256": "40bfff43dbff5e074b35d0043c6a4cbc22ab5a36379dd00ea742c4f6292f0b57",
+  "horizons_m": [
+    5.0,
+    6.0,
+    7.0
+  ],
+  "settings": {
+    "endpoint_tolerance_m": 0.0,
+    "max_iterations": 150,
+    "max_refinements": 2,
+    "max_slope": 1.0,
+    "safety_margin_m": 0.2,
+    "sample_step_m": 0.25,
+    "max_curvature_inv_m": 1.2811915719338236
+  },
+  "fixed_cases": [
+    {
+      "name": "step310",
+      "pose": [
+        32.421922256054025,
+        -8.945391862781824,
+        5.566842973733159
+      ],
+      "control_step": 310,
+      "source_state_sha256": "cc480b29638bd045e3622fda2ccb236d3ec58645cb781a38e9c3dc797c0d1318",
+      "expected_useful": true
+    },
+    {
+      "name": "step317",
+      "pose": [
+        32.99391612205079,
+        -9.559164078708895,
+        5.404957599537912
+      ],
+      "control_step": 317,
+      "source_state_sha256": "4d60d4f23923fb3be83b214587178c8cc3abd52469718624f03d6aa0a2a5f774",
+      "expected_useful": true
+    },
+    {
+      "name": "step807",
+      "pose": [
+        21.83373686922052,
+        -7.34608954190013,
+        2.6100938583759383
+      ],
+      "control_step": 807,
+      "source_state_sha256": "685b9aae591bb7587aab627bf963b0fec86c2a0c5fbcecde8743fbb1cbead685",
+      "expected_useful": true
+    },
+    {
+      "name": "straight",
+      "pose": [
+        -11.33762082332071,
+        -15.082431037875287,
+        2.5928628636163435
+      ],
+      "control_step": 1173,
+      "source_state_sha256": "857709789e95053c5821d020ca3d967f8e8995a3fd1e3016d8a3b5ab4060a772",
+      "expected_useful": true
+    },
+    {
+      "name": "sharp",
+      "pose": [
+        -33.54809253733739,
+        -9.571639153673916,
+        2.1884579672753763
+      ],
+      "control_step": 1604,
+      "source_state_sha256": "edc066c4883b6040954d92dfd293cf638c8aab341331fd367b8459c969706207",
+      "expected_useful": true
+    },
+    {
+      "name": "narrow",
+      "pose": [
+        -23.357639908594606,
+        -7.828291769440065,
+        2.61480876241663
+      ],
+      "control_step": 1290,
+      "source_state_sha256": "30c20a6c518461a1d9f92b9814ee20913ad914df93845fcbe614216aaab6fb7b",
+      "expected_useful": true
+    },
+    {
+      "name": "seam",
+      "pose": [
+        0.029561525152181828,
+        -0.013682193865697159,
+        0.004239404136012863
+      ],
+      "control_step": 1969,
+      "source_state_sha256": "a8290331eb694a46e561a82ac82336266b65f5aea9a6f8e29ef8dc30fee2c375",
+      "expected_useful": true
+    },
+    {
+      "name": "outside_map",
+      "pose": [
+        1000000.0,
+        1000000.0,
+        0.0
+      ],
+      "control_step": null,
+      "source_state_sha256": null,
+      "expected_useful": false
+    }
+  ],
+  "moving_segments": [
+    {
+      "name": "step310",
+      "states": [
+        {
+          "state": {
+            "control_step": 310,
+            "sim_time_s": 31.100000000002062,
+            "pose": [
+              32.421922256054025,
+              -8.945391862781824,
+              5.566842973733159
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 37.01415395832416,
+              "s_unwrapped": 37.01415395832453,
+              "d": -0.017362529891944627,
+              "e_psi": 0.02130710551243009,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9965718706069112,
+              "projection_xy": [
+                32.43359942961367,
+                -8.932542696975961
+              ],
+              "timestamp": 31.100000000002062,
+              "xy": [
+                32.421922256054025,
+                -8.945391862781824
+              ],
+              "yaw": -0.716342333446427,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 273.9216517315764,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "cc480b29638bd045e3622fda2ccb236d3ec58645cb781a38e9c3dc797c0d1318"
+        },
+        {
+          "state": {
+            "control_step": 311,
+            "sim_time_s": 31.200000000002078,
+            "pose": [
+              32.51014432916443,
+              -9.026733150275433,
+              5.549604947618853
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 37.13456087531597,
+              "s_unwrapped": 37.13456087531631,
+              "d": -0.01679599733785376,
+              "e_psi": 0.0279188783908908,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.996662883533444,
+              "projection_xy": [
+                32.52173369114951,
+                -9.014576168110763
+              ],
+              "timestamp": 31.200000000002078,
+              "xy": [
+                32.51014432916443,
+                -9.026733150275433
+              ],
+              "yaw": -0.7335803595607331,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 274.0420586485682,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "aa020c45ed4b6e3e2d642d5037acb561b452f41424517914d51954007b133b89"
+        },
+        {
+          "state": {
+            "control_step": 312,
+            "sim_time_s": 31.300000000002093,
+            "pose": [
+              32.59618262557557,
+              -9.110369465366006,
+              5.525595657045775
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 37.25495320815648,
+              "s_unwrapped": 37.25495320815685,
+              "d": -0.016527289981091157,
+              "e_psi": 0.02789701448328552,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9966982365095701,
+              "projection_xy": [
+                32.60787021862478,
+                -9.098683940866218
+              ],
+              "timestamp": 31.300000000002093,
+              "xy": [
+                32.59618262557557,
+                -9.110369465366006
+              ],
+              "yaw": -0.7575896501338111,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 274.1624509814087,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "ce7eef814cf2e4b20488b39ff7d834969533e3c544296f205f31c66b2414bcdc"
+        },
+        {
+          "state": {
+            "control_step": 313,
+            "sim_time_s": 31.40000000000211,
+            "pose": [
+              32.67930017856262,
+              -9.196917180881293,
+              5.496874988619359
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 37.375358376760346,
+              "s_unwrapped": 37.37535837676069,
+              "d": -0.017496851643285453,
+              "e_psi": 0.023288134086472567,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9964882664045561,
+              "projection_xy": [
+                32.69196807849009,
+                -9.184848041357089
+              ],
+              "timestamp": 31.40000000000211,
+              "xy": [
+                32.67930017856262,
+                -9.196917180881293
+              ],
+              "yaw": -0.7863103185602274,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 274.28285615001255,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "5fabfc0ab83adbe888a7cfe22b08bf8c98b681c9703f591a6619231487358bb0"
+        },
+        {
+          "state": {
+            "control_step": 314,
+            "sim_time_s": 31.500000000002125,
+            "pose": [
+              32.76071171121245,
+              -9.28507634931295,
+              5.474925584651713
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 37.49578832582236,
+              "s_unwrapped": 37.49578832582267,
+              "d": -0.0179136321665019,
+              "e_psi": 0.025527036553933513,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9964174754267285,
+              "projection_xy": [
+                32.77397642740541,
+                -9.273037017034246
+              ],
+              "timestamp": 31.500000000002125,
+              "xy": [
+                32.76071171121245,
+                -9.28507634931295
+              ],
+              "yaw": -0.8082597225278736,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 274.40328609907453,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "cc9b73374b5e81837957fe754835e4b1c459ad7cac574baccdf384f64f1b183c"
+        },
+        {
+          "state": {
+            "control_step": 315,
+            "sim_time_s": 31.60000000000214,
+            "pose": [
+              32.841095205987074,
+              -9.374171988952803,
+              5.4576875585374065
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 37.6161991230326,
+              "s_unwrapped": 37.616199123032914,
+              "d": -0.016833860396413595,
+              "e_psi": 0.032157690861073895,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9966919174023499,
+              "projection_xy": [
+                32.853826836448725,
+                -9.36315906737704
+              ],
+              "timestamp": 31.60000000000214,
+              "xy": [
+                32.841095205987074,
+                -9.374171988952803
+              ],
+              "yaw": -0.8254977486421797,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 274.5236968962848,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "ce9431822fb91b4f3b64f2ed7150ac41a46b73ebf68de8452c7019f9d5ada051"
+        },
+        {
+          "state": {
+            "control_step": 316,
+            "sim_time_s": 31.700000000002156,
+            "pose": [
+              32.91909348670248,
+              -9.465352523370527,
+              5.4336782679643285
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 37.73657577057929,
+              "s_unwrapped": 37.736575770579634,
+              "d": -0.016082925124214532,
+              "e_psi": 0.03160946535246145,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9968907040093087,
+              "projection_xy": [
+                32.93150065575966,
+                -9.455119115505228
+              ],
+              "timestamp": 31.700000000002156,
+              "xy": [
+                32.91909348670248,
+                -9.465352523370527
+              ],
+              "yaw": -0.8495070392152577,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 274.6440735438315,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "e96410ac462d402c351b66924ed3b64aabee6f5b4dd83927355d8f592f239a67"
+        },
+        {
+          "state": {
+            "control_step": 317,
+            "sim_time_s": 31.80000000000217,
+            "pose": [
+              32.99391612205079,
+              -9.559164078708895,
+              5.404957599537912
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 37.856951131057485,
+              "s_unwrapped": 37.856951131057826,
+              "d": -0.01666337473369326,
+              "e_psi": 0.025983722082927763,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9968267187632192,
+              "projection_xy": [
+                33.007012498496145,
+                -9.54886102180732
+              ],
+              "timestamp": 31.80000000000217,
+              "xy": [
+                32.99391612205079,
+                -9.559164078708895
+              ],
+              "yaw": -0.878227707641674,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 274.7644489043097,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "4d60d4f23923fb3be83b214587178c8cc3abd52469718624f03d6aa0a2a5f774"
+        }
+      ]
+    },
+    {
+      "name": "step807",
+      "states": [
+        {
+          "state": {
+            "control_step": 807,
+            "sim_time_s": 80.80000000000443,
+            "pose": [
+              21.83373686922052,
+              -7.34608954190013,
+              2.6100938583759383
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 96.85040811544116,
+              "s_unwrapped": 96.85040811544212,
+              "d": 0.0022064978288644384,
+              "e_psi": 0.005449828733512518,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999785666932919,
+              "projection_xy": [
+                21.83486552906961,
+                -7.344193556769958
+              ],
+              "timestamp": 80.80000000000443,
+              "xy": [
+                21.83373686922052,
+                -7.34608954190013
+              ],
+              "yaw": 2.6100938583759383,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 333.757905888694,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "685b9aae591bb7587aab627bf963b0fec86c2a0c5fbcecde8743fbb1cbead685"
+        },
+        {
+          "state": {
+            "control_step": 808,
+            "sim_time_s": 80.90000000000448,
+            "pose": [
+              21.730256912216884,
+              -7.285333678991426,
+              2.6090639255990093
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 96.97040681507053,
+              "s_unwrapped": 96.9704068150715,
+              "d": 0.002860539032992845,
+              "e_psi": 0.0032088461175083793,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999700475443576,
+              "projection_xy": [
+                21.731717147059893,
+                -7.282873923360771
+              ],
+              "timestamp": 80.90000000000448,
+              "xy": [
+                21.730256912216884,
+                -7.285333678991426
+              ],
+              "yaw": 2.60906392559901,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 333.87790458832336,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "cf3e700e3ab7dfb35c05d1e6cedbf3dad5263693d990d1e54aebb16e627b8039"
+        },
+        {
+          "state": {
+            "control_step": 809,
+            "sim_time_s": 81.00000000000453,
+            "pose": [
+              21.6274737865868,
+              -7.223401915338587,
+              2.6033226044745628
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 97.09040651445488,
+              "s_unwrapped": 97.09040651445582,
+              "d": 0.001996939055737869,
+              "e_psi": -0.0038344947264197238,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999775748320352,
+              "projection_xy": [
+                21.628490938245132,
+                -7.2216834369138505
+              ],
+              "timestamp": 81.00000000000453,
+              "xy": [
+                21.6274737865868,
+                -7.223401915338587
+              ],
+              "yaw": 2.603322604474563,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 333.9979042877077,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "079e0aa0eae4feeaaeae7ee5720620a4ffba98b0833494d500b25948a3dd416e"
+        },
+        {
+          "state": {
+            "control_step": 810,
+            "sim_time_s": 81.10000000000458,
+            "pose": [
+              21.52448123430435,
+              -7.161823424178294,
+              2.6043525477773732
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 97.21040470103463,
+              "s_unwrapped": 97.2104047010356,
+              "d": 0.0013823181986704946,
+              "e_psi": -0.004197729795715421,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999834252190499,
+              "projection_xy": [
+                21.525183667564757,
+                -7.160632881815735
+              ],
+              "timestamp": 81.10000000000458,
+              "xy": [
+                21.52448123430435,
+                -7.161823424178294
+              ],
+              "yaw": 2.6043525477773732,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 334.11790247428746,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "15d4151d47a544e6cb449345cfc638e9e3c9b8aec30652a6af84f4deafca3782"
+        },
+        {
+          "state": {
+            "control_step": 811,
+            "sim_time_s": 81.20000000000464,
+            "pose": [
+              21.420792025239372,
+              -7.101420922682635,
+              2.6100938689334283
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 97.33040544211951,
+              "s_unwrapped": 97.33040544212048,
+              "d": 0.00196188514631455,
+              "e_psi": 5.8954799031507577e-05,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999749788668539,
+              "projection_xy": [
+                21.42178645921784,
+                -7.099729741323409
+              ],
+              "timestamp": 81.20000000000464,
+              "xy": [
+                21.420792025239372,
+                -7.101420922682635
+              ],
+              "yaw": 2.6100938689334283,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 334.23790321537234,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "c3f553a51eae6396bd047f0bec807db7710f4c59253721c8a2cf7f0ee088fa57"
+        },
+        {
+          "state": {
+            "control_step": 812,
+            "sim_time_s": 81.30000000000469,
+            "pose": [
+              21.316755441750058,
+              -7.04161870802017,
+              2.6158386951935277
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 97.45040411681617,
+              "s_unwrapped": 97.45040411681714,
+              "d": 0.0030513377135134583,
+              "e_psi": 0.004227457659656153,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999587484398592,
+              "projection_xy": [
+                21.318297945773,
+                -7.038985963600156
+              ],
+              "timestamp": 81.30000000000469,
+              "xy": [
+                21.316755441750058,
+                -7.04161870802017
+              ],
+              "yaw": 2.6158386951935277,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 334.357901890069,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "23307e8298f5b57656a788697f642bca3d90a4c7c58d256661b4697cd79717cf"
+        },
+        {
+          "state": {
+            "control_step": 813,
+            "sim_time_s": 81.40000000000474,
+            "pose": [
+              21.21292816172574,
+              -6.981458319873093,
+              2.6148087624165988
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 97.57040606742706,
+              "s_unwrapped": 97.57040606742805,
+              "d": 0.003531272568092471,
+              "e_psi": 0.0015291240404526896,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999495467807128,
+              "projection_xy": [
+                21.21470819529105,
+                -6.978408505705553
+              ],
+              "timestamp": 81.40000000000474,
+              "xy": [
+                21.21292816172574,
+                -6.981458319873093
+              ],
+              "yaw": 2.614808762416599,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 334.4779038406799,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "4801ba152b88265bf5ac1c3aeba0ceb7d2bd89dd961f192dc4aec8f53c1a6ced"
+        },
+        {
+          "state": {
+            "control_step": 814,
+            "sim_time_s": 81.50000000000479,
+            "pose": [
+              21.10979094625545,
+              -6.920118047225533,
+              2.609067441292152
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 97.69040599822634,
+              "s_unwrapped": 97.69040599822733,
+              "d": 0.0024386048116624565,
+              "e_psi": -0.005972955613977149,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999632770945582,
+              "projection_xy": [
+                21.111016480772346,
+                -6.918009763901271
+              ],
+              "timestamp": 81.50000000000479,
+              "xy": [
+                21.10979094625545,
+                -6.920118047225533
+              ],
+              "yaw": 2.6090674412921526,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 334.5979037714792,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "20f4966ea6df0e683459bd1de33380d17490a663af132b6174991cdf49363107"
+        }
+      ]
+    },
+    {
+      "name": "straight",
+      "states": [
+        {
+          "state": {
+            "control_step": 1173,
+            "sim_time_s": 117.40000000002316,
+            "pose": [
+              -11.33762082332071,
+              -15.082431037875287,
+              2.5928628636163435
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 140.85190295347675,
+              "s_unwrapped": 140.85190295347786,
+              "d": -0.00013358029968379048,
+              "e_psi": 0.00038474601214577575,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999999999306086,
+              "projection_xy": [
+                -11.337690543172966,
+                -15.082544980135511
+              ],
+              "timestamp": 117.40000000002316,
+              "xy": [
+                -11.33762082332071,
+                -15.082431037875287
+              ],
+              "yaw": 2.592862863616343,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 377.7594007267297,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "857709789e95053c5821d020ca3d967f8e8995a3fd1e3016d8a3b5ab4060a772"
+        },
+        {
+          "state": {
+            "control_step": 1174,
+            "sim_time_s": 117.5000000000232,
+            "pose": [
+              -11.440036215318251,
+              -15.01989728314055,
+              2.591829425703856
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 140.97190032900048,
+              "s_unwrapped": 140.97190032900158,
+              "d": -2.0223863323480693e-05,
+              "e_psi": -0.0006499316028989455,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 1.0000000004283913,
+              "projection_xy": [
+                -11.440046770781224,
+                -15.019914533846308
+              ],
+              "timestamp": 117.5000000000232,
+              "xy": [
+                -11.440036215318251,
+                -15.01989728314055
+              ],
+              "yaw": 2.591829425703856,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 377.87939810225345,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "b5a2e896953189364614c12d512c3a2cd1aa1ef90d7b4c1d784f8e9e9893e1ee"
+        },
+        {
+          "state": {
+            "control_step": 1175,
+            "sim_time_s": 117.60000000002326,
+            "pose": [
+              -11.542316667965205,
+              -14.957143064114504,
+              2.5928628636163435
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 141.09189766962004,
+              "s_unwrapped": 141.09189766962118,
+              "d": -0.00016565480775459533,
+              "e_psi": 0.0003796621375458109,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 1.0000000071048167,
+              "projection_xy": [
+                -11.542403127815874,
+                -14.957284365952972
+              ],
+              "timestamp": 117.60000000002326,
+              "xy": [
+                -11.542316667965205,
+                -14.957143064114504
+              ],
+              "yaw": 2.592862863616343,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 377.99939544287304,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "2d56d01b8158a316fc2196a317814340d024a7a4b4aa70da26e8614062618e95"
+        },
+        {
+          "state": {
+            "control_step": 1176,
+            "sim_time_s": 117.70000000002331,
+            "pose": [
+              -11.645020524381506,
+              -14.895080074448195,
+              2.595216810485264
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 141.21189540074892,
+              "s_unwrapped": 141.21189540075005,
+              "d": 0.0004988943603672505,
+              "e_psi": 0.002727159764441822,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999999677709858,
+              "projection_xy": [
+                -11.644760140286149,
+                -14.894654521037104
+              ],
+              "timestamp": 117.70000000002331,
+              "xy": [
+                -11.645020524381506,
+                -14.895080074448195
+              ],
+              "yaw": 2.5952168104852635,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 378.1193931740019,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "a7a323cb39b085de86788290bd81744e16b6801aa2594b9b76dc392996a1efcc"
+        },
+        {
+          "state": {
+            "control_step": 1177,
+            "sim_time_s": 117.80000000002336,
+            "pose": [
+              -11.747262460627185,
+              -14.832260202536375,
+              2.5918311730245
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 141.33189415448663,
+              "s_unwrapped": 141.33189415448777,
+              "d": 0.00027581157696527747,
+              "e_psi": -0.000667532640706181,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999999761927271,
+              "projection_xy": [
+                -11.747118510543043,
+                -14.83202493588072
+              ],
+              "timestamp": 117.80000000002336,
+              "xy": [
+                -11.747262460627185,
+                -14.832260202536375
+              ],
+              "yaw": 2.5918311730245005,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 378.23939192773963,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "f71dabb54e3c6a37a650b0c379bd9bfad2e778d8c4460894df783108866505e7"
+        },
+        {
+          "state": {
+            "control_step": 1178,
+            "sim_time_s": 117.90000000002341,
+            "pose": [
+              -11.849541816787138,
+              -14.76950422257754,
+              2.592862868863529
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 141.45189147813218,
+              "s_unwrapped": 141.45189147813335,
+              "d": 0.00012551555509292454,
+              "e_psi": 0.0003525022204744488,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999999864396125,
+              "projection_xy": [
+                -11.849476309637033,
+                -14.769397157327083
+              ],
+              "timestamp": 117.90000000002341,
+              "xy": [
+                -11.849541816787138,
+                -14.76950422257754
+              ],
+              "yaw": 2.592862868863529,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 378.3593892513852,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "b7f598d4017f26b0c4ef4ad48805bb0fc858d7d6ccc9dab70e2744f191f33ea2"
+        },
+        {
+          "state": {
+            "control_step": 1179,
+            "sim_time_s": 118.00000000002346,
+            "pose": [
+              -11.951957205573404,
+              -14.706970462504877,
+              2.5918294257196144
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 141.57188886066797,
+              "s_unwrapped": 141.5718888606691,
+              "d": 0.00023421433131750452,
+              "e_psi": -0.0006952085412739173,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999999696078838,
+              "projection_xy": [
+                -11.951834970878533,
+                -14.706770675036891
+              ],
+              "timestamp": 118.00000000002346,
+              "xy": [
+                -11.951957205573404,
+                -14.706970462504877
+              ],
+              "yaw": 2.591829425719615,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 378.47938663392097,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "52b2db2d96fb65d09e140c383eb8f6396034ffaad486e94431109d8adc945db5"
+        },
+        {
+          "state": {
+            "control_step": 1180,
+            "sim_time_s": 118.10000000002351,
+            "pose": [
+              -12.054237658210468,
+              -14.64421624346295,
+              2.592862863616392
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 141.69188619662435,
+              "s_unwrapped": 141.6918861966255,
+              "d": 8.256846405074463e-05,
+              "e_psi": 0.0003213546262941236,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999999874916714,
+              "projection_xy": [
+                -12.0541945675397,
+                -14.644145810904083
+              ],
+              "timestamp": 118.10000000002351,
+              "xy": [
+                -12.054237658210468,
+                -14.64421624346295
+              ],
+              "yaw": 2.592862863616392,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 378.59938396987735,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "badfa4924ddf19451c03632c24b68482085487af1ea90483d8087442ea480e30"
+        }
+      ]
+    },
+    {
+      "name": "sharp",
+      "states": [
+        {
+          "state": {
+            "control_step": 1604,
+            "sim_time_s": 160.499999999999,
+            "pose": [
+              -33.54809253733739,
+              -9.571639153673916,
+              2.1884579672753763
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 192.92635283834238,
+              "s_unwrapped": 192.92635283834375,
+              "d": 0.08160661452401705,
+              "e_psi": -0.12361532521325103,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.8887027765314943,
+              "projection_xy": [
+                -33.48789893420826,
+                -9.516535889919357
+              ],
+              "timestamp": 160.499999999999,
+              "xy": [
+                -33.54809253733739,
+                -9.571639153673916
+              ],
+              "yaw": 2.188457967275376,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 429.8338506115956,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "edc066c4883b6040954d92dfd293cf638c8aab341331fd367b8459c969706207"
+        },
+        {
+          "state": {
+            "control_step": 1605,
+            "sim_time_s": 160.59999999999891,
+            "pose": [
+              -33.63567726898948,
+              -9.489712776661197,
+              2.3090995298304207
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 193.06007636130522,
+              "s_unwrapped": 193.06007636130659,
+              "d": 0.08048439541754956,
+              "e_psi": -0.1714555703382734,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9068328420600829,
+              "projection_xy": [
+                -33.58626498664049,
+                -9.426181963201966
+              ],
+              "timestamp": 160.59999999999891,
+              "xy": [
+                -33.63567726898948,
+                -9.489712776661197
+              ],
+              "yaw": 2.309099529830421,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 429.96757413455845,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "ec237c37639a900c2079f2c8cdb464091041239cc21d30dcf32f6275c9bc09e1"
+        },
+        {
+          "state": {
+            "control_step": 1606,
+            "sim_time_s": 160.69999999999882,
+            "pose": [
+              -33.73248517918214,
+              -9.418922628263344,
+              2.4297411029679425
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 193.190888227302,
+              "s_unwrapped": 193.1908882273034,
+              "d": 0.07540961142151689,
+              "e_psi": -0.1904191832790505,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9258184286700443,
+              "projection_xy": [
+                -33.69492194268339,
+                -9.353534458396897
+              ],
+              "timestamp": 160.69999999999882,
+              "xy": [
+                -33.73248517918214,
+                -9.418922628263344
+              ],
+              "yaw": 2.4297411029679425,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 430.09838600055525,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "65f4a206e7df1398afa5eaefca2694d1a27d56d80afab28f76a73d3c194f48d5"
+        },
+        {
+          "state": {
+            "control_step": 1607,
+            "sim_time_s": 160.79999999999873,
+            "pose": [
+              -33.83658794745283,
+              -9.359324405983042,
+              2.543607906574429
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 193.3191661517541,
+              "s_unwrapped": 193.3191661517555,
+              "d": 0.06835396988321112,
+              "e_psi": -0.19410925491885722,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9414549750449679,
+              "projection_xy": [
+                -33.809725864405586,
+                -9.296469862048987
+              ],
+              "timestamp": 160.79999999999873,
+              "xy": [
+                -33.83658794745283,
+                -9.359324405983042
+              ],
+              "yaw": 2.5436079065744295,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 430.22666392500736,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "c773393b4c432af9308e4df0836034c78cac892fe61f8a9320a30d5914fd8d29"
+        },
+        {
+          "state": {
+            "control_step": 1608,
+            "sim_time_s": 160.89999999999864,
+            "pose": [
+              -33.945670337291745,
+              -9.309367429054019,
+              2.6417086407071557
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 193.444967872501,
+              "s_unwrapped": 193.4449678725024,
+              "d": 0.05923362417653062,
+              "e_psi": -0.19163947956459193,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.962280869624003,
+              "projection_xy": [
+                -33.92769966263219,
+                -9.252925626413006
+              ],
+              "timestamp": 160.89999999999864,
+              "xy": [
+                -33.945670337291745,
+                -9.309367429054019
+              ],
+              "yaw": 2.641708640707156,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 430.35246564575425,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "035dd5cfd65037ca9b04a62e577fdaec81871b650e6baa12a8958de2847d5a9d"
+        },
+        {
+          "state": {
+            "control_step": 1609,
+            "sim_time_s": 160.99999999999855,
+            "pose": [
+              -34.0576758969873,
+              -9.266338781160721,
+              2.7190863277385517
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 193.5679106769812,
+              "s_unwrapped": 193.5679106769826,
+              "d": 0.04809816163351023,
+              "e_psi": -0.17810935869304156,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9804675166634179,
+              "projection_xy": [
+                -34.04603752440299,
+                -9.219669932491485
+              ],
+              "timestamp": 160.99999999999855,
+              "xy": [
+                -34.0576758969873,
+                -9.266338781160721
+              ],
+              "yaw": 2.7190863277385517,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 430.47540845023445,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "23b52ebbd9cd6ee95697adf9c06b2291b4b46270be048ceae0a212f79db181d5"
+        },
+        {
+          "state": {
+            "control_step": 1610,
+            "sim_time_s": 161.09999999999846,
+            "pose": [
+              -34.17158549190233,
+              -9.228611228032513,
+              2.778078832808265
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 193.6889341429248,
+              "s_unwrapped": 193.6889341429262,
+              "d": 0.036617284183176634,
+              "e_psi": -0.15566714562392336,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9926474529295872,
+              "projection_xy": [
+                -34.16402939081549,
+                -9.192782038294018
+              ],
+              "timestamp": 161.09999999999846,
+              "xy": [
+                -34.17158549190233,
+                -9.228611228032513
+              ],
+              "yaw": 2.778078832808265,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 430.59643191617806,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "f30285483ffd5c9419a29ec59bb31a22aa703c2264e797f351010f495583108e"
+        },
+        {
+          "state": {
+            "control_step": 1611,
+            "sim_time_s": 161.19999999999837,
+            "pose": [
+              -34.286245620895755,
+              -9.193226973877257,
+              2.8119609915384003
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 193.8087426847607,
+              "s_unwrapped": 193.80874268476208,
+              "d": 0.024678084127263772,
+              "e_psi": -0.13433473637940985,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9997361513323275,
+              "projection_xy": [
+                -34.28145664557337,
+                -9.169018017857761
+              ],
+              "timestamp": 161.19999999999837,
+              "xy": [
+                -34.286245620895755,
+                -9.193226973877257
+              ],
+              "yaw": 2.8119609915384007,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 430.71624045801394,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "97c3433a032810939b72c58eca42c68e47798d457026594d093ab2dfc35b0fd5"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "states": [
+        {
+          "state": {
+            "control_step": 1290,
+            "sim_time_s": 129.10000000002756,
+            "pose": [
+              -23.357639908594606,
+              -7.828291769440065,
+              2.61480876241663
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 154.89147841007485,
+              "s_unwrapped": 154.891478410076,
+              "d": 0.001350111335336272,
+              "e_psi": 0.003833365688751922,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999961724848654,
+              "projection_xy": [
+                -23.35695666339669,
+                -7.82712730534988
+              ],
+              "timestamp": 129.10000000002756,
+              "xy": [
+                -23.357639908594606,
+                -7.828291769440065
+              ],
+              "yaw": 2.6148087624166294,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 391.79897618332785,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "30c20a6c518461a1d9f92b9814ee20913ad914df93845fcbe614216aaab6fb7b"
+        },
+        {
+          "state": {
+            "control_step": 1291,
+            "sim_time_s": 129.20000000002747,
+            "pose": [
+              -23.460777124064897,
+              -7.766951496792507,
+              2.6090674412921833
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 155.01147615753308,
+              "s_unwrapped": 155.01147615753422,
+              "d": 0.0006181787600954033,
+              "e_psi": -0.0022499195938623373,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.999998229197734,
+              "projection_xy": [
+                -23.4604644672701,
+                -7.766418213839376
+              ],
+              "timestamp": 129.20000000002747,
+              "xy": [
+                -23.460777124064897,
+                -7.766951496792507
+              ],
+              "yaw": 2.609067441292183,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 391.9189739307861,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "dd3096efc84fe0d157bb335d9f8468765a83dc187b247b72c52bdd3f8bf0756e"
+        },
+        {
+          "state": {
+            "control_step": 1292,
+            "sim_time_s": 129.30000000002738,
+            "pose": [
+              -23.564121733250026,
+              -7.705965693923285,
+              2.6100973845949937
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 155.13147316309343,
+              "s_unwrapped": 155.1314731630946,
+              "d": 0.00025568198512667783,
+              "e_psi": -0.0015654884745455178,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999992600223099,
+              "projection_xy": [
+                -23.56399249297284,
+                -7.705745080622981
+              ],
+              "timestamp": 129.30000000002738,
+              "xy": [
+                -23.564121733250026,
+                -7.705965693923285
+              ],
+              "yaw": 2.6100973845949937,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 392.03897093634646,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "a4f0fcb4ecb668c5d4be5886e380a37441bea9ed04d1e38a67a18273fbeb1620"
+        },
+        {
+          "state": {
+            "control_step": 1293,
+            "sim_time_s": 129.4000000000273,
+            "pose": [
+              -23.668156231890222,
+              -7.646159863470587,
+              2.615838705751049
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 155.25146920246473,
+              "s_unwrapped": 155.2514692024659,
+              "d": 0.0012183629721860053,
+              "e_psi": 0.003826773027073127,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999964378476953,
+              "projection_xy": [
+                -23.66754074959155,
+                -7.6451083931324355
+              ],
+              "timestamp": 129.4000000000273,
+              "xy": [
+                -23.668156231890222,
+                -7.646159863470587
+              ],
+              "yaw": 2.615838705751049,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 392.15896697571776,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "3ab3be575d0922ee96671d5b6d109d6275af48d023ffc1aeb9c0d8a1f7fc1c11"
+        },
+        {
+          "state": {
+            "control_step": 1294,
+            "sim_time_s": 129.5000000000272,
+            "pose": [
+              -23.77198350570292,
+              -7.585999464437217,
+              2.614808762448333
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 155.37146604103364,
+              "s_unwrapped": 155.3714660410348,
+              "d": 0.0017282615179329201,
+              "e_psi": 0.0024442172953254016,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999948959100338,
+              "projection_xy": [
+                -23.77111096315438,
+                -7.584507634227254
+              ],
+              "timestamp": 129.5000000000272,
+              "xy": [
+                -23.77198350570292,
+                -7.585999464437217
+              ],
+              "yaw": 2.614808762448333,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 392.27896381428667,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "68260502d5f5e75fc058c785f8c88b4c2c40e64ea815f99baefeabc5c3658579"
+        },
+        {
+          "state": {
+            "control_step": 1295,
+            "sim_time_s": 129.6000000000271,
+            "pose": [
+              -23.87512072115402,
+              -7.524659191757284,
+              2.6090674412922783
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 155.49146276838462,
+              "s_unwrapped": 155.49146276838576,
+              "d": 0.0008287835652643297,
+              "e_psi": -0.00365326660355203,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999975278222794,
+              "projection_xy": [
+                -23.874702550344978,
+                -7.523943639262691
+              ],
+              "timestamp": 129.6000000000271,
+              "xy": [
+                -23.87512072115402,
+                -7.524659191757284
+              ],
+              "yaw": 2.6090674412922787,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 392.3989605416376,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "ebcda94723bafb2518d67576cd5c00d2f2122ea0c895ab45a405f22122a43011"
+        },
+        {
+          "state": {
+            "control_step": 1296,
+            "sim_time_s": 129.70000000002702,
+            "pose": [
+              -23.978465330339095,
+              -7.463673388887964,
+              2.610097384594994
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 155.61145919482541,
+              "s_unwrapped": 155.61145919482658,
+              "d": 0.0002970379776185872,
+              "e_psi": -0.002983035968095127,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999991051758027,
+              "projection_xy": [
+                -23.978315549198403,
+                -7.46341687929742
+              ],
+              "timestamp": 129.70000000002702,
+              "xy": [
+                -23.978465330339095,
+                -7.463673388887964
+              ],
+              "yaw": 2.6100973845949937,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 392.51895696807844,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "c641ee2506f2c1adf8914443cc5a3042c6a6fadda5b189bc40851997745e29bc"
+        },
+        {
+          "state": {
+            "control_step": 1297,
+            "sim_time_s": 129.80000000002693,
+            "pose": [
+              -24.08249982897929,
+              -7.403867558435266,
+              2.615838705751049
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 155.7314564783501,
+              "s_unwrapped": 155.73145647835128,
+              "d": 0.0010887659654618038,
+              "e_psi": 0.002395018900490431,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999966878818277,
+              "projection_xy": [
+                -24.081951161276255,
+                -7.40292714624947
+              ],
+              "timestamp": 129.80000000002693,
+              "xy": [
+                -24.08249982897929,
+                -7.403867558435266
+              ],
+              "yaw": 2.615838705751049,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 392.63895425160314,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "2f75788b9c0c82b58d18d855104123687107afa64393310e04e32656a41f57fc"
+        }
+      ]
+    },
+    {
+      "name": "seam",
+      "states": [
+        {
+          "state": {
+            "control_step": 1963,
+            "sim_time_s": 196.39999999996635,
+            "pose": [
+              -0.6904102335928743,
+              -0.017063662479055112,
+              0.008950781989351992
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 236.14013493698192,
+              "s_unwrapped": 236.1401349369837,
+              "d": -0.00011971710234226089,
+              "e_psi": 0.0030797172556944474,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999999708135834,
+              "projection_xy": [
+                -0.6904109364556932,
+                -0.01694394743999533
+              ],
+              "timestamp": 196.39999999996635,
+              "xy": [
+                -0.6904102335928743,
+                -0.017063662479055112
+              ],
+              "yaw": 0.008950781989351952,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 473.0476327102356,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "9f9a3d553c2ec486406662f3792f2f9b89160d700c208d477454b37f12adc0c4"
+        },
+        {
+          "state": {
+            "control_step": 1964,
+            "sim_time_s": 196.49999999996626,
+            "pose": [
+              -0.5704106303302972,
+              -0.017161029197375978,
+              0.003209460833297236
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 236.2601319270636,
+              "s_unwrapped": 236.2601319270654,
+              "d": -0.0009198619379546101,
+              "e_psi": -0.0026326902262741037,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999997809700736,
+              "projection_xy": [
+                -0.5704160042721149,
+                -0.016241182957155934
+              ],
+              "timestamp": 196.49999999996626,
+              "xy": [
+                -0.5704106303302972,
+                -0.017161029197375978
+              ],
+              "yaw": 0.0032094608332973174,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 473.16762970031726,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "697c532bd69cbdd445169debfa41d942ac7507bccfef40ff47de5becd9490476"
+        },
+        {
+          "state": {
+            "control_step": 1965,
+            "sim_time_s": 196.59999999996617,
+            "pose": [
+              -0.4504136377139323,
+              -0.016847720627837025,
+              0.004239404136012863
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 236.38012873916256,
+              "s_unwrapped": 236.38012873916432,
+              "d": -0.0013058946110964039,
+              "e_psi": -0.0015745152628903192,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999996964729959,
+              "projection_xy": [
+                -0.4504212300371697,
+                -0.01554184808738046
+              ],
+              "timestamp": 196.59999999996617,
+              "xy": [
+                -0.4504136377139323,
+                -0.016847720627837025
+              ],
+              "yaw": 0.004239404136012759,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 473.2876265124162,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "32b9c8a646636f47c1bd80d4963654f664d2a38b3fbc976fbd2c99d9966e4657"
+        },
+        {
+          "state": {
+            "control_step": 1966,
+            "sim_time_s": 196.69999999996608,
+            "pose": [
+              -0.33042575737399565,
+              -0.015167591173657121,
+              0.00998072529206762
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 236.50012436857443,
+              "s_unwrapped": 236.50012436857617,
+              "d": -0.00032172976424720944,
+              "e_psi": 0.004194355293033691,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999999270493993,
+              "projection_xy": [
+                -0.33042761901106776,
+                -0.014845866795485406
+              ],
+              "timestamp": 196.69999999996608,
+              "xy": [
+                -0.33042575737399565,
+                -0.015167591173657121
+              ],
+              "yaw": 0.009980725292067838,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 473.407622141828,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "79f21b4350450f30fbb8271e2f48fd47fcf8836cddc1f1943e20b4b4328a8431"
+        },
+        {
+          "state": {
+            "control_step": 1967,
+            "sim_time_s": 196.799999999966,
+            "pose": [
+              -0.2104350707267603,
+              -0.013898135716915243,
+              0.008950781989351992
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 236.62012038511938,
+              "s_unwrapped": 236.62012038512114,
+              "d": 0.0002550166213313768,
+              "e_psi": 0.0031912794769821673,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 1.000000056374314,
+              "projection_xy": [
+                -0.21043360196601152,
+                -0.014153148108569323
+              ],
+              "timestamp": 196.799999999966,
+              "xy": [
+                -0.2104350707267603,
+                -0.013898135716915243
+              ],
+              "yaw": 0.008950781989351952,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 473.527618158373,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "bc49d92acb3179690c82bb4dbdca3e955b9c50991aa7c190a042e4ba4d6b5223"
+        },
+        {
+          "state": {
+            "control_step": 1968,
+            "sim_time_s": 196.8999999999659,
+            "pose": [
+              -0.09043546746418306,
+              -0.013995502435236104,
+              0.003209460833297236
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 236.74011745124324,
+              "s_unwrapped": 236.740117451245,
+              "d": -0.0005319047542947847,
+              "e_psi": -0.0025238559861313625,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999998854396652,
+              "projection_xy": [
+                -0.09043851702594174,
+                -0.013463606423017103
+              ],
+              "timestamp": 196.8999999999659,
+              "xy": [
+                -0.09043546746418306,
+                -0.013995502435236104
+              ],
+              "yaw": 0.0032094608332973174,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 473.64761522449686,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "de5d76ceb1e097ee7b629a6141b9f39a8830beeb7492013616fc4edc7a89f7b7"
+        },
+        {
+          "state": {
+            "control_step": 1969,
+            "sim_time_s": 196.9999999999658,
+            "pose": [
+              0.029561525152181828,
+              -0.013682193865697159,
+              0.004239404136012863
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 236.86011429104147,
+              "s_unwrapped": 236.86011429104326,
+              "d": -0.0009050413453489293,
+              "e_psi": -0.0014684090832344232,
+              "wrap_count": 1,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 0.9999998102185791,
+              "projection_xy": [
+                0.029556359373267505,
+                -0.012777167263038867
+              ],
+              "timestamp": 196.9999999999658,
+              "xy": [
+                0.029561525152181828,
+                -0.013682193865697159
+              ],
+              "yaw": 0.004239404136012759,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 473.7676120642951,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "a8290331eb694a46e561a82ac82336266b65f5aea9a6f8e29ef8dc30fee2c375"
+        },
+        {
+          "state": {
+            "control_step": 1970,
+            "sim_time_s": 197.09999999996572,
+            "pose": [
+              0.14954940549211854,
+              -0.01200206441151725,
+              0.00998072529206762
+            ],
+            "speed_mps": 1.1999999999999977,
+            "valid": true,
+            "reason": null,
+            "frenet": {
+              "valid": true,
+              "reason": null,
+              "geometry_id": "c53238c43d356997b7035bacb1907958cbc35d77d8f8916ec4691ca9c934de71",
+              "frame_id": "map",
+              "epoch": 0,
+              "needs_reset": false,
+              "s_wrapped": 0.07261203113390025,
+              "s_unwrapped": 236.98010980438755,
+              "d": 9.169209059458965e-05,
+              "e_psi": 0.004297733349079014,
+              "wrap_count": 2,
+              "selection_mode": "continuity",
+              "planning_allowed": false,
+              "domain_verified": false,
+              "source_reference": "sim_cog",
+              "offset_calibrated": true,
+              "jacobian": 1.0000000187060802,
+              "projection_xy": [
+                0.14954992657472588,
+                -0.012093755021453725
+              ],
+              "timestamp": 197.09999999996572,
+              "xy": [
+                0.14954940549211854,
+                -0.01200206441151725
+              ],
+              "yaw": 0.009980725292067838,
+              "inside_track": true,
+              "inside_valid_domain": true,
+              "domain_membership_method": "history_constrained_projection",
+              "freshness_verified": true,
+              "version_verified": true,
+              "native_s_unwrapped": 473.8876075776394,
+              "origin_shift": -236.90749777325186
+            }
+          },
+          "source_state_sha256": "09cba50fc93c21729c90277ea3c5ae2bca3cb8895364caaa8e6a0459fb617980"
+        }
+      ]
+    }
+  ],
+  "scope": "recorded_centerline_PP_inputs_no_candidate_control"
+}

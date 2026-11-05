@@ -5,14 +5,45 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import platform
 
 import numpy as np
 
 from f1tenth_benchmarks.simulator.dynamics_simulator import DynamicsSimulator
 from ..core.geometry import load_geometry
 from ..core.frenet_lap_tracking import CoreLapTracker
+from ..core.geometry.tracker import TrackingOptions
 from ..core.centreline_control import CentrelinePurePursuit
 from .session import latest_plan
+from .reference_path import REFERENCE_PATH, STATE_PATH, check_reference_path
+
+
+def read_verified_stream(path, entries, compact_plans=False):
+    """Check every byte/index entry while retaining only replay inputs.
+
+    Candidate interiors are hashed and parsed, not independently revalidated by
+    this verifier. Its plan checks require only event metadata and first points.
+    This keeps a multi-GB session from becoming a much larger Python object tree.
+    """
+    digest = hashlib.sha256()
+    records = []
+    with Path(path).open('rb') as stream:
+        for item in entries:
+            assert stream.tell() == item['byte_offset'], 'noncontiguous byte index'
+            raw = stream.readline()
+            assert raw and len(raw) == item['byte_length'], 'incorrect byte length'
+            digest.update(raw)
+            row = json.loads(raw)
+            if compact_plans:
+                row.pop('result', None)
+                for candidate in row['paths']:
+                    candidate['points'] = candidate.get('points', [])[:1]
+                    candidate.pop('attempts', None)
+                    if candidate.get('path_type') != REFERENCE_PATH:
+                        candidate.pop('spline', None)
+            records.append(row)
+        assert stream.read(1) == b'', 'unindexed trailing data'
+    return records, digest.hexdigest()
 
 
 def verify_session(directory, require_complete=True):
@@ -23,13 +54,8 @@ def verify_session(directory, require_complete=True):
     streams = {}
     hashes = {}
     for name in ('states', 'actions', 'plans'):
-        raw = (root/(name+'.jsonl')).read_bytes()
-        hashes[name+'.jsonl'] = hashlib.sha256(raw).hexdigest()
-        records = [json.loads(line) for line in raw.splitlines()]
-        assert len(records) == len(index['streams'][name])
-        for row, item in zip(records, index['streams'][name]):
-            assert json.loads(raw[item['byte_offset']:item['byte_offset']+item['byte_length']]) == row
-        streams[name] = records
+        streams[name], hashes[name+'.jsonl'] = read_verified_stream(
+            root/(name+'.jsonl'), index['streams'][name], compact_plans=name == 'plans')
     states, actions, plans = (streams[n] for n in ('states', 'actions', 'plans'))
     assert states and plans
     assert [s['control_step'] for s in states] == list(range(len(states)))
@@ -42,12 +68,18 @@ def verify_session(directory, require_complete=True):
     dynamics = DynamicsSimulator(Namespace(**physics))
     dynamics.reset(metadata['initial_pose'])
     dynamics.state[3] = metadata['initial_speed_mps']
-    assert metadata['map'] == 'esp'
-    geometry = load_geometry('maps/frenet/esp/geometry', 'maps/esp.yaml', inspect=True)
+    map_id = metadata['map']
+    assert map_id in ('esp', 'my_map')
+    geometry_root = Path('maps/frenet')/map_id/'geometry'
+    geometry = load_geometry(geometry_root, Path('maps')/(map_id+'.yaml'), inspect=True)
     assert geometry.geometry_id == metadata['geometry_id']
     assert geometry.raster.source_hashes == metadata['track']['source_hashes']
-    sampled = np.loadtxt('maps/frenet/esp/geometry/centerline.csv', delimiter=',', skiprows=1)
-    tracker = CoreLapTracker(geometry, sampled[:, :2])
+    for name, expected in metadata['track']['file_hashes'].items():
+        assert hashlib.sha256((geometry_root/name).read_bytes()).hexdigest() == expected
+    assert hashlib.sha256((geometry_root/'manifest.json').read_bytes()).hexdigest() == metadata['track']['manifest_sha256']
+    sampled = np.loadtxt(geometry_root/'centerline.csv', delimiter=',', skiprows=1)
+    options = TrackingOptions(**metadata['tracking_options']) if 'tracking_options' in metadata else None
+    tracker = CoreLapTracker(geometry, sampled[:, :2], frenet_options=options)
     controller = CentrelinePurePursuit(sampled[:, :2], metadata['config']['speed_mps'],
         metadata['config']['pp_lookahead_m'], metadata['vehicle_params']['wheelbase'],
         metadata['vehicle_params']['max_steer'])
@@ -118,8 +150,14 @@ def verify_session(directory, require_complete=True):
             a = p['points'][0]
             error = math.hypot(a['x']-source['pose'][0], a['y']-source['pose'][1])
             yaw_error = (a['yaw']-source['pose'][2]+math.pi) % (2*math.pi)-math.pi
-            assert error <= metadata['config']['max_start_position_error_m']
-            assert abs(yaw_error) <= metadata['config']['max_start_heading_error_rad']
+            if p.get('path_type', STATE_PATH) == REFERENCE_PATH:
+                reference_check = check_reference_path(geometry, p, source['pose'], metadata['config']['lookahead_m'],
+                    metadata['config']['max_lateral_error_m'], metadata['config']['max_heading_error_rad'])
+                assert reference_check['valid'], reference_check['reason']
+            else:
+                assert p.get('path_type', STATE_PATH) == STATE_PATH
+                assert error <= metadata['config']['max_start_position_error_m']
+                assert abs(yaw_error) <= metadata['config']['max_start_heading_error_rad']
             np.testing.assert_allclose([error, yaw_error],
                 [p['start_position_error_m'], p['start_heading_error_rad']], rtol=0, atol=1e-12)
     if math.isclose(metadata['config']['plan_period_s'], metadata['config']['control_dt_s'], abs_tol=1e-12):
@@ -142,7 +180,11 @@ def verify_session(directory, require_complete=True):
         assert plans[-1]['trigger'] == 'terminal'
     return dict(schema_version=1, passed=True, session=str(root),
         geometry_id=metadata['geometry_id'], program=metadata['program'], config=metadata['config'],
+        verification_program=dict(python_version=platform.python_version(), numpy_version=np.__version__,
+            code_sha256={name: hashlib.sha256(Path(name).read_bytes()).hexdigest()
+                         for name in metadata['program']['code_sha256'] if Path(name).is_file()}),
         checks=dict(physical_replay=True, byte_index=True, source_pose_and_time=True,
+                    geometry_file_hashes=True,
                     controller_commands=True, independent_frenet_and_laps=True,
                     five_candidate_ids=True, start_pose_gate=True, backward_lookup_no_future=True),
         source_sha256=hashes, summary=summary, seam_control_steps=seam_steps,

@@ -1,0 +1,305 @@
+{
+  "completed": true,
+  "map": "my_map",
+  "config": {
+    "speed_mps": 1.2,
+    "pp_lookahead_m": 0.3,
+    "control_dt_s": 0.1,
+    "timeout_s": 300.0,
+    "laps": 1,
+    "plan_period_s": 0.1,
+    "lookahead_m": 3.0,
+    "safety_margin_m": 0.185,
+    "sample_step_m": 0.25,
+    "max_slope": 1.0,
+    "max_curvature_inv_m": 1.7144629642053641,
+    "endpoint_tolerance_m": 0.0,
+    "max_refinements": 2,
+    "max_iterations": 150,
+    "max_start_position_error_m": 0.0001,
+    "max_start_heading_error_rad": 1e-05,
+    "max_lateral_error_m": 0.25,
+    "max_heading_error_rad": 0.5,
+    "max_control_steps": 0,
+    "query_mode": "exact",
+    "generation_mode": "direct_only",
+    "validation_step_m": null
+  },
+  "experiment": "only_previous_curve_seed_alignment_changes",
+  "scope": "fixed_recorded_states_with_session_gate_not_new_driving_or_full_cycle",
+  "baseline": "existing coefficient warm start, not cold start",
+  "budget_ms": 40,
+  "repair_candidates": [
+    1,
+    2,
+    4,
+    5
+  ],
+  "repeats": 3,
+  "order": [
+    [
+      "coefficients",
+      "aligned"
+    ],
+    [
+      "aligned",
+      "coefficients"
+    ],
+    [
+      "coefficients",
+      "aligned"
+    ]
+  ],
+  "source_sha256": {
+    "Data/research/overtaking/my_map_mm40_outer_20261030_001/validation/budget_40ms_c1245/states.jsonl": "5f4f115a044404f567e4e235324fa99544b0c27367210a36dcf88ddda0127f7f",
+    "Data/research/overtaking/my_map_mm40_outer_20261030_001/validation/budget_40ms_c1245/actions.jsonl": "8c3f38d4a61a9894c4d3a8ffa51c117f26ab424b74ed71122b5f4c10646a03cd",
+    "Data/research/overtaking/my_map_mm40_outer_20261030_001/validation/report.json": "2da5b2c765b89e96248bf78057d79645bca66e87310053f8c298d60671f0fc8a",
+    "Data/research/overtaking/mm_domain_width27_length51_20261030_001/domain/domain.npz": "f828987dfd19331b8f8888d757e6135d59f742a13227334b92f59eedc7bef3a2",
+    "/workspace/f1tenth_benchmarks/research/run_aligned_warm_start.py": "a6cf1adc7a9a45a3a5756a4d3fe3a4f43a9a3ccb0e680b9db318598385ac3aa1",
+    "/workspace/f1tenth_benchmarks/research/overtaking/mm_bspline_repair.py": "214330f95071a9d48d68c221c92ffafc7ec1e875859f22cd16c2bb8e2fd6b704"
+  },
+  "trials": [
+    {
+      "name": "coefficients_1",
+      "mode": "coefficients",
+      "repeat": 1,
+      "calls": 102,
+      "plan_ms": {
+        "median": 14.031462502316572,
+        "p95": 28.163804599171254,
+        "max": 36.37137099576648
+      },
+      "generator_ms": {
+        "median": 13.065933002508245,
+        "p95": 27.206735704385192,
+        "max": 35.44424100255128
+      },
+      "plan_over_40ms": 0,
+      "generator_over_40ms": 0,
+      "cpu_s": 1.5235170679999999,
+      "batch_wall_s": 1.5235128899948904,
+      "valid_id_counts": {
+        "1": 45,
+        "2": 99,
+        "3": 102,
+        "4": 102,
+        "5": 45
+      },
+      "mean_valid_candidates": 3.8529411764705883,
+      "zero_valid": 0,
+      "requested": 206,
+      "repaired": 89,
+      "timed_out": 0,
+      "logged_attempts": 291,
+      "logged_iterations": 2697,
+      "warm_initial_attempts": 113,
+      "iteration_note": "completed/logged attempts only; timeout-interrupted attempts omitted",
+      "independent_audit": {
+        "checked": 393,
+        "failures": []
+      }
+    },
+    {
+      "name": "aligned_1",
+      "mode": "aligned",
+      "repeat": 1,
+      "calls": 102,
+      "plan_ms": {
+        "median": 14.39747899712529,
+        "p95": 27.522104795934865,
+        "max": 36.168288002954796
+      },
+      "generator_ms": {
+        "median": 13.458923000143841,
+        "p95": 26.567107097798726,
+        "max": 35.234375012805685
+      },
+      "plan_over_40ms": 0,
+      "generator_over_40ms": 0,
+      "cpu_s": 1.547501134,
+      "batch_wall_s": 1.5474908539908938,
+      "valid_id_counts": {
+        "1": 45,
+        "2": 99,
+        "3": 102,
+        "4": 102,
+        "5": 45
+      },
+      "mean_valid_candidates": 3.8529411764705883,
+      "zero_valid": 0,
+      "requested": 206,
+      "repaired": 89,
+      "timed_out": 0,
+      "logged_attempts": 291,
+      "logged_iterations": 2716,
+      "warm_initial_attempts": 113,
+      "iteration_note": "completed/logged attempts only; timeout-interrupted attempts omitted",
+      "independent_audit": {
+        "checked": 393,
+        "failures": []
+      }
+    },
+    {
+      "name": "aligned_2",
+      "mode": "aligned",
+      "repeat": 2,
+      "calls": 102,
+      "plan_ms": {
+        "median": 14.454931508225854,
+        "p95": 27.776789845665913,
+        "max": 41.02939000586048
+      },
+      "generator_ms": {
+        "median": 13.494068996806163,
+        "p95": 26.75186689812108,
+        "max": 40.011072997003794
+      },
+      "plan_over_40ms": 1,
+      "generator_over_40ms": 1,
+      "cpu_s": 1.5770446880000004,
+      "batch_wall_s": 1.5771187440113863,
+      "valid_id_counts": {
+        "1": 45,
+        "2": 99,
+        "3": 102,
+        "4": 102,
+        "5": 44
+      },
+      "mean_valid_candidates": 3.843137254901961,
+      "zero_valid": 0,
+      "requested": 206,
+      "repaired": 88,
+      "timed_out": 1,
+      "logged_attempts": 290,
+      "logged_iterations": 2721,
+      "warm_initial_attempts": 112,
+      "iteration_note": "completed/logged attempts only; timeout-interrupted attempts omitted",
+      "independent_audit": {
+        "checked": 392,
+        "failures": []
+      }
+    },
+    {
+      "name": "coefficients_2",
+      "mode": "coefficients",
+      "repeat": 2,
+      "calls": 102,
+      "plan_ms": {
+        "median": 13.966521997645032,
+        "p95": 28.257060455507588,
+        "max": 36.77264200814534
+      },
+      "generator_ms": {
+        "median": 13.033996496233158,
+        "p95": 27.295839203725322,
+        "max": 35.836604991345666
+      },
+      "plan_over_40ms": 0,
+      "generator_over_40ms": 0,
+      "cpu_s": 1.5102142020000002,
+      "batch_wall_s": 1.510201370008872,
+      "valid_id_counts": {
+        "1": 45,
+        "2": 99,
+        "3": 102,
+        "4": 102,
+        "5": 45
+      },
+      "mean_valid_candidates": 3.8529411764705883,
+      "zero_valid": 0,
+      "requested": 206,
+      "repaired": 89,
+      "timed_out": 0,
+      "logged_attempts": 291,
+      "logged_iterations": 2697,
+      "warm_initial_attempts": 113,
+      "iteration_note": "completed/logged attempts only; timeout-interrupted attempts omitted",
+      "independent_audit": {
+        "checked": 393,
+        "failures": []
+      }
+    },
+    {
+      "name": "coefficients_3",
+      "mode": "coefficients",
+      "repeat": 3,
+      "calls": 102,
+      "plan_ms": {
+        "median": 13.859172999218572,
+        "p95": 27.988382506009646,
+        "max": 36.453348002396524
+      },
+      "generator_ms": {
+        "median": 12.924959504744038,
+        "p95": 27.036632995441312,
+        "max": 35.517210999387316
+      },
+      "plan_over_40ms": 0,
+      "generator_over_40ms": 0,
+      "cpu_s": 1.5126325840000003,
+      "batch_wall_s": 1.5126106970128603,
+      "valid_id_counts": {
+        "1": 45,
+        "2": 99,
+        "3": 102,
+        "4": 102,
+        "5": 45
+      },
+      "mean_valid_candidates": 3.8529411764705883,
+      "zero_valid": 0,
+      "requested": 206,
+      "repaired": 89,
+      "timed_out": 0,
+      "logged_attempts": 291,
+      "logged_iterations": 2697,
+      "warm_initial_attempts": 113,
+      "iteration_note": "completed/logged attempts only; timeout-interrupted attempts omitted",
+      "independent_audit": {
+        "checked": 393,
+        "failures": []
+      }
+    },
+    {
+      "name": "aligned_3",
+      "mode": "aligned",
+      "repeat": 3,
+      "calls": 102,
+      "plan_ms": {
+        "median": 14.474273499217816,
+        "p95": 28.09254750609398,
+        "max": 36.52992099523544
+      },
+      "generator_ms": {
+        "median": 13.528419003705494,
+        "p95": 27.045340743643465,
+        "max": 35.59103900624905
+      },
+      "plan_over_40ms": 0,
+      "generator_over_40ms": 0,
+      "cpu_s": 1.5579179509999985,
+      "batch_wall_s": 1.5579196790058631,
+      "valid_id_counts": {
+        "1": 45,
+        "2": 99,
+        "3": 102,
+        "4": 102,
+        "5": 45
+      },
+      "mean_valid_candidates": 3.8529411764705883,
+      "zero_valid": 0,
+      "requested": 206,
+      "repaired": 89,
+      "timed_out": 0,
+      "logged_attempts": 291,
+      "logged_iterations": 2716,
+      "warm_initial_attempts": 113,
+      "iteration_note": "completed/logged attempts only; timeout-interrupted attempts omitted",
+      "independent_audit": {
+        "checked": 393,
+        "failures": []
+      }
+    }
+  ],
+  "reference_and_unrepaired_paths_unchanged": true,
+  "all_audits_passed": true
+}
