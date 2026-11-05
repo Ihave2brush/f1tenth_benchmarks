@@ -353,3 +353,13 @@ B 的第 2 輪在第 90 步五號逾時，該步從 A 的二／三／四／五�
 提交前驗證：完整 `tests/research` 為 **461 passed、1 deselected**，另有 18 個既有 Matplotlib／Pyparsing 棄用警告。排除項由原 `pytest.ini` 的 `not local_archive` 設定決定，並非本次為通過而移除測試。Node 原播放器測試通過；8768 的可攜式 `--assets-only` 與完整來源核對均通過，含原 20 ms GIF、兩圖全部最新回放、C3、曲線與 PP 計算。主要文件的本地連結與 `git diff --check` 也通過。
 
 README、功能表、介面、操作指南及原始資料 README 已明確區分最新 40 ms 全候選展示、歷史 20 ms 基準，以及仍未切換的一般 CLI／生成器預設。位移對齊 warm start 仍為可選實驗，沒有因保存版本而改成預設。候選不接管、完整車體餘量／Jetson／ROS2 即時驗收尚未完成的界線維持不變。
+
+## 15. PR #7 合併後 CI 的浮點比較修正（2026-11-05）
+
+PR #7 的 push 與 pull_request 檢查都成功，但合併至 master 的 [Actions run 41990363762](https://github.com/Ihave2brush/f1tenth_benchmarks/actions/runs/41990363762) 為 460 passed、1 failed、1 deselected。失敗的是已發布 MCO 截面測試：`boundary.left_xy[1]` 及重用該座標的 `road_range.left_xy[1]`，由保存值 `-2.1499999999999995` 重算成 `-2.149999999999999`，相差約 4.44e-16 m；其他 20 個頂層欄位相同。原測試用巢狀資料完全相等比較，因此把跨環境浮點尾差判成失敗。
+
+修正只在 `test_published_tracks.py`：遞迴保持字典鍵、清單長度、整數計數、布林安全旗標、分類與來源字串完全一致；浮點欄位採絕對 1e-12 容差、相對容差為零。此數值遠小於 1 mm 規劃格與 0.1 mm 截面轉換容差，不改地圖檔、雜湊核驗、規劃或安全門檻。新增實際 CI 尾差可接受案例，以及毫米變動、較大浮點偏差、旗標／分類／計數／結構變更與 NaN 必須失敗的回歸案例。
+
+修正放在獨立 `fix/pr7-section-numeric-comparison` 分支，避免改動目前主工作目錄的碰撞研究。PR #7 已合併，本修正需要另外的後續提交／PR；本機測試通過不代表遠端失敗 run 已恢復，遠端須在收到修正後重新執行 CI。
+
+獨立唯讀 Docker 工作目錄執行 `pytest -p no:cacheprovider tests/research/test_published_tracks.py -q`：**17 passed**，含六張發布地圖、精確檔案雜湊與數值／結構比較回歸。`git diff --check` 通過；未重跑或變更行車實驗。
