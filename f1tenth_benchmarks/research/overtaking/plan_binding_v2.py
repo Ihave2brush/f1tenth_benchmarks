@@ -96,7 +96,7 @@ def build_plan_binding(plan, *, session_metadata=None, length_m=None,
             for v in knots+coefficients:
                 _finite(v, 'spline_number')
             n = len(knots)-degree-1
-            if n < degree+1 or len(coefficients) < n or any(a>b for a,b in zip(knots,knots[1:])):
+            if n < degree+1 or len(coefficients) != n or any(a>b for a,b in zip(knots,knots[1:])):
                 raise ValueError('invalid_spline_structure')
             low, high = knots[degree], knots[-degree-1]
             if not low < high or low > 0 or high < length:

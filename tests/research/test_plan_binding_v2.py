@@ -164,3 +164,16 @@ def test_resolved_origin_recorded_without_rewriting_fallback():
 def test_frozen_v2_vector_from_research_contract():
     p,m=analytic_input()
     assert make_binding(p,m)['plan_sha256']=='8401e1a20f9c46833dd3cb64d2c0a759d27000647bb188b39a7ba3a296b77016'
+
+
+@pytest.mark.parametrize('degree',[3,5])
+@pytest.mark.parametrize('extra',[-2,-1,0,1,2])
+def test_exact_coefficient_count_required(degree,extra):
+    p,m=analytic_input();s=p['paths'][0]['spline']
+    s.update(degree=degree,knots=[0.]*(degree+1)+[3.]*(degree+1),coefficients=[0.]*(degree+1+extra))
+    before=deepcopy(p)
+    if extra:
+        with pytest.raises(ValueError,match='invalid_spline_structure'):make_binding(p,m)
+    else:
+        assert make_binding(p,m)['binding_version']==2
+    assert p==before

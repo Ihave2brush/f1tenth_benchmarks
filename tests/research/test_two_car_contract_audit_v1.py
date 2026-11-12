@@ -56,7 +56,7 @@ def test_real_field_layout_order_speed_options_reference_and_no_mutation():
     assert opts[2]['raceline_xy_sha256'] and opts[3]['reference_only']
     assert all(o['coverage_status']=='unknown' and o['evaluation_complete'] is None for o in opts)
     assert all(not o['eligible_for_ego_trajectory_comparison'] for o in opts)
-    assert opts[0]['model']=='three_discs' and opts[0]['physical_pair_clearance_m']==.05
+    assert opts[0]['model']=='three_discs' and opts[0]['configured_pair_clearance_m']==.05
     assert opts[0]['pair_threshold_m']==.09
     assert out['inspection_only'] and not out['planning_allowed']
     json.dumps(out,allow_nan=False)
@@ -317,3 +317,59 @@ def test_selector_and_control_unchanged_with_readonly_audit(upstream_two_car_tra
                 ego_pose=frame['ego_state']['pose'],lead_pose=frame['lead_state']['pose']))
         return trace
     assert collect(False)==collect(True)
+
+
+def test_configured_margins_are_not_measured_clearances():
+    f,r,m=saved_case();before=deepcopy((f,r,m));out=audit(f,r,m);o=out['options'][0]
+    assert o['configured_pair_clearance_m']==.05
+    assert o['configured_wall_clearance_m']==.05
+    assert o['physical_pair_clearance_m'] is None and o['physical_wall_clearance_m'] is None
+    assert o['min_pair_clearance_m']==.3
+    assert o['pair_threshold_m']==.09 and o['wall_threshold_m']==.07
+    assert (f,r,m)==before
+    assert o['inspection_only'] is True and o['planning_allowed'] is False
+
+
+@pytest.mark.parametrize('with_plan',[False,True])
+@pytest.mark.parametrize('terminal',[False,True])
+@pytest.mark.parametrize('costs,valid,reason',[
+    (None,True,None),({},True,None),({'options':[]},True,None),
+    ([],False,'invalid_costs'),([1],False,'invalid_costs'),(False,False,'invalid_costs'),
+    (0,False,'invalid_costs'),('',False,'invalid_costs'),('bad',False,'invalid_costs'),
+    ({'other':1},False,'missing_options'),({'options':None},False,'invalid_options'),
+    ({'options':{}},False,'invalid_options'),({'options':'bad'},False,'invalid_options'),
+    ({'options':False},False,'invalid_options'),({'options':[None]},False,'invalid_option')])
+def test_costs_schema_independent_of_plan_and_terminal(with_plan,terminal,costs,valid,reason):
+    f,r,m=saved_case();x=f[0];x['costs']=deepcopy(costs)
+    if not with_plan:x.pop('plan')
+    if terminal:x['terminal_reason']='duration_reached'
+    before=deepcopy((f,r,m));out=audit(f,r,m)
+    assert out['contract_valid'] is valid
+    if reason:
+        errors=out['frames'][0]['errors']+[e for o in out['options'] for e in o['option_errors']]
+        assert reason in errors
+    elif not with_plan:
+        assert out['frames'][0]['audit_status']=='snapshot_only'
+        assert out['frames'][0]['binding_status']=='no_plan'
+        assert out['frames'][0]['plan_binding'] is None
+    assert (f,r,m)==before
+    if valid:
+        assert out['options']==[]
+        assert out['frames'][0]['options_recorded'] is (costs=={'options':[]})
+        assert out['frames'][0]['recorded_option_count']==(0 if costs=={'options':[]} else None)
+
+
+@pytest.mark.parametrize('terminal',[False,True])
+def test_raceline_only_native_diagnostics_without_plan_remain_readable(terminal):
+    f,r,m=saved_case();x=f[0];x.pop('plan');native=deepcopy(x['costs']['options'][2])
+    native.update(safe=False,reason='predicted_pair_clearance',first_rejection_s=.05,min_pair_clearance_m=-.03)
+    x['costs']={'options':[native]}
+    if terminal:x['terminal_reason']='envelope_event'
+    out=audit(f,r,m);o=out['options'][0]
+    assert out['contract_valid']
+    assert o['candidate_id'] is None and o['reference']=='raceline'
+    assert o['plan_id'] is None and o['plan_v2_sha256'] is None
+    assert o['binding_status']=='no_plan' and o['reference_only']
+    assert o['original_diagnostics']==native
+    assert o['safe'] is False and o['reason']=='predicted_pair_clearance'
+    assert o['min_pair_clearance_m']==-.03

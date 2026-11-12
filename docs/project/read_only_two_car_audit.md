@@ -45,6 +45,15 @@ python -m tools.audit_two_car_contract_v1 --frames /data/case/frames.json --repo
 - C3／raceline 保留 reference 語義，不產生自車 modeled rollout。
 - 同一 candidate 的不同速度保留不同 option index；`candidate_id=null` 的 raceline 不是五候選之一。
 - signed 三圓淨距不是單圓 clipped clearance；缺少數值維持 null。
+- `configured_pair_clearance_m` 來自 report.pair_clearance_m，
+  `configured_wall_clearance_m` 來自 config.footprint_clearance_m；兩者是設定餘量，非量測距離。
+  相容保留的 `physical_pair_clearance_m`／`physical_wall_clearance_m` 沒有可信量測來源，輸出 null。
+  `min_pair_clearance_m` 仍是 Selector 原生 signed 三圓診斷；decision 的 pair/wall threshold 另列。
+- 沒有 plan 也要驗證 costs：缺省／null 及 `{}` 表示未記錄 options，
+  `{"options":[]}` 表示明確記錄零筆；其他非 dict、缺 options 或非 list 的 options 都是無效契約。
+  合法 raceline-only options 保留 reference／native 診斷，plan ID 與 digest 不補造。
+- Analytic B-spline 嚴格要求 `len(coefficients) == len(knots) - degree - 1`。
+  合法輸入的 canonical payload 與 digest domain 不變；過多係數不再被接受。
 - requested horizon、`safe=true` 或 `first_rejection_s` 不能證明實際已查時域。
   未保存 checked range 時完整度 unknown；拒絕時間不是 TTC。
 - `safe=true` 搭配 rejection reason/time 或與記錄門檻矛盾時回報資料契約錯誤。

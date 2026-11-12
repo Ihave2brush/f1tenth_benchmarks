@@ -175,13 +175,23 @@ def audit_two_car_frames(frames, report, *, session_metadata, source_classificat
         item['decision_diagnostics']=decision
         item['opponent_prediction_embedded_timestamp_verified']=False
         costs=frame.get('costs')
-        options=costs.get('options') if isinstance(costs,dict) else None
+        options=None
+        # Null/absent and an empty legacy placeholder contain no evaluations.
+        # Every other value must declare a list, regardless of plan presence.
+        if costs is None:
+            pass
+        elif not isinstance(costs,dict):
+            errors.append('invalid_costs')
+        elif costs:
+            if 'options' not in costs:
+                errors.append('missing_options')
+            elif not isinstance(costs['options'],list):
+                errors.append('invalid_options')
+            else:
+                options=costs['options']
         item['options_recorded']=isinstance(options,list)
         item['recorded_option_count']=len(options) if isinstance(options,list) else None
-        if options is None:
-            if plan is not None and costs not in (None,{}): errors.append('missing_options')
-            options=[]
-        if not isinstance(options,list): errors.append('invalid_options');options=[]
+        if options is None: options=[]
         for option_index, original in enumerate(options):
             option_errors=[]
             raw=original if isinstance(original,dict) else {}
@@ -250,7 +260,8 @@ def audit_two_car_frames(frames, report, *, session_metadata, source_classificat
                 clearance_convention='signed_three_disc_pair_minimum_claim_not_single_circle',
                 body_length_m=config.get('footprint_length_m'),body_width_m=config.get('footprint_width_m'),
                 pair_threshold_m=decision.get('pair_threshold_m'),wall_threshold_m=decision.get('wall_threshold_m'),
-                physical_pair_clearance_m=report.get('pair_clearance_m'),physical_wall_clearance_m=config.get('footprint_clearance_m'),
+                configured_pair_clearance_m=report.get('pair_clearance_m'),configured_wall_clearance_m=config.get('footprint_clearance_m'),
+                physical_pair_clearance_m=None,physical_wall_clearance_m=None,
                 sample_dt_s=dt,requested_horizon_s=requested,checked_range_s=checked,
                 coverage_status=coverage,full_horizon_reported=full,
                 evaluation_complete=complete if type(complete) is bool else None,
