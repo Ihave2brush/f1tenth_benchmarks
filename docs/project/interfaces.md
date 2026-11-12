@@ -2,9 +2,9 @@
 
 本文件定義現行介面；完成狀態、驗收數值與限制見[完成總結](CHANGELOG.md)。
 
-歷史研究基準為 my_map／1 mm 安全域＋直接生成＋二／四號 B-spline 修正（共享 20 ms）；最新實驗／展示為兩圖 40 ms 修 C1／2／4／5。`BudgetedDomainGenerator(domain, budget_s=.020)` 明確選用 20 ms；主 CLI 不會自動切換，`run_mm_bspline_comparison --budgets-ms 0 20` 另做相同車況對照。20 ms 是包含基本生成、排除 session gate／控制的協作式截止，非底層硬中斷；原曲率上限由車輛參數 `tan(max_steer)/wheelbase` 取得，修正另保留 0.01 /m 餘量。
+歷史研究基準為 my_map／1 mm 安全域＋直接生成＋二／四號 B-spline 修正（共享 20 ms）；後續單車對照為兩圖 40 ms 修 C1／2／4／5。`BudgetedDomainGenerator(domain, budget_s=.020)` 明確選用 20 ms；主 CLI 不會自動切換，`run_mm_bspline_comparison --budgets-ms 0 20` 另做相同車況對照。20 ms 是包含基本生成、排除 session gate／控制的協作式截止，非底層硬中斷；原曲率上限由車輛參數 `tan(max_steer)/wheelbase` 取得，修正另保留 0.01 /m 餘量。
 
-1 mm 安全域對來源／幾何／margin 核對；新車體 margin=0.185 m，舊 0.15 m 表不能混用。安全帶只代表中心路徑整格預篩；發布解析曲線及單一起點，尚未發布給 PP 接管。8768 畫圖每 1 cm 取樣，橙色平滑牆線只供顯示，不替代離線安全域或原驗證密度。
+1 mm 安全域對來源／幾何／margin 核對；新車體 margin=0.185 m，舊 0.15 m 表不能混用。安全帶只代表中心路徑整格預篩；單車 session 發布解析曲線供診斷；雙車控制見下方。8768 的繪圖取樣與平滑牆線只供顯示。
 
 ## 程式入口與用途
 
@@ -45,9 +45,24 @@ tracker 重用候選投影並加入歷史判斷，domain 重用精確反轉換�
 | verify_session | 核對物理／控制／Frenet／圈事件、來源、五 ID／起點、串流 hash／索引與幾何檔案；候選內部曲線不由此工具獨立重驗，需另跑原密度核驗 |
 | playback | 依 available 時間選當下可取得事件；倒退跳轉不保留未來候選，播放不重新求解 |
 
-目前同步規劃會暫停模擬時間；`cycle_budget_observation` 若存在，只記錄 make_plan 是否在目標內，排除記錄／控制，`deadline_enforced=false`，不代表有中止或排程保證。`candidate_control_enabled=false`，planning_allowed／footprint_verified 維持 false。
+單車 session 同步規劃時會暫停模擬時間；`cycle_budget_observation` 若存在，只記錄 make_plan 是否在目標內，排除記錄／控制，`deadline_enforced=false`，不代表有中止或排程保證。`candidate_control_enabled=false`，planning_allowed／footprint_verified 維持 false。
 
 fixed_grid_lookup 的 5 cm 格是弧長定位輔助，原候選 2.5 cm 檢查點、原圖邊界及必要 XY／折線核驗仍保留。道路表命中不能當作新曲線整段通過。未使用 tracking_options 的歷史 session 沿用預設；MY 小圈整合依車輛物理速度上限記錄專用選項，不回寫全域 TrackingOptions 預設。
+
+## 雙車候選與超車決策
+
+`run_two_car_candidates` 使用兩車真值，不使用 LiDAR。每 100 ms 生成五個候選（ESP 完整測試在最佳化線巡航時也生成），並以 10 ms 物理步執行；`--original-esp-control` 每 40 ms 更新轉向，PP 前視為 `0.8 + 0.6 × v / 8` m。Phase 1 依靜態檢查和候選優先順序選路；Phase 2 另做前車預測與短時間預演。
+
+| 狀態 | ESP 完整測試的切換條件 |
+|---|---|
+| 最佳化線巡航 | 完成超車並回中線後使用 `mu60_closed`，上限 8 m/s。對車進入沿線前方 7 m 內就切回候選規劃，先測 C3；此時未必開始超車。 |
+| 切出超車 | C3 巡航預測車間不足、對車在前且較慢，才評估側向候選。Car 0 的中線里程在 `[170, 202)` m 時不啟動新超車。側向方案須有足夠並排空間且預測相對前進量超過 5 cm。若已在跟車，需連續三個規劃步確認同側可行。 |
+| 減速跟車 | 沒有可切出的方案時，嘗試以較低速度走 C3。先用 `前車速度 + 0.7 ×（沿線車距 − 1.15 m）` 算目標，再限制於 0 到當前巡航上限；未通過預演就試較低速度。對手在後方時，不用它的速度算跟車。 |
+| 維持同側、退回或完成 | 已切出時優先留在同側；尚未超過且同側走不通，可在預演通過後退回對車後方。領先至少 1 m 時評估 C3 回線；回線可行、距中線小於 6 cm 且航向誤差小於 0.15 rad 才計一次。沒有可執行選項時下達零目標速度。 |
+
+預演先淘汰車間淨距不大於 9 cm、牆面淨距不大於 7 cm 或無法追蹤的方案；實際模擬另做三圓掃掠，牆面與車間餘量皆為 5 cm。可行側向方案先比最小車間淨距；落在最佳值 1.5 cm 內再比相對前進量。這是狀態與規則式排名，短時間預演不保證整次超車可完成，尚未導入加權成本函數。
+
+`frames.json` 保存逐步車況、候選、預演與命令，`report.json` 保存設定和結果。沿線車距使用有號週期距離判斷套圈；圈數用各車從自身出發位置累積的進度，先達標的車繼續行駛。見[重跑方式](usage.md#esp-完整測試起點出發最佳化賽道線與套圈)與[實驗結果](CHANGELOG.md#esp-完整測試8-ms急彎先跟車持續生成候選2026-11-12)。
 
 ## 座標定義
 

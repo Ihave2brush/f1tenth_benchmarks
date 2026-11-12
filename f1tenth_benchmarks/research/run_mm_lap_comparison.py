@@ -27,9 +27,10 @@ from f1tenth_benchmarks.utils.BasePlanner import load_parameter_file
 
 
 class DomainGenerator:
-    def __init__(self, domain, target_policy='reference_centerline'):
+    def __init__(self, domain, target_policy='reference_centerline', lateral_inset_m=0.):
         self.domain = domain
         self.target_policy = target_policy
+        self.lateral_inset_m = lateral_inset_m
 
     def __call__(self, geometry, x, y, yaw, **settings):
         start, reason = exact_start(geometry, [x, y, yaw])
@@ -38,7 +39,7 @@ class DomainGenerator:
         length = settings['lookahead_m']
         plan = self.domain.plan(start['s'], start['d'], start['d_prime'], length=length,
             max_slope=settings['max_slope'], max_curvature=settings['max_curvature'],
-            target_policy=self.target_policy)
+            target_policy=self.target_policy, lateral_inset_m=self.lateral_inset_m)
         if not plan['paths']:
             return dict(start=start, paths=reject_paths(plan['reason']), **{k: v for k, v in plan.items() if k != 'paths'})
         # Reconstruct the mathematical start independently, so make_plan's

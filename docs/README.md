@@ -1,10 +1,8 @@
 # 專案文件
 
-修改過程、採用／放棄的方案、目前設定、效能結果、完成界線與清理紀錄，統一維護在 **[專案修改過程與結果](project/CHANGELOG.md)**。不再另開進度快照或每階段人工報告。
+雙車從這裡開始：[現行決策](project/interfaces.md#雙車候選與超車決策) · [ESP 完整測試重跑](project/usage.md#esp-完整測試起點出發最佳化賽道線與套圈) · [實驗結果](project/CHANGELOG.md#esp-完整測試8-ms急彎先跟車持續生成候選2026-11-12)。
 
 ## 必要技術指南
-
-以下文件供操作或查介面，並非另一份修改歷程：
 
 | 文件 | 用途 |
 |---|---|
@@ -16,9 +14,11 @@
 | [Frenet 技術設計](project/frenet_runtime_validation_plan.md) | 精確查詢、快取與有效性設計 |
 | [中線與播放設計](project/centerline_candidates_playback_plan.md) | 記錄／播放架構與契約 |
 
-本機頁面：[8765 地圖查詢](http://127.0.0.1:8765/)、[8766 session 播放](http://127.0.0.1:8766/)、[8768 雙賽道最新 40 ms 實驗](http://127.0.0.1:8768/)。
+本機頁面：[8765 地圖查詢](http://127.0.0.1:8765/)、[8766 session 播放](http://127.0.0.1:8766/)、[8768 ESP 完整測試與歷史回放](http://127.0.0.1:8768/#esp_complete_test)。
 
 ## 歷史實驗與驗收報告
+
+[雙車 Phase 1 原始規劃](project/two_car_candidate_overtaking_plan.md)保留最初的介面設計與驗收項目。
 
 原先分散的 28 份報告／進度／工作計畫、9 組非現行圖形及探測輸出，已核對後放入單一[歸檔 ZIP](project/archive/experiments_through_20261030.zip)。原名、各檔 SHA256 與安全取回方式見[統一紀錄](project/CHANGELOG.md)及 ZIP 中的 MANIFEST.json。
 

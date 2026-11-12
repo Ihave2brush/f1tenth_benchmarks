@@ -26,6 +26,6 @@
 
 Continuous 沿用原動力學、LiDAR、碰撞模型與 Pure Pursuit；尺寸／軸距／轉向限制採目前已確認參數。原 raceline 多圈入口與 Frenet 中線候選入口分開；後者已接上同版本 CSV、Frenet 定位／進度、五候選記錄及瀏覽器時間步播放。入口支援 ESP／MY map，最新研究設定為 MY map／3 m，主 CLI 地圖預設仍 esp。
 
-最新展示為 my_map／ESP、1 mm 安全域＋直接生成＋40 ms 共用預算修正一／二／四／五號；完整週期 P95 分別 30.12／46.87 ms，最大 38.52／48.93 ms，僅代表此批量測落在 100 ms 預算內，硬即時尚未驗收。主入口仍為 exact／optimized，獨立研究入口與契約見[介面規格](interfaces.md#候選生成與-session-契約)。fixed_grid_lookup 的兩圈與 10/29 超時結果保留為歷史對照，不能當作最新方案的時間。歷史 ESP 40 m 全量手動播放最終驗收仍待完成。數值與證據集中於[完成總結](CHANGELOG.md)。
+歷史單車對照為 my_map／ESP、1 mm 安全域＋直接生成＋40 ms 共用預算修正一／二／四／五號；完整週期 P95 分別 30.12／46.87 ms，最大 38.52／48.93 ms，僅代表此批量測落在 100 ms 預算內，硬即時尚未驗收。主入口仍為 exact／optimized，獨立研究入口與契約見[介面規格](interfaces.md#候選生成與-session-契約)。fixed_grid_lookup 的兩圈與 10/29 超時結果保留為歷史對照，不能當作最新方案的時間。歷史 ESP 40 m 全量手動播放最終驗收仍待完成。數值與證據集中於[完成總結](CHANGELOG.md)。
 
-候選不接管控制；超車決策、完整車身／動態、ROS2 節點及實車部署尚未驗收。LMPC 維持獨立分支；TF 適配器不是完整 ROS2 訂閱／TF buffer／publisher 節點。
+單車候選只供診斷；雙車候選可接管控制，見[雙車決策](interfaces.md#雙車候選與超車決策)。ROS2 節點及實車部署尚未驗收。LMPC 維持獨立分支；TF 適配器不是完整 ROS2 訂閱／TF buffer／publisher 節點。

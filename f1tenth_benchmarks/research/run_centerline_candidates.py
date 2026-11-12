@@ -238,6 +238,10 @@ def main():
     parser.add_argument('--query-mode', choices=('exact', 'reused_exact', 'fast_with_fallback', 'fixed_grid_with_fallback', 'fixed_grid_lookup'), default='exact')
     parser.add_argument('--generation-mode', choices=('optimized', 'direct_only', 'direct_then_repair', 'width_fraction_only', 'width_fraction_then_repair'), default='optimized')
     parser.add_argument('--timeout', type=float, default=300.)
+    parser.add_argument('--footprint-clearance', type=float, default=None,
+                        help='three-disc wall clearance in metres; default simulator YAML')
+    parser.add_argument('--footprint-step', type=float, default=.01,
+                        help='three-disc validation spacing along reference s, metres')
     parser.add_argument('--max-control-steps', type=int, default=0, help='short preview only; zero runs to lap/timeout')
     args = parser.parse_args()
     result = run_session(args.output_dir, SessionConfig(laps=args.laps, plan_period_s=args.plan_period,
@@ -245,7 +249,10 @@ def main():
                                                        lookahead_m=args.lookahead, timeout_s=args.timeout,
                                                        query_mode=args.query_mode,
                                                        generation_mode=args.generation_mode,
-                                                       max_control_steps=args.max_control_steps),
+                                                       max_control_steps=args.max_control_steps,
+                                                       footprint_step_m=args.footprint_step,
+                                                       **({} if args.footprint_clearance is None else
+                                                          dict(footprint_clearance_m=args.footprint_clearance))),
                          geometry_dir='maps/frenet/'+args.map+'/geometry',
                          map_yaml='maps/'+args.map+'.yaml')
     print(json.dumps(result, indent=2, allow_nan=False))

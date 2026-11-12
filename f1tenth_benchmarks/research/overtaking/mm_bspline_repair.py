@@ -165,10 +165,10 @@ def aligned_previous_seed(cached, start, target, basis, length, delta):
 
 
 class BudgetedDomainGenerator(DomainGenerator):
-    """Repair selected failed slots with one budget; C3 stays reference-only."""
+    """Repair selected failed slots with one budget; C3 is excluded from repair."""
     def __init__(self, domain, budget_s=.04, curvature_reserve=.01,
-                 repair_candidates=(2, 4), warm_start_mode='coefficients'):
-        super().__init__(domain)
+                 repair_candidates=(2, 4), warm_start_mode='coefficients', lateral_inset_m=0.):
+        super().__init__(domain, lateral_inset_m=lateral_inset_m)
         if not np.isfinite([budget_s, curvature_reserve]).all() or budget_s < 0 or curvature_reserve < 0:
             raise ValueError('invalid repair budget/reserve')
         self.budget_s, self.curvature_reserve = budget_s, curvature_reserve

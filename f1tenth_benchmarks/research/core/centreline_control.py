@@ -29,12 +29,12 @@ class CentrelinePurePursuit:
         self.wheelbase, self.max_steer = wheelbase, max_steer
         self.diagnostic = None
 
-    def plan(self, observation):
+    def plan(self, observation, lookahead=None):
         pose = np.asarray(observation['pose'], float)
         _, distance, fraction, index = nearest_point_on_trajectory_py2(
             pose[:2], self.path, self.l2s, self.diffs)
         point, _, _ = first_point_on_trajectory_intersecting_circle(
-            pose[:2], self.lookahead, self.path, index+fraction, wrap=True)
+            pose[:2], self.lookahead if lookahead is None else lookahead, self.path, index+fraction, wrap=True)
         if point is None:
             raise ValueError('no forward Pure Pursuit lookahead intersection')
         steering = float(get_actuation(pose[2], point, pose[:2],

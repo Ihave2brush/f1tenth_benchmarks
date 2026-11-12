@@ -10,6 +10,7 @@ docs/project/*
 !docs/project/viewer.md
 !docs/project/centerline_candidates_playback_plan.md
 !docs/project/frenet_runtime_validation_plan.md
+!docs/project/two_car_candidate_overtaking_plan.md
 !docs/project/images/
 docs/project/images/*
 !docs/project/images/esp_projection_candidates.png
