@@ -38,9 +38,9 @@ def run(output, map_name='my_map', seconds=12., gap=1.5, speeds=(1.2, 1.2),
     obs, done = sim.reset(poses)
     frames, timings = [], []
 
-    def record(actions):
+    def record(actions, cycle_ms=None):
         frames.append(dict(time_s=sim.time, states=[car.state.tolist() for car in sim.cars],
-                           actions=actions, events=list(sim.events)))
+                           actions=actions, cycle_ms=cycle_ms, events=list(sim.events)))
     record(None)
     for _ in range(int(np.ceil(seconds/.1))):
         if done:
@@ -49,7 +49,7 @@ def run(output, map_name='my_map', seconds=12., gap=1.5, speeds=(1.2, 1.2),
         actions = [np.zeros(2) if p is None else p.plan(o) for p, o in zip(planners, obs)]
         obs, done = sim.step(actions)
         timings.append((perf_counter()-start)*1000)
-        record(np.asarray(actions).tolist())
+        record(np.asarray(actions).tolist(), timings[-1])
     report = dict(map=map_name, duration_s=sim.time, steps=len(timings),
                   terminal_reason='envelope_event' if done else 'duration_reached', events=sim.events,
                   body=asdict(sim.bodies[0]), disc_radius_m=sim.bodies[0].radius,
@@ -57,7 +57,8 @@ def run(output, map_name='my_map', seconds=12., gap=1.5, speeds=(1.2, 1.2),
                   pair_clearance_m=pair_clearance, physics_dt_s=sim.params.timestep,
                   control_dt_s=.1, max_sweep_motion_m=sim.max_sweep_motion,
                   spawn_gap_along_track_m=gap, target_speeds_mps=list(speeds),
-                  cycle_ms=dict(p95=float(np.percentile(timings, 95)), maximum=max(timings)) if timings else None,
+                  cycle_ms=dict(median=float(np.median(timings)), p95=float(np.percentile(timings, 95)),
+                                maximum=max(timings)) if timings else None,
                   collision_model='three_disc_conservative_interpolated_sweep',
                   reference_point='geometric_body_centre_assumption',
                   lidar='static_map_plus_uninflated_opponent_discs_no_noise',

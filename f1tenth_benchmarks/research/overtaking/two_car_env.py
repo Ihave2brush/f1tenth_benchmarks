@@ -111,6 +111,7 @@ class TwoCarOvertakingEnv:
         body = self.sim.bodies[0]
         self.config = SessionConfig(speed_mps=ego_speed, lookahead_m=path_lookahead_m, generation_mode='direct_only',
                                     safety_margin_m=body.width / 2 + wall_clearance,
+                                    footprint_check_enabled=True,
                                     footprint_length_m=body.length, footprint_width_m=body.width,
                                     footprint_clearance_m=wall_clearance).for_map(self.map_id)
         if (not math.isclose(domain.metadata['margin_m'], self.config.safety_margin_m, abs_tol=1e-12)

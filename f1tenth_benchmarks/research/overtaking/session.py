@@ -3,6 +3,7 @@ from dataclasses import asdict, dataclass, field, replace
 import json
 import math
 from pathlib import Path
+from typing import Optional
 from time import perf_counter
 
 from .robust_adaptive_paths import generate_robust_paths
@@ -46,7 +47,7 @@ class SessionConfig:
     query_mode: str = 'exact'
     generation_mode: str = 'optimized'
     validation_step_m: float = None  # research override; None keeps original raster-half policy
-    footprint_check_enabled: bool = True
+    footprint_check_enabled: Optional[bool] = None  # auto: enable when geometry supplies a raster
     footprint_length_m: float = field(default_factory=lambda: footprint_parameter('vehicle_length'))
     footprint_width_m: float = field(default_factory=lambda: footprint_parameter('vehicle_width'))
     footprint_clearance_m: float = field(default_factory=lambda: footprint_parameter('vehicle_boundary_clearance'))
@@ -58,7 +59,7 @@ class SessionConfig:
                               max_control_steps=(0, 10000000))
         for name, value in asdict(self).items():
             if name == 'footprint_check_enabled':
-                if type(value) is not bool:
+                if value is not None and type(value) is not bool:
                     raise ValueError('invalid footprint_check_enabled')
                 continue
             if name == 'pp_lookahead_m':
@@ -104,6 +105,10 @@ def reject_paths(reason, status='rejected'):
 def make_plan(geometry, state, config, plan_id, trigger='periodic', generator=None):
     """Five slots even on invalid localization or whole-generator rejection."""
     generator = generator or generate_robust_paths
+    has_raster = getattr(geometry, 'raster', None) is not None
+    footprint_enabled = config.footprint_check_enabled
+    if footprint_enabled is True and not has_raster:
+        raise ValueError('footprint checking requires geometry.raster')
     started = perf_counter()
     event = dict(schema_version=1, plan_id=plan_id, trigger=trigger,
                  source_control_step=state['control_step'], source_sim_time_s=state['sim_time_s'],
@@ -172,7 +177,7 @@ def make_plan(geometry, state, config, plan_id, trigger='periodic', generator=No
                     position_error > config.max_start_position_error_m or
                     abs(heading_error) > config.max_start_heading_error_rad):
                     path.update(sampled_valid=False, status='rejected', reason='start_pose_mismatch')
-            if config.footprint_check_enabled:
+            if footprint_enabled is True or (footprint_enabled is None and has_raster):
                 from .footprint_validation import check_candidate_footprints
                 event['footprint_validation'] = check_candidate_footprints(geometry, result, state['pose'], config)
                 event['validation_scope'] = 'prior_geometry_gates_and_sampled_three_disc_poses'

@@ -61,7 +61,7 @@ def test_invalid_windows_rejected(start, distance):
 def test_fixed_grid_actual_pose_and_legacy_exact_audit():
     geometry = make_straight()
     config = SessionConfig(lookahead_m=3., generation_mode='direct_then_repair',
-                           query_mode='fixed_grid_with_fallback')
+                           query_mode='fixed_grid_with_fallback', footprint_check_enabled=False)
     state = dict(control_step=0, sim_time_s=0., valid=True, frenet=dict(valid=True),
                  pose=[1.513, 3.1, .05])
     event = make_plan(geometry, state, config, 0)

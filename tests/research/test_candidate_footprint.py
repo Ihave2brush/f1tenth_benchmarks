@@ -1,4 +1,6 @@
 """The published candidate set must reflect body checks, not centre flags."""
+from types import SimpleNamespace
+
 import pytest
 
 from test_robust_adaptive_paths import make_straight
@@ -27,6 +29,16 @@ def test_clear_curve_gets_sampled_body_result():
         assert path['footprint_check']['sample_count'] == 301
         assert not path['footprint_verified']  # no continuous claim
     assert not event['planning_allowed']
+
+
+def test_lightweight_geometry_keeps_centerline_results_without_claiming_footprint():
+    geometry = SimpleNamespace(geometry_id='lightweight')
+    event = plan(geometry)
+    assert event['sampled_valid_count'] == 5
+    assert 'footprint_validation' not in event
+    assert not event['footprint_verified']
+    with pytest.raises(ValueError, match=r'geometry\.raster'):
+        plan(geometry, footprint_check_enabled=True)
 
 
 @pytest.mark.parametrize('occupancy', [1, -1])

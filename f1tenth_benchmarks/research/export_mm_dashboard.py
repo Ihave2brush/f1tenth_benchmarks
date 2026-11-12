@@ -211,8 +211,41 @@ def make_gif(data, out, gray):
         gif_sha256=digest(out/gif_name),source=f'same {len(data["frames"])} recorded states as data.json'),indent=2)+'\n')
 
 
-def export_three_disc_single(session_dir, output_dir, base_dashboard_dir):
-    """Export single_car_three_disc session using the verified my_map dashboard geometry."""
+def _load_dashboard_domain(base, geometry, domain_dir=None):
+    """Load the matching base domain, or a verified replacement for an old export."""
+    metadata = base['domain']
+    if metadata['geometry_id'] != geometry.geometry_id:
+        raise ValueError('display base uses a different track geometry')
+    from_base = domain_dir is None
+    if from_base:
+        files = [Path(item['path']) for item in base['sources']
+                 if Path(item['path']).name == 'domain.npz']
+        if len(files) != 1:
+            raise ValueError('display base must identify exactly one domain.npz source')
+        domain_dir = files[0].parent
+    domain_dir = Path(domain_dir)
+    try:
+        domain = MillimetreDomain.load(domain_dir, geometry, expected_margin=metadata['margin_m'])
+    except (FileNotFoundError, ValueError) as exc:
+        if not from_base:
+            raise
+        raise ValueError(f'cannot load the base dashboard domain {domain_dir}: {exc}; '
+                         'supply a compatible --domain-dir for this map') from exc
+    if from_base and domain.metadata['source_fingerprint'] != metadata['source_fingerprint']:
+        raise ValueError('display base domain fingerprint changed')
+    display = dict(base['geometry'])
+    if not from_base:
+        arrays = domain.arrays
+        spacing = .020 if base['map_id'] == 'esp' else .005
+        select = slice(None, None, max(1, round(spacing/domain.step)))
+        for side, bound in [('left', 'upper'), ('right', 'lower')]:
+            xy = arrays['xy'][select] + arrays[bound][select, None]*arrays['normal'][select]
+            display['safe_'+side] = xy[np.isfinite(xy).all(axis=1)].round(6).tolist()
+    return domain, domain_dir, display
+
+
+def export_three_disc_single(session_dir, output_dir, base_dashboard_dir, domain_dir=None):
+    """Export a single-car three-disc session with its matching dashboard geometry."""
     session = Path(session_dir)
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
@@ -224,9 +257,7 @@ def export_three_disc_single(session_dir, output_dir, base_dashboard_dir):
     map_id = metadata.get('map', 'my_map')
     map_yaml = f'maps/{map_id}.yaml'
     geometry = load_geometry(f'maps/frenet/{map_id}/geometry', map_yaml, inspect=True)
-    domain_dir = Path('Data/research/overtaking/mm_domain_width27_length51_20261030_001/domain')
-    domain = MillimetreDomain.load(domain_dir, geometry,
-        expected_margin=base['profile']['centre_prefilter_margin_m'])
+    domain, domain_dir, display = _load_dashboard_domain(base, geometry, domain_dir)
     arrays = domain.arrays
     Image.fromarray(geometry.raster.gray).save(out/'map.png')
     action_map = {a['source_control_step']:a for a in actions}
@@ -337,11 +368,11 @@ def export_three_disc_single(session_dir, output_dir, base_dashboard_dir):
     ]
     comparisons = list(base['comparisons']) + [chosen]
     data = dict(
-        version=3, map_id='my_map_three_disc', base_map_id='my_map', mode='single_car_three_disc',
-        title='my_map · 單車三圓車體 5 cm 檢查實驗', selected_budget_ms=40,
-        geometry=base['geometry'], config=metadata['config'], vehicle=metadata['vehicle_params'],
+        version=3, map_id=f'{map_id}_three_disc', base_map_id=map_id, mode='single_car_three_disc',
+        title=f'{map_id} · 單車三圓車體檢查實驗', selected_budget_ms=40,
+        geometry=display, config=metadata['config'], vehicle=metadata['vehicle_params'],
         profile=base['profile'], footprint_validation=plans[0]['footprint_validation']['settings'],
-        domain=base['domain'], offline_file_bytes=base['offline_file_bytes'],
+        domain=domain.metadata, offline_file_bytes=(domain_dir/'domain.npz').stat().st_size,
         chosen=chosen, comparisons=comparisons,
         summary={k:v for k,v in summary.items() if k!='cycle_timings'}, frames=frames,
         audits=dict(all_passed=True, baseline=base['audits']['chosen'], chosen=chosen['original_density_audit'],
@@ -354,7 +385,7 @@ def export_three_disc_single(session_dir, output_dir, base_dashboard_dir):
     print(json.dumps(dict(mode='single_car_three_disc', frames=len(frames), output=str(out), data_bytes=(out/'data.json').stat().st_size)))
 
 
-def export_two_car(two_car_dir, output_dir, base_dashboard_dir):
+def export_two_car(two_car_dir, output_dir, base_dashboard_dir, domain_dir=None):
     """Export two_car_three_disc simulation with exact 3-disc geometry and LiDAR opponent rays."""
     from .collision.discs import ThreeDiscBody, opponent_scan
     from .core.centreline_control import CentrelinePurePursuit
@@ -372,9 +403,7 @@ def export_two_car(two_car_dir, output_dir, base_dashboard_dir):
     map_yaml = f'maps/{map_id}.yaml'
     track = TrackData(f'maps/frenet/{map_id}/geometry', map_yaml)
     geometry = track.geometry
-    domain_dir = Path('Data/research/overtaking/mm_domain_width27_length51_20261030_001/domain')
-    domain = MillimetreDomain.load(domain_dir, geometry,
-        expected_margin=base['profile']['centre_prefilter_margin_m'])
+    domain, domain_dir, display = _load_dashboard_domain(base, geometry, domain_dir)
     arrays = domain.arrays
     Image.fromarray(geometry.raster.gray).save(out/'map.png')
 
@@ -458,7 +487,9 @@ def export_two_car(two_car_dir, output_dir, base_dashboard_dir):
                                     true_distance=true_distance, lateral=lateral, calculated_steering=steer))
             pp, opp_pp = pp_list[0], pp_list[1]
 
-        cycle_ms = (report['cycle_ms']['maximum'] if idx == 0 else report['cycle_ms']['p95'] * 0.72) if not terminal else 0.0
+        # The step's command and its measured duration are recorded with the
+        # resulting state. Historical recordings only have aggregate timing.
+        cycle_ms = raw_frames[idx + 1].get('cycle_ms') if not terminal else None
         frames.append(dict(
             step=idx, time=round(float(rf['time_s']), 4), pose=[round(v, 6) for v in poses[0]],
             speed=round(speeds[0], 5), steer_angle=round(steers[0], 5),
@@ -486,7 +517,7 @@ def export_two_car(two_car_dir, output_dir, base_dashboard_dir):
             checks=dict(explicit_boundary_checks=0, inherited_boundary_checks=0, interval_count=0,
                         curvature_sample_count=0, online_rays=len(hit_rays), online_candidate_inverse_projections=0,
                         online_candidate_xy_conversions=0),
-            plan_ms=round(cycle_ms, 3), cycle_ms=round(cycle_ms, 3), terminal=terminal,
+            plan_ms=None, cycle_ms=cycle_ms, terminal=terminal,
             events=rf['events'],
         ))
 
@@ -495,9 +526,12 @@ def export_two_car(two_car_dir, output_dir, base_dashboard_dir):
         domain_dir/'domain.npz', domain_dir/'metadata.json', Path(map_yaml),
         Path(map_yaml).parent/yaml.safe_load(Path(map_yaml).read_text())['image'],
     ]
+    aggregate = report.get('cycle_ms') or {}
+    complete_cycle = {key: aggregate[name] / 1000 if aggregate.get(name) is not None else None
+                      for key, name in (('median', 'median'), ('p95', 'p95'), ('max', 'maximum'))}
     chosen = dict(
         name='two_car_three_disc',
-        label='雙車三圓跟車 (120 步)',
+        label=f"雙車三圓跟車 ({report['steps']} 步)",
         budget_ms=40,
         repair_candidates=[1, 2, 4, 5],
         verification_passed=True,
@@ -506,7 +540,7 @@ def export_two_car(two_car_dir, output_dir, base_dashboard_dir):
         timed_out_instances=0,
         reference_valid_count=len(frames),
         valid_id_counts={1:0, 2:0, 3:len(frames), 4:0, 5:0},
-        complete_cycle_s=dict(median=report['cycle_ms']['p95']/1000*0.72, p95=report['cycle_ms']['p95']/1000, max=report['cycle_ms']['maximum']/1000),
+        complete_cycle_s=complete_cycle,
         mean_valid_candidates=1.0,
         zero_valid_plan_count=0,
         min_pair_clearance_m=round(min_pair_clearance_all, 4),
@@ -514,9 +548,10 @@ def export_two_car(two_car_dir, output_dir, base_dashboard_dir):
         original_density_audit=dict(checked=len(frames), failed=0),
     )
     data = dict(
-        version=3, map_id='two_car', base_map_id='my_map', mode='two_car',
-        title='my_map · 雙車三圓碰撞與對車光達模擬', selected_budget_ms=40,
-        geometry=base['geometry'], config=base['config'], vehicle=base['vehicle'],
+        version=3, map_id='two_car' if map_id == 'my_map' else f'two_car_{map_id}',
+        base_map_id=map_id, mode='two_car',
+        title=f'{map_id} · 雙車三圓碰撞與對車光達模擬', selected_budget_ms=40,
+        geometry=display, config=base['config'], vehicle=base['vehicle'],
         profile=base['profile'],
         footprint_validation=dict(
             model='three_discs', length_m=report['body']['length'], width_m=report['body']['width'],
@@ -525,13 +560,13 @@ def export_two_car(two_car_dir, output_dir, base_dashboard_dir):
             max_sweep_motion_m=report['max_sweep_motion_m'],
         ),
         two_car_report={k: v for k, v in report.items() if k != 'source'},
-        domain=base['domain'], offline_file_bytes=base['offline_file_bytes'],
+        domain=domain.metadata, offline_file_bytes=(domain_dir/'domain.npz').stat().st_size,
         chosen=chosen, comparisons=base['comparisons'],
         summary=dict(completed_full_laps=1, collision=False, events=report['events'], steps=report['steps'], duration_s=report['duration_s']),
         frames=frames,
         audits=dict(all_passed=True, baseline=base['audits']['baseline'], chosen=chosen['original_density_audit'], one_mm=[]),
         sources=[dict(path=str(p),sha256=digest(p)) for p in src_files],
-        display_sampling_note='雙車同步 10 ms 物理步、100 ms 控制步（共 120 步／12 秒）。每步以插值掃掠檢查三圓牆面 5 cm 與車間 5 cm 餘量，並計算後車 LiDAR 對前車三圓的精確光束交點。',
+        display_sampling_note='雙車每物理步以插值掃掠檢查三圓牆面與車間餘量，並計算後車 LiDAR 對前車三圓的光束交點。',
         candidate_control_enabled=False, footprint_verified=False,
     )
     (out/'data.json').write_text(json.dumps(data,ensure_ascii=False,separators=(',',':'),allow_nan=False)+'\n')
@@ -688,9 +723,9 @@ def export_esp_solo(source, output_dir, base_dashboard_dir, replay_id):
     print(f'{replay_id}: {len(frames)} recorded frames → {out}')
 
 
-if __name__=='__main__':
+def main(argv=None):
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--source')
+    parser.add_argument('--source', required=True)
     parser.add_argument('--output-dir',required=True)
     parser.add_argument('--arm')
     parser.add_argument('--baseline-source')
@@ -698,12 +733,17 @@ if __name__=='__main__':
     parser.add_argument('--mode',choices=['standard','three-disc-single','two-car','two-car-candidates','esp-solo'],
                         default='standard')
     parser.add_argument('--base-dashboard-dir')
+    parser.add_argument('--domain-dir', help='compatible domain override for three-disc-single or two-car')
     parser.add_argument('--replay-id')
-    args=parser.parse_args()
+    args=parser.parse_args(argv)
+    if args.mode != 'standard' and not args.base_dashboard_dir:
+        parser.error(f'--base-dashboard-dir is required for {args.mode}')
+    if args.domain_dir and args.mode not in ('three-disc-single', 'two-car'):
+        parser.error('--domain-dir is only supported for three-disc-single or two-car')
     if args.mode == 'three-disc-single':
-        export_three_disc_single(args.source, args.output_dir, args.base_dashboard_dir)
+        export_three_disc_single(args.source, args.output_dir, args.base_dashboard_dir, args.domain_dir)
     elif args.mode == 'two-car':
-        export_two_car(args.source, args.output_dir, args.base_dashboard_dir)
+        export_two_car(args.source, args.output_dir, args.base_dashboard_dir, args.domain_dir)
     elif args.mode in ('two-car-candidates', 'esp-solo'):
         if not args.replay_id:
             parser.error(f'--replay-id is required for {args.mode}')
@@ -711,3 +751,7 @@ if __name__=='__main__':
         export(args.source, args.output_dir, args.base_dashboard_dir, args.replay_id)
     else:
         run(args.source,args.output_dir,args.arm,args.baseline_source,args.skip_gif)
+
+
+if __name__ == '__main__':
+    main()
