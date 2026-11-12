@@ -46,7 +46,9 @@ def test_yaw_required_and_actual_start_gate():
         r['paths'][1]['points'][0]['yaw'] += .01
         r['paths'][2]['points'] = []
         return r
-    result = make_plan(SimpleNamespace(geometry_id='g'), state(), SessionConfig(), 0, generator=moved)
+    # This fixture has no map or curve: exercise only the source-pose gate.
+    result = make_plan(SimpleNamespace(geometry_id='g'), state(),
+                       SessionConfig(footprint_check_enabled=False), 0, generator=moved)
     assert result['sampled_valid_count'] == 2
     assert [p['reason'] for p in result['paths'][:3]] == ['start_pose_mismatch']*3
     assert result['source_pose'] == [1., 2., .1]

@@ -107,19 +107,20 @@ def hermite_values(distance, length, d0, slope0, target):
     return d, p, q
 
 
-def centerline_targets(lower, upper, step):
+def centerline_targets(lower, upper, step, lateral_inset_m=0.):
     """Ordered targets with C3 fixed at reference d=0, never road midpoint.
 
     Missing lateral space rejects that side's slots instead of moving C3 or
     relabelling positive offsets as right-side candidates. A forbidden d=0
     remains an explicit proposal and must fail the normal boundary check.
     """
-    if not np.isfinite([lower, upper, step]).all() or lower >= upper or step <= 0:
+    if (not np.isfinite([lower, upper, step, lateral_inset_m]).all()
+            or lower >= upper or step <= 0 or lateral_inset_m < 0):
         raise ValueError('invalid terminal interval')
     targets = np.zeros(5)
     available = np.zeros(5, dtype=bool)
     available[2] = True
-    right_low = math.ceil(lower/step-1e-10)*step
+    right_low = math.ceil((lower+lateral_inset_m)/step-1e-10)*step
     right_high = math.floor(min(upper, 0.)/step+1e-10)*step
     if right_low < 0 and right_low <= right_high:
         targets[0] = right_low
@@ -128,7 +129,7 @@ def centerline_targets(lower, upper, step):
         available[0] = True
         available[1] = targets[0] < targets[1] < 0
     left_low = math.ceil(max(lower, 0.)/step-1e-10)*step
-    left_high = math.floor(upper/step+1e-10)*step
+    left_high = math.floor((upper-lateral_inset_m)/step+1e-10)*step
     if left_high > 0 and left_low <= left_high:
         targets[4] = left_high
         targets[3] = max(step, np.rint((left_low+left_high)/(2*step))*step)
@@ -389,7 +390,7 @@ class MillimetreDomain:
         return distance, indices
 
     def plan(self, s0, d0, slope0, length=3., max_slope=1., max_curvature=None,
-             inherit=True, target_policy='reference_centerline'):
+             inherit=True, target_policy='reference_centerline', lateral_inset_m=0.):
         """Table-only planning after a separately measured vehicle projection.
 
         Targets lie on integer-mm d coordinates. Interior paths remain analytic
@@ -410,7 +411,7 @@ class MillimetreDomain:
             return dict(paths=[], valid_ids=[], reason='no_terminal_domain', explicit_boundary_checks=0,
                         inherited_boundary_checks=0, planning_allowed=False)
         if target_policy in ('reference_centerline', 'centerline_return'):
-            targets, available = centerline_targets(*terminal, self.step)
+            targets, available = centerline_targets(*terminal, self.step, lateral_inset_m)
         else:
             targets = np.rint(np.linspace(*terminal, 5)/self.step)*self.step
             targets = np.clip(targets, *terminal)

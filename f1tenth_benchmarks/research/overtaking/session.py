@@ -3,6 +3,7 @@ from dataclasses import asdict, dataclass, field, replace
 import json
 import math
 from pathlib import Path
+from typing import Optional
 from time import perf_counter
 
 from .robust_adaptive_paths import generate_robust_paths
@@ -14,6 +15,12 @@ def vehicle_curvature_limit():
     import yaml
     parameters = yaml.safe_load((Path(__file__).resolve().parents[3]/'params'/'vehicle_params.yaml').read_text())
     return math.tan(float(parameters['max_steer']))/float(parameters['wheelbase'])
+
+
+def footprint_parameter(name):
+    import yaml
+    parameters = yaml.safe_load((Path(__file__).resolve().parents[3]/'params'/'simulator_params.yaml').read_text())
+    return float(parameters[name])
 
 
 @dataclass(frozen=True)
@@ -40,12 +47,21 @@ class SessionConfig:
     query_mode: str = 'exact'
     generation_mode: str = 'optimized'
     validation_step_m: float = None  # research override; None keeps original raster-half policy
+    footprint_check_enabled: Optional[bool] = None  # auto: enable when geometry supplies a raster
+    footprint_length_m: float = field(default_factory=lambda: footprint_parameter('vehicle_length'))
+    footprint_width_m: float = field(default_factory=lambda: footprint_parameter('vehicle_width'))
+    footprint_clearance_m: float = field(default_factory=lambda: footprint_parameter('vehicle_boundary_clearance'))
+    footprint_step_m: float = .01  # Frenet longitudinal sampling, not map resolution
 
     def __post_init__(self):
-        nonnegative = ('safety_margin_m', 'endpoint_tolerance_m')
+        nonnegative = ('safety_margin_m', 'endpoint_tolerance_m', 'footprint_clearance_m')
         integer_limits = dict(laps=(1, 100), max_refinements=(0, 5), max_iterations=(1, 1000),
                               max_control_steps=(0, 10000000))
         for name, value in asdict(self).items():
+            if name == 'footprint_check_enabled':
+                if value is not None and type(value) is not bool:
+                    raise ValueError('invalid footprint_check_enabled')
+                continue
             if name == 'pp_lookahead_m':
                 if value is not None and (isinstance(value, bool) or not math.isfinite(value) or value <= 0):
                     raise ValueError('invalid pp_lookahead_m')
@@ -89,6 +105,10 @@ def reject_paths(reason, status='rejected'):
 def make_plan(geometry, state, config, plan_id, trigger='periodic', generator=None):
     """Five slots even on invalid localization or whole-generator rejection."""
     generator = generator or generate_robust_paths
+    has_raster = getattr(geometry, 'raster', None) is not None
+    footprint_enabled = config.footprint_check_enabled
+    if footprint_enabled is True and not has_raster:
+        raise ValueError('footprint checking requires geometry.raster')
     started = perf_counter()
     event = dict(schema_version=1, plan_id=plan_id, trigger=trigger,
                  source_control_step=state['control_step'], source_sim_time_s=state['sim_time_s'],
@@ -157,13 +177,16 @@ def make_plan(geometry, state, config, plan_id, trigger='periodic', generator=No
                     position_error > config.max_start_position_error_m or
                     abs(heading_error) > config.max_start_heading_error_rad):
                     path.update(sampled_valid=False, status='rejected', reason='start_pose_mismatch')
+            if footprint_enabled is True or (footprint_enabled is None and has_raster):
+                from .footprint_validation import check_candidate_footprints
+                event['footprint_validation'] = check_candidate_footprints(geometry, result, state['pose'], config)
+                event['validation_scope'] = 'prior_geometry_gates_and_sampled_three_disc_poses'
             result['sampled_valid_count'] = sum(p['sampled_valid'] for p in paths)
-            if 'valid_ids' in result:
-                result['valid_ids'] = [p['candidate_id'] for p in paths if p['sampled_valid']]
+            result['valid_ids'] = [p['candidate_id'] for p in paths if p['sampled_valid']]
+            result['requires_stop'] = result['sampled_valid_count'] == 0
             if 'fallback_candidate_id' in result:
                 result['fallback_candidate_id'] = (3 if paths[2].get('path_type') == REFERENCE_PATH
                                                     and paths[2]['sampled_valid'] else None)
-                result['requires_stop'] = result['sampled_valid_count'] == 0
             event.update(status='completed', reason=None, paths=paths,
                          result={k: v for k, v in result.items() if k != 'paths'})
     event['sampled_valid_count'] = sum(p['sampled_valid'] for p in event['paths'])

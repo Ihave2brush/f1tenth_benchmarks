@@ -41,10 +41,28 @@ class OpenCandidatePP:
     def nearest(self, xy):
         return nearest_point_on_trajectory_py2(xy, self.path, self.l2s, self.diffs)
 
-    def plan(self, pose):
+    def plan(self, pose, lookahead=None):
         _, distance, fraction, index = self.nearest(pose[:2])
+        radius = self.lookahead if lookahead is None else lookahead
         target, _, _ = first_point_on_trajectory_intersecting_circle(
-            pose[:2], self.lookahead, self.path, index+fraction, wrap=False)
+            pose[:2], radius, self.path, index+fraction, wrap=False)
+        if target is None:
+            # The legacy search perturbs segment endpoints. A circle crossing at
+            # a shared vertex can fall in the resulting gap between segments.
+            delta = self.path[index:-1] - pose[:2]
+            direction = self.diffs[index:]
+            length_sq = self.l2s[index:]
+            dot = np.sum(delta * direction, axis=1)
+            discriminant = dot**2 - length_sq * (np.sum(delta**2, axis=1) - radius**2)
+            roots = np.column_stack((-dot-np.sqrt(np.maximum(discriminant, 0.)),
+                                     -dot+np.sqrt(np.maximum(discriminant, 0.)))) / length_sq[:, None]
+            lower = np.zeros(len(length_sq))
+            lower[0] = fraction
+            hits = np.argwhere((discriminant[:, None] >= 0.) & (roots >= lower[:, None]-1e-10)
+                               & (roots <= 1.+1e-10))
+            if len(hits):
+                segment, root = hits[0]
+                target = self.path[index+segment] + np.clip(roots[segment, root], 0., 1.) * direction[segment]
         if target is None:
             raise ValueError('open_path_lookahead_unavailable')
         steer = float(get_actuation(pose[2], target, pose[:2],

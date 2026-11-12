@@ -45,7 +45,7 @@ def test_all_valid_width_proposals_skip_optimizer_and_pass_exact_audit(monkeypat
     state = dict(control_step=0, sim_time_s=0., pose=[1.513, 3.1, .03],
                  valid=True, frenet=dict(valid=True))
     config = SessionConfig(lookahead_m=4., generation_mode='width_fraction_then_repair',
-                           query_mode='fast_with_fallback')
+                           query_mode='fast_with_fallback', footprint_check_enabled=False)
     event = make_plan(make_straight(), state, config, 0)
     assert event['sampled_valid_count'] == event['result']['direct_valid_count'] == 5
     for path in event['paths']:

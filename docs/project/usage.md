@@ -291,17 +291,17 @@ python -B -m f1tenth_benchmarks.research.run_mm_bspline_comparison \
   --budgets-ms 0 20
 ```
 
-20 ms 是歷史基準；8768 最新展示為 40 ms 修 C1／2／4／5。一般多預算比較的第一組必須為 0，作為相同控制條件的基準。單組測試可只指定 `--budgets-ms 20`。可額外加入 40／80 ms 作比較，不會自動變更目前選擇。預算包含基本生成，不含 session gate
+單車回放保留 20 ms 與 40 ms 修 C1／2／4／5 對照。一般多預算比較的第一組必須為 0，作為相同控制條件的基準。單組測試可只指定 `--budgets-ms 20`。可額外加入 40／80 ms 作比較，不會自動變更目前選擇。預算包含基本生成，不含 session gate
 及控制；截止為協作式檢查與丟棄過時結果，不是底層硬即時中斷。
-候選仍未接管控制，安全域仍非完整車體掃掠驗證。
+此單車對照不讓候選接管控制；安全域只檢查中心路徑。
 目前新車體結果見[27×51 cm 重驗](CHANGELOG.md)與[現況](CHANGELOG.md)；[首次 B-spline 預算實驗](CHANGELOG.md)為舊車寬對照。
 
 目前車體參數為寬 27 cm、長 51 cm、軸距 33 cm、轉角上限 29.5°；舊 20 cm 車寬的安全域不可混用。新參數比較與完成進度見 [重驗報告](CHANGELOG.md)。
 
 
-## my_map／ESP 最新 40 ms 實驗網頁（8768）
+## my_map／ESP 實驗回放（8768）
 
-本機 http://127.0.0.1:8768/ 可切換兩圖 40 ms C1／2／4／5 組，保留 my_map 全部 102 筆、ESP 全部 1,971 筆規劃的回放、顯示用平滑邊界、實際安全帶、逐步計算與離線預計算結果。橙色高斯平滑牆線僅供顯示，不參與原實驗判定。
+本機 8768 預設開啟 [ESP 完整測試](http://127.0.0.1:8768/#esp_complete_test)。兩圖的單車 40 ms 對照和 20 ms GIF 都在歷史基準。
 
 歷史 my_map 20 ms GIF 位於 `/data/f1tenth/sites/my-map-lab-20261029/dist/my_map_20ms.gif`，也可由網頁下載。網頁由 `f1tenth-my-map-lab` 容器持續提供；匯出器為 `research.export_mm_dashboard`，播放及來源一致性檢查位於 `/data/f1tenth/sites/my-map-lab-20261029/check.mjs`。
 
@@ -333,7 +333,7 @@ python -B -m f1tenth_benchmarks.research.run_mm_bspline_comparison \
   --output-dir Data/research/overtaking/NEW_MY_MAP/validation
 ```
 
-此命令同批比較僅修二／四號與修一／二／四／五號，並獨立複查；道路門檻、車輛與 PP 設定由現行檔案讀取。將 map 改成 esp 並更換新資料目錄可做 ESP 對照；本次提交沒有追加 ESP 行車測試。
+此命令比較只修 C2／C4 與修 C1／C2／C4／C5。將 map 改成 esp 並使用新目錄可重跑 ESP 單車對照。
 
 CPU 與 warm start 的重跑工具使用已保留的原始錄製車況：
 
@@ -354,3 +354,130 @@ python3 -m http.server 8768 --bind 127.0.0.1 --directory dist
 ```
 
 若既有 8768 容器正在服務，不要另啟同埠。網頁保存自足的匯出資料，可離線回放；`node check.mjs` 不加旗標會進一步核對本機大型原始資料 SHA256，需要原始 Data 仍在。對應網頁 commit 記於最新結果 manifest，歷史 20 ms GIF 明確標示用途。
+## 單車候選路線三圓檢查（2026-11-05）
+
+`run_centerline_candidates` 與經過 `session.make_plan` 的 1 mm／40 ms
+研究生成流程，現在預設在候選發布前執行三圓車體檢查，包含 C3 中線及
+B-spline 修正後候選。原中心路徑域與曲率預篩仍保留。直接呼叫底層生成器
+不會執行此最終發布關卡。
+
+車長、車寬、牆面餘量預設讀取 `params/simulator_params.yaml` 的
+`vehicle_length=0.51`、`vehicle_width=0.27`、`vehicle_boundary_clearance=0.05`。
+圓心為車體縱向 −L/3、0、L/3，半徑 `sqrt((L/6)^2+(W/2)^2)`；
+檢查半徑再加牆面餘量。沿原始解析曲線每 0.01 m 的參考 s 取樣位置與切線朝向，
+包括終點；不拿顯示點或只有起點的記錄當完整路線。
+使用規劃器原始 trinary map，未知格與圖外均視為障礙，檢查整個像素方格。
+當前實際車體位置也須通過，C3 的參考路線不能繞過此檢查。
+
+主 CLI 可調 `--footprint-clearance 0.05 --footprint-step 0.01`。
+程式設定為 `SessionConfig.footprint_*`，隨 `metadata.json` 保存。
+`plans.jsonl` 的 `footprint_validation` 記錄幾何設定，各候選的
+`footprint_check` 記錄拒絕原因、首個不合格姿態；`footprint_sampled_valid`
+表示取樣檢查通過，失敗會更新 `sampled_valid`、有效 ID 及零候選狀態。
+`footprint_check_enabled=False` 僅供明確重現舊版／無地圖單元測試。
+
+這是候選路線的取樣車體檢查，尚非連續曲線或追蹤誤差的安全證明，
+因此 `footprint_verified`／`planning_allowed` 保持 false。
+原單車物理碰撞判定、PP 中線控制及 8768 舊回放不在本次變更範圍。
+三圓檢查時間包含在 `make_plan.wall_time_s`，不在生成器的 40 ms 修正預算內。
+
+## 三圓車體與雙車基本運行（2026-11-05）
+
+在專案根目錄、既有 `f1tenth-sim:full` 環境執行：
+
+```bash
+python -m f1tenth_benchmarks.research.run_two_car \
+  --map my_map --seconds 12 --gap 1.5 \
+  --ego-speed 1.2 --lead-speed 1.2 \
+  --wall-clearance 0.05 --pair-clearance 0.05 \
+  --output Data/research/overtaking/two_car_new_run
+```
+
+輸出目錄必須尚不存在；輸出 `report.json`、`frames.json`、`preview.png`。
+兩車各自使用既有動力學與中線 PP；前車速度可設 0 作為靜止車。
+此獨立入口採三圓包覆 51×27 cm 車體：縱向圓心 −17／0／17 cm，
+半徑 `sqrt((L/6)^2+(W/2)^2)` 約 15.95 cm。車體姿態暫沿用幾何中心假設。
+牆面以原圖佔用像素方格判定，圖外視為障礙；沿用模擬器像素 <=128 的定義。
+牆面餘量加在圓半徑上，車間餘量只在兩車半徑和上加一次。
+觸發包覆接觸或餘量不足即停止，事件不代表精確矩形已碰撞。
+物理步長 10 ms、控制步長 100 ms；物理步間依位置線性／最短方向角插值，
+以膨脹中點圓保守包覆插值掃掠，非連續動力學的碰撞證明。
+LiDAR 包含對方未加餘量的三圓，關閉量測雜訊以利基本核對。
+此入口尚不包含候選接管、超車決策或碰撞後力學反應。
+
+## my_map 無光達雙車候選跟隨（Phase 1）
+
+在專案根目錄執行。以下以兩車等速驗證持續跟隨，輸出目錄須尚不存在。
+
+```bash
+python -m f1tenth_benchmarks.research.run_two_car_candidates \
+  --map my_map --lead-speed 1.2 --seconds 12 \
+  --output Data/research/overtaking/two_car_candidates_equal
+```
+
+入口輸出 `report.json`、`frames.json` 和 `preview.png`。省略
+`--domain-dir` 時先核對既有安全域。若找不到相容資料，會在輸出目錄下保存
+重建的 `domain/`，後續可用 `--domain-dir` 明確重用。用不同輸出目錄和
+`--lead-speed 0.9` 可驗證後車追近時的車間餘量終止。用
+`--preferred-candidate 2` 可測試側向跟隨。Phase 1 依靜態驗證與候選偏好
+選路徑，車間餘量由同步物理模擬判定。
+
+## Phase 2 前車預測、減速跟車與超車
+
+加上 `--phase 2` 使用時空候選篩選與規則式排名。若已有通過來源核對的安全域，
+可用 `--domain-dir` 重用。以下由原雙車預設的後車 1.2／前車 0.9 m/s、
+起始間距 2 m 重跑 my_map，輸出目錄須尚不存在。
+
+```bash
+python -m f1tenth_benchmarks.research.run_two_car_candidates \
+  --phase 2 --map my_map --seconds 12 \
+  --output Data/research/overtaking/two_car_phase2_my_map_new
+```
+
+ESP Phase 2 基準使用 `--phase 2 --map esp --seconds 18 --ego-speed 1.35 --lead-speed 0.85 --gap 2`。回放見 [my_map 跟車](http://127.0.0.1:8768/#two_car_phase2_my_map)和 [ESP 基準](http://127.0.0.1:8768/#two_car_phase2_esp)；規則見[雙車決策](interfaces.md#雙車候選與超車決策)。
+
+### ESP 原版轉向節奏對照
+
+`--original-esp-control` 僅適用於 ESP Phase 2，使用速度連動前視與 40 ms 轉向。
+
+```bash
+python -m f1tenth_benchmarks.research.run_two_car_candidates \
+  --phase 2 --map esp --original-esp-control --rolling-start \
+  --ego-speed 4.0 --lead-speed 3.2 --ego-start-s 34.5 --gap 1.5 \
+  --path-lookahead-m 4.1 --seconds 6 \
+  --output Data/research/overtaking/esp_original_control_bend_new
+```
+
+要重現受阻先跟車，將後車速度、起始弧長、間距、候選距離和時長改為
+`--ego-speed 3.6 --ego-start-s 193 --gap 0.84 --path-lookahead-m 4.5 --seconds 8`，
+並使用新的輸出目錄。
+
+### ESP 三圈驗收與實測彎速
+
+前次三圈對照使用中線曲率限速與[兩段實測彎速](CHANGELOG.md#esp-雙車三圈跟車判定與彎道限速2026-11-12)。
+
+```bash
+python -m f1tenth_benchmarks.research.run_two_car_candidates \
+  --phase 2 --map esp --original-esp-control --curve-speed-control --measured-bend-caps \
+  --rolling-start --laps 3 --seconds 280 --ego-start-s 34.5 --gap 1.5 \
+  --ego-speed 4 --lead-speed 3.2 --path-lookahead-m 4.1 \
+  --domain-dir Data/research/overtaking/two_car_phase2_esp_domain_20261112 \
+  --output Data/research/overtaking/esp_three_laps_new
+```
+
+### ESP 完整測試：起點出發、最佳化賽道線與套圈
+
+兩車從起跑區靜止出發，Car 1 目標 2.5 m/s；Car 0 的最佳化線上限 8 m/s。切換與計數見[雙車決策](interfaces.md#雙車候選與超車決策)。若沒有下列本機安全域，省略 `--domain-dir` 整行：程式會沿用相容的 ESP 安全域，找不到時重建至本次輸出目錄的 `domain/`。輸出目錄須尚不存在。
+
+```bash
+python -m f1tenth_benchmarks.research.run_two_car_candidates \
+  --phase 2 --map esp --original-esp-control --curve-speed-control --measured-bend-caps \
+  --laps 3 --seconds 320 --ego-start-s 0 --gap 1.5 \
+  --ego-speed 4 --lead-speed 2.5 --path-lookahead-m 4.1 \
+  --raceline-path Data/racelines/mu60_closed/esp_raceline.csv --raceline-speed 8 \
+  --domain-dir Data/research/overtaking/two_car_phase2_esp_domain_20261112 \
+  --output Data/research/overtaking/esp_complete_continuous_8_new
+```
+
+本機 8768 的 `#esp_complete_test` 回放提供最佳化線圖層、峰值車速與套圈切換跳轉；
+地圖鏡頭可切換全圖、雙車、Car 0 或 Car 1。

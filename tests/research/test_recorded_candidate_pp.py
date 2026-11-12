@@ -5,6 +5,12 @@ from f1tenth_benchmarks.research.run_recorded_candidate_pp import OpenCandidateP
 
 
 class OpenCandidatePPTests(unittest.TestCase):
+    def test_circle_intersection_just_before_shared_vertex(self):
+        radius = .9999995
+        controller = OpenCandidatePP([[0, 0], [-1, 0], [-2, 0]], 1.2, radius, .33, .4)
+        _, detail = controller.plan(np.array([0., 0., np.pi]))
+        np.testing.assert_allclose(detail['lookahead_xy'], [-radius, 0.], atol=1e-10, rtol=0.)
+
     def test_open_path_has_no_artificial_return_segment(self):
         controller = OpenCandidatePP([[0, 0], [1, 0], [2, 0]], 1.2, .6, .33, .4)
         self.assertEqual(len(controller.path), 3)
