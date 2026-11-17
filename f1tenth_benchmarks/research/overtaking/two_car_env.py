@@ -17,6 +17,7 @@ from .mm_bspline_repair import BudgetedDomainGenerator
 from .raceline_cruise import RacelineCruise, local_track_gap
 from .session import SessionConfig, make_plan
 from .two_car_decision import OvertakingSelector
+from .rollout_diagnostics_v1 import RolloutDiagnostics
 
 
 def sample_candidate_xy(geometry, path, length_m, step_m=.02):
@@ -89,7 +90,10 @@ class TwoCarOvertakingEnv:
                  budget_s=.04, wall_clearance=.05, pair_clearance=.05,
                  selector=select_candidate_default, phase=1, original_esp_control=False, path_lookahead_m=3.,
                  rolling_start=False, curve_speed_control=False, measured_bend_caps=(),
-                 raceline_path=None, raceline_speed=None, raceline_candidates=True):
+                 raceline_path=None, raceline_speed=None, raceline_candidates=True, rollout_diagnostics=False):
+        if rollout_diagnostics and phase != 2:
+            raise ValueError("rollout diagnostics requires Phase 2")
+        self.rollout_diagnostics = RolloutDiagnostics(source_classification='native_two_car_runtime_model') if rollout_diagnostics else None
         self.track = track
         self.geometry = track.geometry
         self.length = self.geometry.curve.L
@@ -140,7 +144,7 @@ class TwoCarOvertakingEnv:
         self.domain, self.budget_s, self.phase = domain, budget_s, phase
         self.selector = (OvertakingSelector(self.geometry, self.sim, self.ego, ego_speed, self.steer_ticks,
                                             confirm_pass=original_esp_control, curve_speed_control=curve_speed_control,
-                                            measured_bend_caps=measured_bend_caps)
+                                            measured_bend_caps=measured_bend_caps, diagnostics=self.rollout_diagnostics)
                          if phase == 2 else selector)
         self.frame = None
 
@@ -236,6 +240,22 @@ class TwoCarOvertakingEnv:
         return make_plan(self.geometry, ego, self.config, self.control_step, generator=self.generator)
 
     def step(self):
+        trace = self.rollout_diagnostics
+        if trace is None:
+            return self._step()
+        if self.frame is None or self.frame['terminal_reason'] is not None:
+            return self._step()
+        trace.begin_frame(self.frame['ego_state'], self.frame['lead_state'])
+        trace.source_runtime = dict(source_physics_tick=self.sim.physics_tick,
+                                    held_steering=self.selector.held_steering,
+                                    frame_id=self.track.manifest.get("frame_id"),
+                                    source_physical_state=self.sim.cars[0].state.copy(),
+                                    source_steering_buffer=self.sim.cars[0].steer_buffer.copy())
+        transition, frame = self._step()
+        trace.finish_frame(transition, self.selector, self.geometry)
+        return transition, frame
+
+    def _step(self):
         if self.frame is None or self.frame['terminal_reason'] is not None:
             raise RuntimeError('reset a nonterminal session before stepping')
         started = perf_counter()
