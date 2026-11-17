@@ -228,10 +228,14 @@ def test_cli_flag_is_opt_in():
 
 
 @pytest.mark.parametrize('lead_x,wall',[(5.,False),(.8,False),(.2,False),(5.,True)])
-def test_disabled_matches_unmodified_upstream_selector(lead_x,wall,tmp_path):
+def test_disabled_matches_unmodified_upstream_selector(lead_x,wall,tmp_path,monkeypatch):
     import importlib.util,subprocess
-    original=tmp_path/'original.py'
-    original.write_bytes(subprocess.check_output(['git','show','707d869:f1tenth_benchmarks/research/overtaking/two_car_decision.py']))
+    from pathlib import Path
+    original=Path(__file__).resolve().parent/'fixtures'/'two_car_selector_707d869.py'
+    def no_history(*args,**kwargs):
+        raise AssertionError('baseline comparison must not query Git or network')
+    monkeypatch.setattr(subprocess,'check_output',no_history)
+    monkeypatch.chdir(tmp_path)
     spec=importlib.util.spec_from_file_location('original_selector',original)
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
     answers=[]
@@ -385,3 +389,10 @@ def test_snapshot_cannot_claim_verified_historical_producer(claim):
 def test_malformed_error_list_is_explicitly_rejected(errors):
     record,_,_=rollout();record['errors']=errors
     with pytest.raises(ValueError,match='invalid_diagnostics_errors'):validate_record(record)
+
+
+def test_frozen_native_selector_has_reviewed_source_digest():
+    import hashlib
+    from pathlib import Path
+    original=Path(__file__).resolve().parent/'fixtures'/'two_car_selector_707d869.py'
+    assert hashlib.sha256(original.read_bytes()).hexdigest()=='9843992b470c68e6b96c7d37541f10f3bbb46400233d4b43b565daf915e7d260'
