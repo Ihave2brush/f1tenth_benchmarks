@@ -481,3 +481,26 @@ python -m f1tenth_benchmarks.research.run_two_car_candidates \
 
 本機 8768 的 `#esp_complete_test` 回放提供最佳化線圖層、峰值車速與套圈切換跳轉；
 地圖鏡頭可切換全圖、雙車、Car 0 或 Car 1。
+
+### new 賽道雙車測試（5 mm）
+
+`maps/new.yaml` 使用原始 5 cm PGM。下列命令使用 5 mm 的 Frenet
+縱向與橫向網格，保留既有三圓車體檢查及雙車餘量。新輸出目錄下會保存
+`domain/`、`frames.json`、`report.json` 與預覽圖。
+
+```bash
+python -m f1tenth_benchmarks.research.run_two_car_candidates \
+  --map new --phase 2 --ego-start-s 10 --gap .8 \
+  --ego-speed .65 --lead-speed .3 --path-lookahead-m 1.45 --seconds 12 \
+  --output Data/research/overtaking/new_5mm_replay
+python -m f1tenth_benchmarks.research.export_mm_dashboard \
+  --mode two-car-candidates --replay-id new_two_car_5mm \
+  --source Data/research/overtaking/new_5mm_replay \
+  --output-dir /data/f1tenth/sites/my-map-lab-20261029/dist/new_two_car_5mm
+```
+
+重建幾何時使用 `research.core.geometry.build_map`，指定
+`--map-yaml maps/new.yaml --anchor-csv maps/new_centerline.csv --map-id new
+--anchor-index 16 --centerline-method equidistant_periodic_v1 --centering-smoothing-m .45`。
+中線以原 CSV 第 17 筆資料作起點與行駛方向的參考，並由 PGM 擷取。
+本機回放入口為 [new · 5 mm 雙車超車測試](http://127.0.0.1:8768/#new_two_car_5mm)。

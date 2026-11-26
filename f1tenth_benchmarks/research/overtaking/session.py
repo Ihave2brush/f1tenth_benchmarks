@@ -93,7 +93,7 @@ class SessionConfig:
         """Resolve an automatic PP distance, preserving explicit overrides."""
         if self.pp_lookahead_m is not None:
             return self
-        return replace(self, pp_lookahead_m=.3 if map_id == 'my_map' else .6)
+        return replace(self, pp_lookahead_m=.3 if map_id in ('my_map', 'new') else .6)
 
 
 def reject_paths(reason, status='rejected'):

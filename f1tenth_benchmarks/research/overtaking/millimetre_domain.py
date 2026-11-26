@@ -235,7 +235,7 @@ class MillimetreDomain:
         if not geometry.curve.closed:
             raise ValueError('first experiment supports closed tracks only')
         if not (np.isfinite([step, margin, window, numeric_guard]).all()
-                and 0 < step <= .001 and margin > 0 and window >= 0 and numeric_guard > 0):
+                and 0 < step <= .005 and margin > 0 and window >= 0 and numeric_guard > 0):
             raise ValueError('invalid millimetre domain parameters')
         started = perf_counter()
         length = geometry.curve.L
