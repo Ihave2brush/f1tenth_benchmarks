@@ -8,6 +8,8 @@ from f1tenth_benchmarks.research.overtaking.millimetre_domain import MillimetreD
 from f1tenth_benchmarks.research.overtaking.raceline_cruise import local_track_gap
 from f1tenth_benchmarks.research.overtaking.track_data import TrackData
 from f1tenth_benchmarks.research.overtaking.two_car_env import TwoCarOvertakingEnv, select_candidate_default
+from f1tenth_benchmarks.simulator.dynamics_simulator import DynamicsSimulator
+from f1tenth_benchmarks.utils.BasePlanner import load_parameter_file_with_extras
 
 
 @pytest.fixture(scope='module')
@@ -48,6 +50,19 @@ def test_shared_occupancy_preserves_wall_and_pair_events():
         assert without_lidar.reset(poses)[1]
         assert with_lidar.events == without_lidar.events
         assert [event['kind'] for event in without_lidar.events] == [kind]
+
+
+def test_substep_integration_is_stable_just_above_dynamic_model_switch():
+    params = load_parameter_file_with_extras('simulator_params', {'dynamics_substeps': 10})
+    car = DynamicsSimulator(params)
+    car.state[2:] = [-.43, .52, 1., -.68, -.18]
+    car.steer_buffer = np.full(car.steer_buffer_size, -.43)
+    for _ in range(30):
+        state = car.update_pose(-.43, .52)
+        assert -1. < state[5] < 0.
+        assert abs(state[6]) < .3
+        assert state[3] == pytest.approx(.52)
+    assert car.time_step == .01
 
 
 def test_sync_plan_and_track_across_spawn_seam(track_and_domain):

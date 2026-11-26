@@ -3,6 +3,14 @@ from numba import njit
 
 from f1tenth_benchmarks.simulator.dynamic_models import vehicle_dynamics_st, pid
 
+
+@njit(cache=True)
+def _integrate_vehicle(state, control, params, timestep, substeps):
+    dt = timestep / substeps
+    for _ in range(substeps):
+        state = state + dt * vehicle_dynamics_st(state, control, *params)
+    return state
+
 '''
     params (dict, default={'mu': 1.0489, 'C_Sf':, 'C_Sr':, 'lf': 0.15875, 'lr': 0.17145, 'h': 0.074, 'm': 3.74, 'I': 0.04712, 's_min': -0.4189, 's_max': 0.4189, 'sv_min': -3.2, 'sv_max': 3.2, 'v_switch':7.319, 'a_max': 9.51, 'v_min':-5.0, 'v_max': 20.0, 'width': 0.31, 'length': 0.58}): dictionary of vehicle parameters.
     mu: surface friction coefficient
@@ -29,6 +37,9 @@ class DynamicsSimulator:
     def __init__(self, params):
         np.random.seed(params.random_seed)
         self.time_step = params.timestep
+        self.integration_substeps = getattr(params, 'dynamics_substeps', 1)
+        if type(self.integration_substeps) is not int or self.integration_substeps < 1:
+            raise ValueError('dynamics_substeps must be a positive integer')
 
         # These parameters are related to the vehicle model...,not simulation.
         self.params = vars(params)
@@ -70,9 +81,7 @@ class DynamicsSimulator:
         # steering angle velocity input to steering velocity acceleration input
         accl, sv = pid(vel, steer, self.state[3], self.state[2], self.params['sv_max'], self.params['a_max'], self.params['v_max'], self.params['v_min'])
         
-        f = vehicle_dynamics_st(
-            self.state,
-            np.array([sv, accl]),
+        model_params = (
             self.params['mu'],
             self.params['C_Sf'],
             self.params['C_Sr'],
@@ -89,7 +98,12 @@ class DynamicsSimulator:
             self.params['a_max'],
             self.params['v_min'],
             self.params['v_max'])
-        self.state = self.state + self.time_step * f
+        control = np.array([sv, accl])
+        if self.integration_substeps == 1:
+            self.state = self.state + self.time_step * vehicle_dynamics_st(self.state, control, *model_params)
+        else:
+            self.state = _integrate_vehicle(self.state, control, model_params, self.time_step,
+                                            self.integration_substeps)
         
         # bound yaw angle
         if self.state[4] > 2*np.pi:
