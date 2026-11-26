@@ -35,7 +35,8 @@ class CurveSpeedLimit:
 class OvertakingSelector:
     """Filter predicted wall and pair conflicts before ranking candidate/speed pairs."""
 
-    def __init__(self, geometry, sim, controller, cruise_speed, steer_ticks, confirm_pass=False, curve_speed_control=False, measured_bend_caps=()):
+    def __init__(self, geometry, sim, controller, cruise_speed, steer_ticks, confirm_pass=False, curve_speed_control=False, measured_bend_caps=(), diagnostics=None):
+        self.diagnostics = diagnostics
         self.geometry = geometry
         self.sim = sim
         self.controller = controller
@@ -75,8 +76,12 @@ class OvertakingSelector:
         path_s = np.r_[0., np.cumsum(segment_m)]
         options = []
         for speed in (ceiling, .85 * ceiling, .70 * ceiling):
+            if self.diagnostics is not None:
+                self.diagnostics.start_option(None, speed, reference_id='raceline', reference_xy=pp.path)
             result = self._rollout(pp, speed, lead_centres, lead_rate, times, path_s=path_s)
             options.append(dict(candidate_id=None, reference='raceline', target_speed_mps=speed, **result))
+            if self.diagnostics is not None:
+                self.diagnostics.finish_option(options[-1])
             if result['safe']:
                 self.mode = 'raceline'
                 return pp, speed, options, dict(
@@ -105,6 +110,8 @@ class OvertakingSelector:
         yaw = heading + frenet['e_psi'] * np.maximum(1. - times / .3, 0.)
         poses = np.column_stack((xy + frenet['d'] * normal, yaw))
         poses[0] = state['pose']
+        if self.diagnostics is not None:
+            self.diagnostics.prediction(times, poses, rate)
         return poses, rate
 
     def _rollout(self, pp, speed, lead_centres, lead_rate, times, path_s=None):
@@ -116,28 +123,46 @@ class OvertakingSelector:
         steer = self.held_steering
         minimum = float('inf')
         first_issue = None
+        trace = self.diagnostics
+        integrated_steps = 0
+        if trace is not None:
+            trace.rollout_start(pp)
         for i, t in enumerate(times):
             if i:
                 try:
                     for substep in range(self.sample_steps):
                         tick = (i - 1) * self.sample_steps + substep
                         if (self.sim.physics_tick + tick) % self.steer_ticks == 0:
+                            if trace is not None:
+                                operation = 'pp_plan'
                             action, _ = pp.plan(car.state[[0, 1, 4]], self.controller.lookahead(car.state[3]))
                             steer = action[0]
+                        if trace is not None:
+                            operation = 'update_pose'
                         car.update_pose(steer, speed)
+                        if trace is not None:
+                            integrated_steps += 1
+                            trace.integrated(integrated_steps * self.dt)
                 except ValueError:
                     if first_issue is None:
                         first_issue = ('lookahead_unavailable', float(t))
+                    if trace is not None:
+                        trace.stopped(t, operation)
                     break
             centres = self.body.centres(car.state[[0, 1, 4]])
             clearance = float(np.linalg.norm(centres[:, None] - lead_centres[i][None, :], axis=2).min()
                               - 2 * self.body.radius)
             minimum = min(minimum, clearance)
+            wall_hit = None
             if first_issue is None:
                 if clearance <= self.pair_margin:
                     first_issue = ('predicted_pair_clearance', float(t))
-                elif self.sim.map.intersects(centres, self.body.radius + self.wall_margin):
-                    first_issue = ('predicted_wall_clearance', float(t))
+                else:
+                    wall_hit = self.sim.map.intersects(centres, self.body.radius + self.wall_margin)
+                    if wall_hit:
+                        first_issue = ('predicted_wall_clearance', float(t))
+            if trace is not None:
+                trace.sample(i, t, car.state, clearance, wall_hit)
         final_index = pp.nearest(car.state[:2])[2:]
         if path_s is None:
             s_per_segment = self.controller.config.lookahead_m / (len(pp.path) - 1)
@@ -170,6 +195,8 @@ class OvertakingSelector:
 
         def evaluate(candidate_id, speed, require_lane_room=False):
             path = paths[candidate_id]
+            if self.diagnostics is not None:
+                self.diagnostics.start_option(candidate_id, speed, path=path)
             result = dict(candidate_id=candidate_id, target_speed_mps=speed, safe=False)
             if not path['sampled_valid'] or not path.get('footprint_sampled_valid'):
                 result.update(reason='static_rejection', static_reason=path['reason'])
@@ -189,6 +216,8 @@ class OvertakingSelector:
                             and result['relative_s_progress_m'] <= .05):
                         result.update(safe=False, reason='insufficient_pass_progress')
             options.append(result)
+            if self.diagnostics is not None:
+                self.diagnostics.finish_option(result)
             return result
 
         def best_side(ids, speed, require_lane_room=False):
