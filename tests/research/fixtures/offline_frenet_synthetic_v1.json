@@ -1,0 +1,695 @@
+{
+  "schema": "two_car_rollout_diagnostics_v1",
+  "schema_version": 1,
+  "status": "valid",
+  "errors": [],
+  "source_classification": "synthetic_schema_and_pose_math_not_ESP",
+  "source": {
+    "source_control_step": 0,
+    "source_sim_time_s": 10.0,
+    "ego_state": {
+      "pose": [
+        1.4999999999999998,
+        3.0,
+        -6.901146321069973e-16
+      ],
+      "sim_time_s": 10.0,
+      "frenet": {
+        "valid": true,
+        "s_wrapped": 0.5,
+        "s_unwrapped": 0.5,
+        "geometry_id": "robust-straight",
+        "frame_id": "map"
+      },
+      "control_step": 0,
+      "speed_mps": 2.0,
+      "valid": true
+    },
+    "lead_state": {
+      "pose": [
+        2.4999999999999996,
+        2.999999999999999,
+        5.03597163969971e-16
+      ],
+      "sim_time_s": 10.0,
+      "frenet": {
+        "valid": true,
+        "s_wrapped": 1.5,
+        "s_unwrapped": 1.5,
+        "geometry_id": "robust-straight",
+        "frame_id": "map"
+      },
+      "control_step": 0,
+      "speed_mps": 1.0,
+      "valid": true
+    }
+  },
+  "metadata": {
+    "geometry_id": "robust-straight",
+    "frame_id": "map",
+    "model": "three_discs",
+    "body_reference": "geometric_body_centre",
+    "body_length_m": 0.5,
+    "body_width_m": 0.3,
+    "body_radius_m": 0.3,
+    "physics_dt_s": 0.01,
+    "sample_dt_s": 0.05
+  },
+  "binding_status": "unverified_snapshot_only",
+  "plan_binding_v2": null,
+  "historical_producer_binding_verified": false,
+  "plan_snapshot": {
+    "plan_id": 0,
+    "source_control_step": 0,
+    "source_sim_time_s": 10.0,
+    "source_pose": [
+      1.4999999999999998,
+      3.0,
+      -6.901146321069973e-16
+    ],
+    "geometry_id": "robust-straight",
+    "frame_id": "map",
+    "paths": [
+      {
+        "candidate_id": 1,
+        "path_type": "state_matched_trajectory",
+        "sampled_valid": true,
+        "reason": null
+      },
+      {
+        "candidate_id": 2,
+        "path_type": "state_matched_trajectory",
+        "sampled_valid": true,
+        "reason": null
+      },
+      {
+        "candidate_id": 3,
+        "path_type": "reference_centerline",
+        "sampled_valid": true,
+        "reason": null
+      },
+      {
+        "candidate_id": 4,
+        "path_type": "state_matched_trajectory",
+        "sampled_valid": true,
+        "reason": null
+      },
+      {
+        "candidate_id": 5,
+        "path_type": "state_matched_trajectory",
+        "sampled_valid": true,
+        "reason": null
+      }
+    ]
+  },
+  "tracking_paths": [],
+  "lead_predictions": [
+    {
+      "prediction_group_id": "synthetic:g0",
+      "requested_sample_times_s": [
+        0.0,
+        0.05,
+        0.1,
+        0.15,
+        0.2
+      ],
+      "poses": [
+        [
+          2.4999999999999996,
+          2.999999999999999,
+          5.03597163969971e-16
+        ],
+        [
+          2.5499999999999994,
+          2.9999999999999987,
+          5.414602100017871e-16
+        ],
+        [
+          2.5999999999999996,
+          2.999999999999999,
+          5.772449185315054e-16
+        ],
+        [
+          2.6499999999999995,
+          2.999999999999999,
+          6.109512895591249e-16
+        ],
+        [
+          2.6999999999999997,
+          2.9999999999999996,
+          6.425793230846464e-16
+        ]
+      ]
+    }
+  ],
+  "options": [
+    {
+      "option_index": 0,
+      "evaluation_id": "synthetic:e0",
+      "prediction_group_id": "synthetic:g0",
+      "candidate_id": 1,
+      "reference_id": null,
+      "target_speed_mps": 2.0,
+      "source_path_type": "state_matched_trajectory",
+      "reference_only": false,
+      "rollout_trajectory_type": "modeled_ego_rollout",
+      "native_safe": true,
+      "native_reason": null,
+      "native_relative_s_progress_m": 123.0,
+      "requested_sample_times_s": [
+        0.0,
+        0.05,
+        0.1,
+        0.15,
+        0.2
+      ],
+      "requested_horizon_s": 0.2,
+      "sample_dt_s": 0.05,
+      "samples": [
+        {
+          "sample_index": 0,
+          "t_s": 0.0,
+          "ego_pose": [
+            1.4999999999999998,
+            3.0,
+            -6.901146321069973e-16
+          ],
+          "lead_pose": [
+            2.4999999999999996,
+            2.999999999999999,
+            5.03597163969971e-16
+          ],
+          "ego_speed_mps": 2.0,
+          "signed_min_pair_clearance_m": 1.0
+        },
+        {
+          "sample_index": 1,
+          "t_s": 0.05,
+          "ego_pose": [
+            1.5999999999999994,
+            2.999999999999999,
+            -5.33333377461531e-16
+          ],
+          "lead_pose": [
+            2.5499999999999994,
+            2.9999999999999987,
+            5.414602100017871e-16
+          ],
+          "ego_speed_mps": 2.0,
+          "signed_min_pair_clearance_m": 1.0
+        },
+        {
+          "sample_index": 2,
+          "t_s": 0.1,
+          "ego_pose": [
+            1.6999999999999995,
+            2.999999999999999,
+            -3.8486547282445835e-16
+          ],
+          "lead_pose": [
+            2.5999999999999996,
+            2.999999999999999,
+            5.772449185315054e-16
+          ],
+          "ego_speed_mps": 2.0,
+          "signed_min_pair_clearance_m": 1.0
+        },
+        {
+          "sample_index": 3,
+          "t_s": 0.15,
+          "ego_pose": [
+            1.7999999999999994,
+            2.9999999999999987,
+            -2.447109181957783e-16
+          ],
+          "lead_pose": [
+            2.6499999999999995,
+            2.999999999999999,
+            6.109512895591249e-16
+          ],
+          "ego_speed_mps": 2.0,
+          "signed_min_pair_clearance_m": 1.0
+        },
+        {
+          "sample_index": 4,
+          "t_s": 0.2,
+          "ego_pose": [
+            1.9,
+            2.9999999999999996,
+            -1.1286971357549194e-16
+          ],
+          "lead_pose": [
+            2.6999999999999997,
+            2.9999999999999996,
+            6.425793230846464e-16
+          ],
+          "ego_speed_mps": 2.0,
+          "signed_min_pair_clearance_m": 1.0
+        }
+      ],
+      "checked_start_s": 0.0,
+      "checked_end_s": 0.2,
+      "checked_sample_count": 5,
+      "evaluation_complete": true,
+      "termination_reason": "horizon_reached",
+      "signed_min_pair_clearance_m": 1.0,
+      "candidate_snapshot": null,
+      "reference_xy": null,
+      "inspection_only": true,
+      "planning_allowed": false
+    },
+    {
+      "option_index": 1,
+      "evaluation_id": "synthetic:e1",
+      "prediction_group_id": "synthetic:g0",
+      "candidate_id": 1,
+      "reference_id": null,
+      "target_speed_mps": 1.5,
+      "source_path_type": "state_matched_trajectory",
+      "reference_only": false,
+      "rollout_trajectory_type": "modeled_ego_rollout",
+      "native_safe": false,
+      "native_reason": "synthetic_native_reject",
+      "native_relative_s_progress_m": 123.0,
+      "requested_sample_times_s": [
+        0.0,
+        0.05,
+        0.1,
+        0.15,
+        0.2
+      ],
+      "requested_horizon_s": 0.2,
+      "sample_dt_s": 0.05,
+      "samples": [
+        {
+          "sample_index": 0,
+          "t_s": 0.0,
+          "ego_pose": [
+            1.4999999999999998,
+            3.0,
+            -6.901146321069973e-16
+          ],
+          "lead_pose": [
+            2.4999999999999996,
+            2.999999999999999,
+            5.03597163969971e-16
+          ],
+          "ego_speed_mps": 1.5,
+          "signed_min_pair_clearance_m": 1.0
+        },
+        {
+          "sample_index": 1,
+          "t_s": 0.05,
+          "ego_pose": [
+            1.5749999999999997,
+            3.0,
+            -5.717493145596109e-16
+          ],
+          "lead_pose": [
+            2.5499999999999994,
+            2.9999999999999987,
+            5.414602100017871e-16
+          ],
+          "ego_speed_mps": 1.5,
+          "signed_min_pair_clearance_m": 1.0
+        },
+        {
+          "sample_index": 2,
+          "t_s": 0.1,
+          "ego_pose": [
+            1.6499999999999997,
+            2.999999999999999,
+            -4.580602563919454e-16
+          ],
+          "lead_pose": [
+            2.5999999999999996,
+            2.999999999999999,
+            5.772449185315054e-16
+          ],
+          "ego_speed_mps": 1.5,
+          "signed_min_pair_clearance_m": 1.0
+        },
+        {
+          "sample_index": 3,
+          "t_s": 0.15,
+          "ego_pose": [
+            1.7249999999999992,
+            2.999999999999999,
+            -3.490474576040013e-16
+          ],
+          "lead_pose": [
+            2.6499999999999995,
+            2.999999999999999,
+            6.109512895591249e-16
+          ],
+          "ego_speed_mps": 1.5,
+          "signed_min_pair_clearance_m": 1.0
+        },
+        {
+          "sample_index": 4,
+          "t_s": 0.2,
+          "ego_pose": [
+            1.7999999999999994,
+            2.9999999999999987,
+            -2.447109181957783e-16
+          ],
+          "lead_pose": [
+            2.6999999999999997,
+            2.9999999999999996,
+            6.425793230846464e-16
+          ],
+          "ego_speed_mps": 1.5,
+          "signed_min_pair_clearance_m": 1.0
+        }
+      ],
+      "checked_start_s": 0.0,
+      "checked_end_s": 0.2,
+      "checked_sample_count": 5,
+      "evaluation_complete": true,
+      "termination_reason": "horizon_reached",
+      "signed_min_pair_clearance_m": 1.0,
+      "candidate_snapshot": null,
+      "reference_xy": null,
+      "inspection_only": true,
+      "planning_allowed": false
+    },
+    {
+      "option_index": 2,
+      "evaluation_id": "synthetic:e2",
+      "prediction_group_id": "synthetic:g0",
+      "candidate_id": 3,
+      "reference_id": null,
+      "target_speed_mps": 1.5,
+      "source_path_type": "reference_centerline",
+      "reference_only": true,
+      "rollout_trajectory_type": "modeled_ego_rollout",
+      "native_safe": true,
+      "native_reason": null,
+      "native_relative_s_progress_m": 123.0,
+      "requested_sample_times_s": [
+        0.0,
+        0.05,
+        0.1,
+        0.15,
+        0.2
+      ],
+      "requested_horizon_s": 0.2,
+      "sample_dt_s": 0.05,
+      "samples": [
+        {
+          "sample_index": 0,
+          "t_s": 0.0,
+          "ego_pose": [
+            1.4999999999999998,
+            3.0,
+            -6.901146321069973e-16
+          ],
+          "lead_pose": [
+            2.4999999999999996,
+            2.999999999999999,
+            5.03597163969971e-16
+          ],
+          "ego_speed_mps": 1.5,
+          "signed_min_pair_clearance_m": 1.0
+        },
+        {
+          "sample_index": 1,
+          "t_s": 0.05,
+          "ego_pose": [
+            1.5749999999999997,
+            3.0,
+            -5.717493145596109e-16
+          ],
+          "lead_pose": [
+            2.5499999999999994,
+            2.9999999999999987,
+            5.414602100017871e-16
+          ],
+          "ego_speed_mps": 1.5,
+          "signed_min_pair_clearance_m": 1.0
+        },
+        {
+          "sample_index": 2,
+          "t_s": 0.1,
+          "ego_pose": [
+            1.6499999999999997,
+            2.999999999999999,
+            -4.580602563919454e-16
+          ],
+          "lead_pose": [
+            2.5999999999999996,
+            2.999999999999999,
+            5.772449185315054e-16
+          ],
+          "ego_speed_mps": 1.5,
+          "signed_min_pair_clearance_m": 1.0
+        },
+        {
+          "sample_index": 3,
+          "t_s": 0.15,
+          "ego_pose": [
+            1.7249999999999992,
+            2.999999999999999,
+            -3.490474576040013e-16
+          ],
+          "lead_pose": [
+            2.6499999999999995,
+            2.999999999999999,
+            6.109512895591249e-16
+          ],
+          "ego_speed_mps": 1.5,
+          "signed_min_pair_clearance_m": 1.0
+        },
+        {
+          "sample_index": 4,
+          "t_s": 0.2,
+          "ego_pose": [
+            1.7999999999999994,
+            2.9999999999999987,
+            -2.447109181957783e-16
+          ],
+          "lead_pose": [
+            2.6999999999999997,
+            2.9999999999999996,
+            6.425793230846464e-16
+          ],
+          "ego_speed_mps": 1.5,
+          "signed_min_pair_clearance_m": 1.0
+        }
+      ],
+      "checked_start_s": 0.0,
+      "checked_end_s": 0.2,
+      "checked_sample_count": 5,
+      "evaluation_complete": true,
+      "termination_reason": "horizon_reached",
+      "signed_min_pair_clearance_m": 1.0,
+      "candidate_snapshot": null,
+      "reference_xy": null,
+      "inspection_only": true,
+      "planning_allowed": false
+    },
+    {
+      "option_index": 3,
+      "evaluation_id": "synthetic:e3",
+      "prediction_group_id": "synthetic:g0",
+      "candidate_id": null,
+      "reference_id": "raceline",
+      "target_speed_mps": 1.0,
+      "source_path_type": null,
+      "reference_only": false,
+      "rollout_trajectory_type": "modeled_ego_rollout",
+      "native_safe": null,
+      "native_reason": null,
+      "native_relative_s_progress_m": 123.0,
+      "requested_sample_times_s": [
+        0.0,
+        0.05,
+        0.1,
+        0.15,
+        0.2
+      ],
+      "requested_horizon_s": 0.2,
+      "sample_dt_s": 0.05,
+      "samples": [
+        {
+          "sample_index": 0,
+          "t_s": 0.0,
+          "ego_pose": [
+            1.4999999999999998,
+            3.0,
+            -6.901146321069973e-16
+          ],
+          "lead_pose": [
+            2.4999999999999996,
+            2.999999999999999,
+            5.03597163969971e-16
+          ],
+          "ego_speed_mps": 1.0,
+          "signed_min_pair_clearance_m": 1.0
+        },
+        {
+          "sample_index": 1,
+          "t_s": 0.05,
+          "ego_pose": [
+            1.55,
+            2.9999999999999996,
+            -6.106848360332147e-16
+          ],
+          "lead_pose": [
+            2.5499999999999994,
+            2.9999999999999987,
+            5.414602100017871e-16
+          ],
+          "ego_speed_mps": 1.0,
+          "signed_min_pair_clearance_m": 1.0
+        },
+        {
+          "sample_index": 2,
+          "t_s": 0.1,
+          "ego_pose": [
+            1.5999999999999994,
+            2.999999999999999,
+            -5.33333377461531e-16
+          ],
+          "lead_pose": [
+            2.5999999999999996,
+            2.999999999999999,
+            5.772449185315054e-16
+          ],
+          "ego_speed_mps": 1.0,
+          "signed_min_pair_clearance_m": 1.0
+        },
+        {
+          "sample_index": 3,
+          "t_s": 0.15,
+          "ego_pose": [
+            1.6499999999999997,
+            2.999999999999999,
+            -4.580602563919454e-16
+          ],
+          "lead_pose": [
+            2.6499999999999995,
+            2.999999999999999,
+            6.109512895591249e-16
+          ],
+          "ego_speed_mps": 1.0,
+          "signed_min_pair_clearance_m": 1.0
+        },
+        {
+          "sample_index": 4,
+          "t_s": 0.2,
+          "ego_pose": [
+            1.6999999999999995,
+            2.999999999999999,
+            -3.8486547282445835e-16
+          ],
+          "lead_pose": [
+            2.6999999999999997,
+            2.9999999999999996,
+            6.425793230846464e-16
+          ],
+          "ego_speed_mps": 1.0,
+          "signed_min_pair_clearance_m": 1.0
+        }
+      ],
+      "checked_start_s": 0.0,
+      "checked_end_s": 0.2,
+      "checked_sample_count": 5,
+      "evaluation_complete": true,
+      "termination_reason": "horizon_reached",
+      "signed_min_pair_clearance_m": 1.0,
+      "candidate_snapshot": null,
+      "reference_xy": null,
+      "inspection_only": true,
+      "planning_allowed": false
+    },
+    {
+      "option_index": 4,
+      "evaluation_id": "synthetic:e4",
+      "prediction_group_id": "synthetic:g0",
+      "candidate_id": 2,
+      "reference_id": null,
+      "target_speed_mps": 0.5,
+      "source_path_type": "state_matched_trajectory",
+      "reference_only": false,
+      "rollout_trajectory_type": "modeled_ego_rollout",
+      "native_safe": null,
+      "native_reason": null,
+      "native_relative_s_progress_m": 123.0,
+      "requested_sample_times_s": [
+        0.0,
+        0.05,
+        0.1,
+        0.15,
+        0.2
+      ],
+      "requested_horizon_s": 0.2,
+      "sample_dt_s": 0.05,
+      "samples": [
+        {
+          "sample_index": 0,
+          "t_s": 0.0,
+          "ego_pose": [
+            1.4999999999999998,
+            3.0,
+            -6.901146321069973e-16
+          ],
+          "lead_pose": [
+            2.4999999999999996,
+            2.999999999999999,
+            5.03597163969971e-16
+          ],
+          "ego_speed_mps": 0.5,
+          "signed_min_pair_clearance_m": 1.0
+        },
+        {
+          "sample_index": 1,
+          "t_s": 0.05,
+          "ego_pose": [
+            1.5249999999999997,
+            2.9999999999999996,
+            -6.501399418823436e-16
+          ],
+          "lead_pose": [
+            2.5499999999999994,
+            2.9999999999999987,
+            5.414602100017871e-16
+          ],
+          "ego_speed_mps": 0.5,
+          "signed_min_pair_clearance_m": 1.0
+        },
+        {
+          "sample_index": 2,
+          "t_s": 0.1,
+          "ego_pose": [
+            1.55,
+            2.9999999999999996,
+            -6.106848360332147e-16
+          ],
+          "lead_pose": [
+            2.5999999999999996,
+            2.999999999999999,
+            5.772449185315054e-16
+          ],
+          "ego_speed_mps": 0.5,
+          "signed_min_pair_clearance_m": 1.0
+        }
+      ],
+      "checked_start_s": 0.0,
+      "checked_end_s": 0.1,
+      "checked_sample_count": 3,
+      "evaluation_complete": false,
+      "termination_reason": "synthetic_truncated",
+      "signed_min_pair_clearance_m": 1.0,
+      "candidate_snapshot": null,
+      "reference_xy": null,
+      "inspection_only": true,
+      "planning_allowed": false
+    }
+  ],
+  "inspection_only": true,
+  "planning_allowed": false,
+  "plan_snapshot_sha256": "4004f55ea5726cedff583ae85384e12a6ed225dcabc43a704c714f7c7eaf8f35",
+  "ego_state_sha256": "2991edb00ecbbedc59a0a348495ba1f75b8bb4c6ee1b60dd5a3fb636d18af96b",
+  "lead_state_sha256": "725100a2017c6c8afb78494215c6dd3a988918a7708f16dd4af40d948632f8dd"
+}
