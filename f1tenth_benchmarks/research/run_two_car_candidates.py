@@ -62,7 +62,9 @@ def run(output, map_name='my_map', domain_dir=None, seconds=12., gap=2., ego_spe
         lead_speed=.9, budget_ms=40., preferred_candidate=3, wall_clearance=.05,
         pair_clearance=.05, ego_start_s=0., phase=1, original_esp_control=False, path_lookahead_m=3.,
         rolling_start=False, laps=None, curve_speed_control=False, measured_bend_caps=False,
-        raceline_path=None, raceline_speed=None, skip_raceline_candidates=False):
+        raceline_path=None, raceline_speed=None, skip_raceline_candidates=False, rollout_diagnostics=False):
+    if rollout_diagnostics and phase != 2:
+        raise ValueError('rollout diagnostics requires Phase 2')
     if map_name not in ('my_map', 'esp') or preferred_candidate not in range(1, 6):
         raise ValueError('invalid map or preferred candidate')
     if not math.isfinite(seconds) or seconds <= 0 or not math.isfinite(wall_clearance) or wall_clearance < 0:
@@ -84,8 +86,9 @@ def run(output, map_name='my_map', domain_dir=None, seconds=12., gap=2., ego_spe
                               rolling_start=rolling_start, curve_speed_control=curve_speed_control,
                               measured_bend_caps=((151., 166., 3.9), (184., 202., 3.8)) if measured_bend_caps else (),
                               raceline_path=raceline_path, raceline_speed=raceline_speed,
-                              raceline_candidates=not skip_raceline_candidates)
+                              raceline_candidates=not skip_raceline_candidates, rollout_diagnostics=rollout_diagnostics)
     frames = [env.reset()]
+    rollout_records = []
     cars = ('ego_state', 'lead_state')
     origins = {car: frames[0][car]['frenet'].get('s_unwrapped') for car in cars}
     laps_at = {car: [] for car in cars}
@@ -96,6 +99,8 @@ def run(output, map_name='my_map', domain_dir=None, seconds=12., gap=2., ego_spe
         if frames[-1]['terminal_reason'] is not None:
             break
         transition, frame = env.step()
+        if rollout_diagnostics:
+            rollout_records.append(env.rollout_diagnostics.last_record)
         plan = transition['plan']
         cycle_times.append(transition['cycle_wall_time_s'])
         if plan is not None:
@@ -168,6 +173,9 @@ def run(output, map_name='my_map', domain_dir=None, seconds=12., gap=2., ego_spe
         with (out / name).open('x') as stream:
             json.dump(_json_safe(data), stream, allow_nan=False)
             stream.write('\n')
+    if rollout_diagnostics:
+        from .overtaking.rollout_diagnostics_v1 import write_sidecar
+        write_sidecar(out / 'rollout_diagnostics.jsonl', rollout_records)
     _preview(env, frames, out / 'preview.png')
     return report
 
@@ -175,6 +183,7 @@ def run(output, map_name='my_map', domain_dir=None, seconds=12., gap=2., ego_spe
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', required=True)
+    parser.add_argument('--rollout-diagnostics', action='store_true', help='write opt-in offline rollout sidecar')
     parser.add_argument('--phase', type=int, choices=(1, 2), default=1)
     parser.add_argument('--map', choices=('my_map', 'esp'), default='my_map')
     parser.add_argument('--domain-dir')
