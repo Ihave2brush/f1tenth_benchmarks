@@ -110,8 +110,12 @@ class TwoCarOvertakingEnv:
         if measured_bend_caps and not curve_speed_control:
             raise ValueError('measured bend caps require curve speed control')
         self.original_esp_control = original_esp_control
+        # Near 0.5 m/s the dynamic bicycle equations are stiff. Subdivide only
+        # integration, keeping actuator updates and collision sweeps at 10 ms.
+        physics = {'dynamics_substeps': 10} if self.map_id == 'new' else None
         self.sim = MultiCarSim(self.map_id, wall_clearance=wall_clearance, pair_clearance=pair_clearance,
-                               enable_lidar=False, occupancy_map=OccupancyMap.from_raster(self.geometry.raster))
+                               enable_lidar=False, occupancy_map=OccupancyMap.from_raster(self.geometry.raster),
+                               extra_params=physics)
         body = self.sim.bodies[0]
         self.config = SessionConfig(speed_mps=ego_speed, lookahead_m=path_lookahead_m, generation_mode='direct_only',
                                     safety_margin_m=body.width / 2 + wall_clearance,

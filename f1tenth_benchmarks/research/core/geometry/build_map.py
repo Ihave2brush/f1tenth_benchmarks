@@ -224,6 +224,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--map-yaml', type=Path)
     parser.add_argument('--anchor-csv', type=Path)
+    parser.add_argument('--anchor-index', type=int, default=0, help='zero-based row in the anchor CSV')
     parser.add_argument('--map-id')
     parser.add_argument('--output-root', type=Path, default=Path('Data/research/geometry'))
     parser.add_argument('--verify-only', type=Path)
@@ -240,10 +241,13 @@ def main():
     old = np.loadtxt(args.anchor_csv, delimiter=',', comments='#', ndmin=2)
     if len(old) < 2 or old.shape[1] < 2 or not np.isfinite(old[:, :2]).all():
         raise ValueError('invalid anchor CSV')
-    heading = float(np.arctan2(*(old[1, :2]-old[0, :2])[::-1]))
+    i = args.anchor_index
+    if not 0 <= i < len(old) - 1:
+        parser.error('--anchor-index must identify a row with a following sample')
+    heading = float(np.arctan2(*(old[i+1, :2]-old[i, :2])[::-1]))
     build = build_geometry(raster, ExtractionOptions(output_step_m=args.step,
                            method=args.centerline_method,centering_smoothing_m=args.centering_smoothing_m),
-                           old[0, :2], heading)
+                           old[i, :2], heading)
     validation = validate_candidate(raster, build)
     # Anchor source is part of provenance, not only its extracted numerical pose.
     raster.source_hashes['anchor_csv'] = sha256(args.anchor_csv)

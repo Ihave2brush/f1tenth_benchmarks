@@ -19,9 +19,15 @@ from .run_two_car import plot
 
 
 def _load_domain(track, map_name, domain_dir, output, margin):
+    step = .005 if map_name == 'new' else .001
     if domain_dir is not None:
         directory = Path(domain_dir)
-        return MillimetreDomain.load(directory, track.geometry, expected_margin=margin), directory
+        domain = MillimetreDomain.load(directory, track.geometry, expected_margin=margin)
+        if map_name == 'new' and not math.isclose(domain.step, step, rel_tol=0., abs_tol=1e-12):
+            raise ValueError('new requires a 5 mm domain')
+        return domain, directory
+    if map_name == 'new':
+        return MillimetreDomain.build(track.geometry, step=step, margin=margin), output / 'domain'
     historical = {'my_map': 'mm_domain_width27_length51_20261030_001',
                   'esp': 'esp_mm_20ms_20261030_001'}
     directory = Path('Data/research/overtaking') / historical[map_name] / 'domain'
@@ -65,7 +71,7 @@ def run(output, map_name='my_map', domain_dir=None, seconds=12., gap=2., ego_spe
         raceline_path=None, raceline_speed=None, skip_raceline_candidates=False, rollout_diagnostics=False):
     if rollout_diagnostics and phase != 2:
         raise ValueError('rollout diagnostics requires Phase 2')
-    if map_name not in ('my_map', 'esp') or preferred_candidate not in range(1, 6):
+    if map_name not in ('my_map', 'esp', 'new') or preferred_candidate not in range(1, 6):
         raise ValueError('invalid map or preferred candidate')
     if not math.isfinite(seconds) or seconds <= 0 or not math.isfinite(wall_clearance) or wall_clearance < 0:
         raise ValueError('invalid duration or wall clearance')
@@ -133,6 +139,7 @@ def run(output, map_name='my_map', domain_dir=None, seconds=12., gap=2., ego_spe
                   config=asdict(env.config), target_speeds_mps=[ego_speed, lead_speed], ego_start_s=ego_start_s,
                   spawn_gap_m=gap, preferred_order=order, budget_ms=budget_ms, pair_clearance_m=pair_clearance,
                   duration_requested_s=seconds, duration_s=end['time_s'], steps=len(cycle_times),
+                  physics_integration_step_s=env.sim.params.timestep / env.sim.cars[0].integration_substeps,
                   terminal_reason=end['terminal_reason'] or 'duration_reached', events=end['events'],
                   plan_ms=_timing_ms(plan_times), cycle_ms=_timing_ms(cycle_times),
                   selected_counts={str(i): selected[i] for i in range(1, 6)},
@@ -185,7 +192,7 @@ def main():
     parser.add_argument('--output', required=True)
     parser.add_argument('--rollout-diagnostics', action='store_true', help='write opt-in offline rollout sidecar')
     parser.add_argument('--phase', type=int, choices=(1, 2), default=1)
-    parser.add_argument('--map', choices=('my_map', 'esp'), default='my_map')
+    parser.add_argument('--map', choices=('my_map', 'esp', 'new'), default='my_map')
     parser.add_argument('--domain-dir')
     parser.add_argument('--original-esp-control', action='store_true')
     parser.add_argument('--rolling-start', action='store_true')

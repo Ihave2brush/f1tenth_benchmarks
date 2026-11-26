@@ -592,9 +592,11 @@ def export_two_car_candidates(source, output_dir, base_dashboard_dir, replay_id)
             or len(raw_frames) != report['steps'] + 1
             or domain.metadata['source_fingerprint'] != report['domain_fingerprint']):
         raise ValueError('inconsistent two-car candidate recording')
-    base = json.loads((Path(base_dashboard_dir)/'data.json').read_text())
-    if base['domain']['geometry_id'] != geometry.geometry_id:
-        raise ValueError('display base uses a different track geometry')
+    base = None
+    if base_dashboard_dir is not None:
+        base = json.loads((Path(base_dashboard_dir)/'data.json').read_text())
+        if base['domain']['geometry_id'] != geometry.geometry_id:
+            raise ValueError('display base uses a different track geometry')
     body = ThreeDiscBody(config['footprint_length_m'], config['footprint_width_m'])
     lap_replay = 'laps_requested_per_car' in report
     display_step = .10 if lap_replay else .02
@@ -642,6 +644,9 @@ def export_two_car_candidates(source, output_dir, base_dashboard_dir, replay_id)
                            plan_ms=plan['wall_time_s']*1000 if plan else None,
                            cycle_ms=row['cycle_wall_time_s']*1000 if not terminal else None,
                            repair=plan.get('result', {}).get('bspline_repair', {}) if plan else {}))
+        wall_time = (plan.get('footprint_validation') or {}).get('wall_gate_time_s') if plan else None
+        if wall_time is not None:
+            frames[-1]['wall_gate_ms'] = wall_time * 1000
         if report.get('phase') == 2:
             frames[-1].update(decision=row.get('decision'), options=row.get('costs', {}).get('options', []))
         if report.get('raceline'):
@@ -656,8 +661,21 @@ def export_two_car_candidates(source, output_dir, base_dashboard_dir, replay_id)
                 for s, start in zip(progress, origins)]
 
     arrays = domain.arrays
-    grid = slice(None, None, 25 if lap_replay else 5)
-    map_geometry = dict(base['geometry'])
+    grid = slice(None, None, max(1, round((.025 if lap_replay else .005)/domain.step)))
+    if base is not None:
+        map_geometry = dict(base['geometry'])
+    else:
+        raster = geometry.raster
+        if raster.origin[2] != 0:
+            raise ValueError('candidate dashboard requires an axis-aligned map raster')
+        map_geometry = dict(width=raster.width, height=raster.height, resolution=raster.resolution,
+                            origin=raster.origin.tolist(), length=domain.length,
+                            center=arrays['xy'][grid].round(5).tolist())
+        for side, bound in [('left', 'raw_upper'), ('right', 'raw_lower')]:
+            xy = arrays['xy'] + arrays[bound][:, None]*arrays['normal']
+            map_geometry['raw_'+side] = xy[grid].round(5).tolist()
+            smoothed = gaussian_filter1d(xy, .05/domain.step, axis=0, mode='wrap')
+            map_geometry['smooth_'+side] = smoothed[grid].round(5).tolist()
     for side, bound in [('left', 'upper'), ('right', 'lower')]:
         values = arrays[bound][grid]
         xy = arrays['xy'][grid] + values[:, None]*arrays['normal'][grid]
@@ -736,7 +754,7 @@ def main(argv=None):
     parser.add_argument('--domain-dir', help='compatible domain override for three-disc-single or two-car')
     parser.add_argument('--replay-id')
     args=parser.parse_args(argv)
-    if args.mode != 'standard' and not args.base_dashboard_dir:
+    if args.mode not in ('standard', 'two-car-candidates') and not args.base_dashboard_dir:
         parser.error(f'--base-dashboard-dir is required for {args.mode}')
     if args.domain_dir and args.mode not in ('three-disc-single', 'two-car'):
         parser.error('--domain-dir is only supported for three-disc-single or two-car')
